@@ -19,7 +19,7 @@ except ImportError:
     import saxonche as saxonlib
     PROCESSOR = saxonlib.PySaxonProcessor()
 
-PROCESSOR.set_configuration_property("indent-space", "0")
+#PROCESSOR.set_configuration_property("indent-space", "0")
 
 
 

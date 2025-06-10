@@ -1,0 +1,2552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" type="lemma">
+    <teiHeader>
+        <fileDesc xmlns:tei="http://www.tei-c.org/ns/1.0">
+            <titleStmt>
+                <title>Epistula VII</title>
+                <author>Hieronymus</author>
+            </titleStmt>
+            <editionStmt>
+                <edition>Biblindex</edition>
+                <respStmt xml:id="resp_NB">
+                    <resp>encodage des noms par</resp>
+                    <name xml:id="name-1"/>
+                </respStmt>
+                <respStmt xml:id="resp_LM">
+                    <resp>vérification de l'encodage des noms par</resp>
+                    <name xml:id="name-2"/>
+                </respStmt>
+            </editionStmt>
+            <publicationStmt>
+                <p>Publication Information</p>
+            </publicationStmt>
+            <sourceDesc>
+                <p>Information about the source</p>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc>
+            <refsDecl n="default">
+                <citeStructure unit="chapter" match="//body/div[@type='chapter']" use="@xml:id">
+                    <citeData use="@n" property="number"/>
+
+                    <citeData property="contains"
+                              use="sort(distinct-values(for $item in //persName|//placeName return if ($item = '') then continue else normalize-space($item)))"/>
+
+                    <citeStructure unit="section" match="child::div[@type='section']" use="@xml:id" delim=".">
+                        <citeData use="@n" property="number"/>
+
+                        <!--<citeStructure unit="token" match="(//*:w|//*:pc)" use="@xml:id" delim=".">
+                            <citeData use="@lemma" property="lemma"/>
+                            <citeData use="@pos" property="pos"/>
+                            <citeData use="@msd" property="msd"/>
+                            <citeData use="child::text()" property="text"/>
+                        </citeStructure>-->
+
+                        <!--<citeStructure unit="word" match="/w" use="@xml:id" delim="."> => voir .//w
+                            <citeData use="@lemma" property="lemma"/>
+                            <citeData use="@pos" property="pos"/>
+                            <citeData use="@msd" property="msd"/>
+                            <citeData use="child::text()" property="text"/>
+                        </citeStructure>-->
+
+                        <citeStructure unit="punctuation" match="/pc" use="@xml:id" delim="#">
+                            <citeData use="child::text()" property="text"/>
+                        </citeStructure>
+                    </citeStructure>
+                </citeStructure>
+            </refsDecl>
+            <refsDecl n="lines">
+                <citeStructure unit="line" match="//body/div//lb" use="@n"/>
+            </refsDecl>
+        </encodingDesc>
+    </teiHeader>
+    <text xmlns:tei="http://www.tei-c.org/ns/1.0">
+        <body>
+            <head>VII. AD <!--<persName>-->CHROMATIVM<!--</persName>-->, <!--<persName>-->IOVINVM<!--</persName>-->
+                , <!--<persName>-->EVSEBIVM<!--</persName>-->.
+            </head>
+            <div xml:id="chap_1" n="1" type="chapter">
+                <div xml:id="chap_1-sec_1" n="1" type="section">
+                    <p>
+                        <w xml:id="w-1" n="1" lemma="non" pos="ADVneg" msd="MORPH=empty">Non</w>
+                        <space></space>
+                        <w xml:id="w-2" n="2" lemma="debeo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">debet
+                        </w>
+                        <space></space>
+                        <w xml:id="w-3" n="3" lemma="charta" pos="NOMcom" msd="Case=Nom|Numb=Sing">charta</w>
+                        <space></space>
+                        <w xml:id="w-4" n="4" lemma="diuido" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">diuidere</w>
+                        <pc xml:id="pc-1" n="5">,</pc>
+                        <space></space>
+                        <w xml:id="w-5" n="6" lemma="qui1" pos="PROrel" msd="Case=Acc|Numb=Plur|Gend=Masc">quos</w>
+                        <space></space>
+                        <w xml:id="w-6" n="7" lemma="amor" pos="NOMcom" msd="Case=Nom|Numb=Sing">amor</w>
+                        <space></space>
+                        <w xml:id="w-7" n="8" lemma="mutuus" pos="ADJqua" msd="Case=Nom|Numb=Sing|Gend=Masc|Deg=Pos">
+                            mutuus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-8" n="9" lemma="copulo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">copulauit
+                        </w>
+                        <pc xml:id="pc-2" n="10">,</pc>
+                        <space></space>
+                        <w xml:id="w-9" n="11" lemma="nec2" pos="CONcoo" msd="MORPH=empty">nec</w>
+                        <space></space>
+                        <w xml:id="w-10" n="12" lemma="per" pos="PRE" msd="MORPH=empty">per</w>
+                        <space></space>
+                        <w xml:id="w-11" n="13" lemma="singulus" pos="ADJdis" msd="Case=Acc|Numb=Plur|Gend=Masc">
+                            singulos
+                        </w>
+                        <space></space>
+                        <w xml:id="w-12" n="14" lemma="officium" pos="NOMcom" msd="Case=Nom|Numb=Plur">officia</w>
+                        <space></space>
+                        <w xml:id="w-13" n="15" lemma="meus" pos="PROper" msd="Case=Gen|Numb=Plur|Gend=MascNeut">mei</w>
+                        <space></space>
+                        <w xml:id="w-14" n="16" lemma="sum1" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=3">sunt
+                        </w>
+                        <space></space>
+                        <w xml:id="w-15" n="17" lemma="partior" pos="VER"
+                           msd="Case=Nom|Numb=Plur|Gend=Neut|Mood=Adj|Voice=Dep">partienda
+                        </w>
+                        <space></space>
+                        <w xml:id="w-16" n="18" lemma="sermo" pos="NOMcom" msd="Case=Gen|Numb=Sing">sermonis</w>
+                        <pc xml:id="pc-3" n="19">,</pc>
+                        <space></space>
+                        <w xml:id="w-17" n="20" lemma="cum3" pos="CONsub" msd="MORPH=empty">cum</w>
+                        <space></space>
+                        <w xml:id="w-18" n="21" lemma="sic" pos="ADV" msd="Deg=Pos">sic</w>
+                        <space></space>
+                        <w xml:id="w-19" n="22" lemma="inuicem" pos="ADV" msd="Deg=Pos">inuicem</w>
+                        <space></space>
+                        <w xml:id="w-20" n="23" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-21" n="24" lemma="amo" pos="VER"
+                           msd="Numb=Plur|Mood=Sub|Tense=Pres|Voice=Act|Person=2">ametis
+                        </w>
+                        <pc xml:id="pc-4" n="25">,</pc>
+                        <space></space>
+                        <w xml:id="w-22" n="26" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-23" n="27" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-24" n="28" lemma="parum2" pos="ADV" msd="Deg=Comp">minus</w>
+                        <space></space>
+                        <w xml:id="w-25" n="29" lemma="tres" pos="ADJcar" msd="Case=Acc|Numb=Plur|Gend=MascFem">tres</w>
+                        <space></space>
+                        <w xml:id="w-26" n="30" lemma="caritas" pos="NOMcom" msd="Case=Nom|Numb=Sing">caritas</w>
+                        <space></space>
+                        <w xml:id="w-27" n="31" lemma="iungo" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">iungat
+                        </w>
+                        <pc xml:id="pc-5" n="32">,</pc>
+                        <space></space>
+                        <w xml:id="w-28" n="33" lemma="quam1" pos="ADVrel" msd="MORPH=empty">quam</w>
+                        <space></space>
+                        <w xml:id="w-29" n="34" lemma="duo" pos="ADJcar" msd="Case=Acc|Numb=Plur|Gend=Masc">duos</w>
+                        <space></space>
+                        <w xml:id="w-30" n="35" lemma="natura" pos="NOMcom" msd="Case=Nom|Numb=Sing">natura</w>
+                        <space></space>
+                        <w xml:id="w-31" n="36" lemma="socio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">sociauit
+                        </w>
+                        <pc xml:id="pc-6" n="37">.</pc>
+                        <space></space>
+                        <w xml:id="w-32" n="38" lemma="quin3" pos="ADVint.neg" msd="MORPH=empty">Quin</w>
+                        <space></space>
+                        <w xml:id="w-33" n="39" lemma="potius" pos="ADV" msd="Deg=Comp">potius</w>
+                        <pc xml:id="pc-7" n="40">,</pc>
+                        <space></space>
+                        <w xml:id="w-34" n="41" lemma="si2" pos="CONsub" msd="MORPH=empty">si</w>
+                        <space></space>
+                        <w xml:id="w-35" n="42" lemma="res" pos="NOMcom" msd="Case=Gen|Numb=Sing">rei</w>
+                        <space></space>
+                        <w xml:id="w-36" n="43" lemma="condicio" pos="NOMcom" msd="Case=Nom|Numb=Sing">condicio</w>
+                        <space></space>
+                        <w xml:id="w-37" n="44" lemma="patior" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Impa|Voice=Dep|Person=3">pateretur
+                        </w>
+                        <pc xml:id="pc-8" n="45">,</pc>
+                        <space></space>
+                        <w xml:id="w-38" n="46" lemma="sub" pos="PRE" msd="MORPH=empty">sub</w>
+                        <space></space>
+                        <w xml:id="w-39" n="47" lemma="unus" pos="ADJcar" msd="Case=Abl|Numb=Sing|Gend=MascNeut">uno</w>
+                        <space></space>
+                        <w xml:id="w-40" n="48" lemma="litterula" pos="NOMcom" msd="Case=Gen|Numb=Sing">litterulae</w>
+                        <space></space>
+                        <w xml:id="w-41" n="49" lemma="apex" pos="NOMcom" msd="Numb=Sing">apice</w>
+                        <space></space>
+                        <w xml:id="w-42" n="50" lemma="nomen" pos="NOMcom" msd="Case=Acc|Numb=Plur">nomina</w>
+                        <space></space>
+                        <w xml:id="w-43" n="51" lemma="indiuisus" pos="VER" msd="Case=Acc|Numb=Plur|Gend=Neut|Deg=Pos">
+                            indiuisa
+                        </w>
+                        <space></space>
+                        <w xml:id="w-44" n="52" lemma="concludo" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Impa|Voice=Act|Person=1">concluderem
+                        </w>
+                        <space></space>
+                        <w xml:id="w-45" n="53" lemma="uester" pos="PROpos" msd="Case=Dat|Numb=Plur|Gend=Com">uestris
+                        </w>
+                        <space></space>
+                        <w xml:id="w-46" n="54" lemma="quoque" pos="ADV" msd="Deg=Pos">quo<lb n="8" break="no"/>que
+                        </w>
+                        <space></space>
+                        <w xml:id="w-47" n="55" lemma="ita" pos="ADV" msd="Deg=Pos">ita</w>
+                        <space></space>
+                        <w xml:id="w-48" n="56" lemma="ego" pos="PROper" msd="Case=Acc|Numb=Sing">me</w>
+                        <space></space>
+                        <w xml:id="w-49" n="57" lemma="littera" pos="NOMcom" msd="Case=Abl|Numb=Plur">litteris</w>
+                        <space></space>
+                        <w xml:id="w-50" n="58" lemma="prouoco" pos="VER"
+                           msd="Case=Abl|Numb=Plur|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">prouocantibus
+                        </w>
+                        <pc xml:id="pc-9" n="59">,</pc>
+                        <space></space>
+                        <w xml:id="w-51" n="60" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-52" n="61" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-53" n="62" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-54" n="63" lemma="unus" pos="ADJcar" msd="Case=Abl|Numb=Sing|Gend=MascNeut">uno</w>
+                        <space></space>
+                        <w xml:id="w-55" n="64" lemma="tres" pos="ADJcar" msd="Case=Acc|Numb=Plur|Gend=MascFem">tres</w>
+                        <space></space>
+                        <w xml:id="w-56" n="65" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-57" n="66" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-58" n="67" lemma="tres" pos="NOMcom" msd="Case=Acc|Numb=Plur|Gend=Com">tri<lb n="9"
+                                                                                                                   break="no"/>
+                            bus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-59" n="68" lemma="unus" pos="ADJcar" msd="Case=Acc|Numb=Sing|Gend=MascNeut">unum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-60" n="69" lemma="puto" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Impa|Voice=Act|Person=1">putarem
+                        </w>
+                        <pc xml:id="pc-10" n="70">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+                <div xml:id="chap_1-sec_2" n="2" type="section">
+                    <p>
+                        <w xml:id="w-61" n="71" lemma="nam" pos="CONcoo" msd="MORPH=empty">Nam</w>
+                        <space></space>
+                        <w xml:id="w-62" n="72" lemma="postquam" pos="CONsub" msd="MORPH=empty">postquam</w>
+                        <space></space>
+                        <w xml:id="w-63" n="73" lemma="sanctus" pos="ADJqua"
+                           msd="Case=Abl|Numb=Sing|Gend=MascNeut|Deg=Pos">sancto
+                        </w>
+                        <space></space>
+                        <persName xml:id="persName-1" ref="Q321225" cert="high" resp="#resp_NB">
+                            <w xml:id="w-64" n="74" lemma="Euagrion" pos="NOMpro" msd="Case=Abl|Numb=Sing">Euagrio</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-65" n="75" lemma="transmitto" pos="VER"
+                           msd="Case=Abl|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">transmit<lb n="10"
+                                                                                                       break="no"/>tente
+                        </w>
+                        <space></space>
+                        <w xml:id="w-66" n="76" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-67" n="77" lemma="is" pos="PROdem" msd="Case=Abl|Numb=Plur|Gend=Fem">ea</w>
+                        <space></space>
+                        <w xml:id="w-68" n="78" lemma="ad2" pos="PRE" msd="MORPH=empty">ad</w>
+                        <space></space>
+                        <w xml:id="w-69" n="79" lemma="ego" pos="PROper" msd="Case=Acc|Numb=Sing">me</w>
+                        <space></space>
+                        <w xml:id="w-70" n="80" lemma="heremus" pos="NOMcom" msd="Case=Nom|Numb=Sing">heremi</w>
+                        <space></space>
+                        <w xml:id="w-71" n="81" lemma="pars" pos="NOMcom" msd="Case=Abl|Numb=Sing">parte</w>
+                        <space></space>
+                        <w xml:id="w-72" n="82" lemma="defero" pos="VER"
+                           msd="Case=Nom|Numb=Plur|Gend=Fem|Mood=Par|Tense=Perf|Voice=Pass">delatae
+                        </w>
+                        <space></space>
+                        <w xml:id="w-73" n="83" lemma="sum1" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=3">sunt
+                        </w>
+                        <pc xml:id="pc-11" n="84">,</pc>
+                        <space></space>
+                        <w xml:id="w-74" n="85" lemma="qui1" pos="PROrel" msd="Case=Nom|Numb=Plur|Gend=Fem">quae</w>
+                        <space></space>
+                        <w xml:id="w-75" n="86" lemma="inter" pos="PRE" msd="MORPH=empty">inter</w>
+                        <space></space>
+                        <orgName xml:id="orgName-1" ref="Q878607" resp="#resp_NB" cert="high">
+                            <w xml:id="w-76" n="87" lemma="Syri" pos="NOMpro" msd="Case=Acc|Numb=Plur">Syros</w>
+                        </orgName>
+                        <space></space>
+                        <w xml:id="w-77" n="88" lemma="ac1" pos="CONcoo" msd="MORPH=empty">ac</w>
+                        <space></space>
+                        <orgName xml:id="orgName-2" ref="Q105763" resp="#resp_NB" cert="high">
+                            <w xml:id="w-78" n="89" lemma="Sarraceni" pos="NOMpro" msd="Case=Acc|Numb=Plur|Gend=Masc">
+                                Sarracenos
+                            </w>
+                        </orgName>
+                        <space></space>
+                        <w xml:id="w-79" n="90" lemma="uastus" pos="ADJqua"
+                           msd="Case=Acc|Numb=Sing|Gend=MascNeut|Deg=Pos">uastum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-80" n="91" lemma="limes" pos="NOMcom" msd="Case=Acc|Numb=Sing">limitem</w>
+                        <space></space>
+                        <w xml:id="w-81" n="92" lemma="duco" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">ducit
+                        </w>
+                        <pc xml:id="pc-12" n="93">,</pc>
+                        <space></space>
+                        <w xml:id="w-82" n="94" lemma="sic" pos="ADV" msd="Deg=Pos">sic</w>
+                        <space></space>
+                        <w xml:id="w-83" n="95" lemma="gaudeo" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Par|Tense=Perf|Voice=SemDep">gauisus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-84" n="96" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">sum
+                        </w>
+                        <pc xml:id="pc-13" n="97">,</pc>
+                        <space></space>
+                        <w xml:id="w-85" n="98" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-86" n="99" lemma="ille" pos="PROdem" msd="Case=Acc|Numb=Sing|Gend=Masc">illum</w>
+                        <space></space>
+                        <w xml:id="w-87" n="100" lemma="dies" pos="NOMcom" msd="Case=Acc|Numb=Sing">diem</w>
+                        <space></space>
+                        <orgName xml:id="orgName-3" ref="Q1651392" resp="#resp_NB" cert="high">
+                            <w xml:id="w-88" n="101" lemma="Romanus" pos="ADJqua"
+                               msd="Case=Gen|Numb=Sing|Gend=Fem|Deg=Pos">Romanae
+                            </w>
+                        </orgName>
+                        <space></space>
+                        <w xml:id="w-89" n="102" lemma="felicitas" pos="NOMcom" msd="Case=Gen|Numb=Sing">felicitatis</w>
+                        <pc xml:id="pc-14" n="103">,</pc>
+                        <space></space>
+                        <w xml:id="w-90" n="104" lemma="qui1" pos="PROrel" msd="Case=Abl|Numb=Sing|Gend=MascNeut">quo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-91" n="105" lemma="primum" pos="ADJadv.ord" msd="Deg=Sup">primum</w>
+                        <space></space>
+                        <persName xml:id="persName-2" ref="Q312306" resp="#resp_NB" cert="high">
+                            <w xml:id="w-92" n="106" lemma="Marcellus" pos="NOMpro" msd="Case=Gen|Numb=Sing">Marcelli
+                            </w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-93" n="107" lemma="apud" pos="PRE" msd="MORPH=empty">apud</w>
+                        <space></space>
+                        <placeName xml:id="placeName-1" ref="Q72288" resp="#resp_NB" cert="high">
+                            <w xml:id="w-94" n="108" lemma="Nola" pos="NOMpro" msd="Case=Acc|Numb=Sing">Nolam</w>
+                        </placeName>
+                        <space></space>
+                        <w xml:id="w-95" n="109" lemma="proelium" pos="NOMcom" msd="Case=Abl|Numb=Sing">proelio</w>
+                        <space></space>
+                        <w xml:id="w-96" n="110" lemma="post2" pos="PRE" msd="MORPH=empty">post</w>
+                        <space></space>
+                        <placeName xml:id="placeName-2" ref="Q568611" resp="#resp_NB" cert="high">
+                            <w xml:id="w-97" n="111" lemma="Cannensis" pos="ADJqua"
+                               msd="Case=Acc|Numb=Sing|Gend=MascFem|Deg=Pos">Cannensem
+                            </w>
+                        </placeName>
+                        <space></space>
+                        <w xml:id="w-98" n="112" lemma="pugna" pos="NOMcom" msd="Case=Acc|Numb=Sing">pugnam</w>
+                        <space></space>
+                        <w xml:id="w-99" n="113" lemma="superbus2" pos="ADJqua"
+                           msd="Case=Nom|Numb=Plur|Gend=Neut|Deg=Pos">superba
+                        </w>
+                        <space></space>
+                        <persName xml:id="persName-3" ref="Q36456" resp="#resp_NB" cert="high">
+                            <w xml:id="w-100" n="114" lemma="Hannibal" pos="NOMpro" msd="Case=Gen|Numb=Sing">
+                                Hannibalis
+                            </w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-101" n="115" lemma="agmen" pos="NOMcom" msd="Case=Nom|Numb=Plur">agmina</w>
+                        <space></space>
+                        <w xml:id="w-102" n="116" lemma="concido1" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Perf|Voice=Act|Person=3">conciderunt
+                        </w>
+                        <pc xml:id="pc-15" n="117">,</pc>
+                        <space></space>
+                        <w xml:id="w-103" n="118" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <space></space>
+                        <w xml:id="w-104" n="119" lemma="uinco" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Perf|Voice=Act|Person=1">uicerim
+                        </w>
+                        <pc xml:id="pc-16" n="120">.</pc>
+                        <space></space>
+                        <w xml:id="w-105" n="121" lemma="et2" pos="CONcoo" msd="MORPH=empty">Et</w>
+                        <space></space>
+                        <w xml:id="w-106" n="122" lemma="licet3" pos="CONsub" msd="Mood=Ind|Tense=Pres|Voice=Act">
+                            licet
+                        </w>
+                        <space></space>
+                        <w xml:id="w-107" n="123" lemma="supra1" pos="ADV" msd="Deg=Pos">supra</w>
+                        <space></space>
+                        <w xml:id="w-108" n="124" lemma="dico2" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Par|Tense=Perf|Voice=Pass">dictus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-109" n="125" lemma="frater" pos="NOMcom" msd="Case=Nom|Numb=Sing">frater</w>
+                        <space></space>
+                        <w xml:id="w-110" n="126" lemma="saepe" pos="ADV" msd="Deg=Pos">saepe</w>
+                        <space></space>
+                        <w xml:id="w-111" n="127" lemma="ego" pos="PROper" msd="Case=Acc|Numb=Sing">me</w>
+                        <space></space>
+                        <w xml:id="w-112" n="128" lemma="uisito" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">uisitet
+                        </w>
+                        <space></space>
+                        <w xml:id="w-113" n="129" lemma="atque1" pos="CONcoo" msd="MORPH=empty">atque</w>
+                        <space></space>
+                        <w xml:id="w-114" n="130" lemma="ita" pos="ADV" msd="Deg=Pos">ita</w>
+                        <space></space>
+                        <w xml:id="w-115" n="131" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-116" n="132" lemma="suus" pos="PROpos.ref" msd="Case=Acc|Numb=Plur|Gend=Neut">sua
+                        </w>
+                        <space></space>
+                        <w xml:id="w-117" n="133" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <persName xml:id="persName-4" ref="Q302" resp="#resp_NB" cert="high">
+                            <w xml:id="w-118" n="134" lemma="Christus" pos="NOMpro" msd="Case=Abl|Numb=Sing">Christo</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-119" n="135" lemma="uiscus2" pos="NOMcom" msd="Case=Acc|Numb=Plur">uiscera</w>
+                        <space></space>
+                        <w xml:id="w-120" n="136" lemma="foueo" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">foueat
+                        </w>
+                        <pc xml:id="pc-17" n="137">,</pc>
+                        <space></space>
+                        <w xml:id="w-121" n="138" lemma="tamen" pos="ADV" msd="Deg=Pos">tamen</w>
+                        <space></space>
+                        <w xml:id="w-122" n="139" lemma="longus" pos="ADJqua"
+                           msd="Case=Abl|Numb=Sing|Gend=MascNeut|Deg=Pos">longo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-123" n="140" lemma="ab" pos="PRE" msd="MORPH=empty">a</w>
+                        <space></space>
+                        <w xml:id="w-124" n="141" lemma="ego" pos="PROper" msd="Case=Abl|Numb=Sing">me</w>
+                        <space></space>
+                        <w xml:id="w-125" n="142" lemma="spatium" pos="NOMcom" msd="Case=Abl|Numb=Sing">spatio</w>
+                        <space></space>
+                        <w xml:id="w-126" n="143" lemma="seiungo" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Par|Tense=Perf|Voice=Pass">seiunctus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-127" n="144" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-128" n="145" lemma="parum2" pos="ADV" msd="Deg=Comp">minus</w>
+                        <space></space>
+                        <w xml:id="w-129" n="146" lemma="ego" pos="PROper" msd="Case=Dat|Numb=Sing">mihi</w>
+                        <space></space>
+                        <w xml:id="w-130" n="147" lemma="derelinquo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">dereliquit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-131" n="148" lemma="abeo1" pos="VER" msd="Case=Dat|Numb=Sing|Mood=Ger|Voice=Act">
+                            abeundo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-132" n="149" lemma="desiderium" pos="NOMcom" msd="Case=Acc|Numb=Sing">desiderium
+                        </w>
+                        <pc xml:id="pc-18" n="150">,</pc>
+                        <space></space>
+                        <w xml:id="w-133" n="151" lemma="quam1" pos="ADVrel" msd="MORPH=empty">quam</w>
+                        <space></space>
+                        <w xml:id="w-134" n="152" lemma="affero" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pqp|Voice=Act|Person=3">adtulerat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-135" n="153" lemma="uenio" pos="VER" msd="Case=Abl|Numb=Sing|Mood=Ger|Voice=Act">
+                            ueniendo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-136" n="154" lemma="laetitia" pos="NOMcom" msd="Case=Acc|Numb=Sing">laetitiam</w>
+                        <pc xml:id="pc-19" n="155">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+            </div>
+            <div xml:id="chap_2" n="2" type="chapter">
+                <div xml:id="chap_2-sec_1" n="1" type="section">
+                    <p>
+                        <w xml:id="w-137" n="156" lemma="nunc" pos="ADV" msd="Deg=Pos">Nunc</w>
+                        <space></space>
+                        <w xml:id="w-138" n="157" lemma="cum2" pos="PRE" msd="MORPH=empty">cum</w>
+                        <space></space>
+                        <w xml:id="w-139" n="158" lemma="uester" pos="PROpos" msd="Case=Abl|Numb=Plur|Gend=Com">
+                            uestris
+                        </w>
+                        <space></space>
+                        <w xml:id="w-140" n="159" lemma="littera" pos="NOMcom" msd="Case=Abl|Numb=Plur">litteris</w>
+                        <space></space>
+                        <w xml:id="w-141" n="160" lemma="fabulor" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Mood=Ind|Tense=Pres|Voice=Dep|Person=1">fabulor
+                        </w>
+                        <pc xml:id="pc-20" n="161">,</pc>
+                        <space></space>
+                        <w xml:id="w-142" n="162" lemma="ille" pos="PROdem" msd="Case=Acc|Numb=Plur|Gend=Fem">illas</w>
+                        <space></space>
+                        <w xml:id="w-143" n="163" lemma="amplexor" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Dep|Person=1">amplexor
+                        </w>
+                        <pc xml:id="pc-21" n="164">,</pc>
+                        <space></space>
+                        <w xml:id="w-144" n="165" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Plur|Gend=Fem">illae</w>
+                        <space></space>
+                        <w xml:id="w-145" n="166" lemma="ego" pos="PROper" msd="Case=Abl|Numb=Sing">me</w>
+                        <space></space>
+                        <w xml:id="w-146" n="167" join="left" lemma="cum3" pos="CON" msd="MORPH=empty">cum</w>
+                        <space></space>
+                        <w xml:id="w-147" n="168" lemma="loquor" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Dep|Person=3">loquuntur
+                        </w>
+                        <pc xml:id="pc-22" n="169">,</pc>
+                        <space></space>
+                        <w xml:id="w-148" n="170" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Plur|Gend=Fem">illae</w>
+                        <space></space>
+                        <w xml:id="w-149" n="171" lemma="hic2" pos="ADV" msd="Deg=Pos">hic</w>
+                        <space></space>
+                        <w xml:id="w-150" n="172" lemma="tantum2" pos="ADV" msd="Deg=Pos">tantum</w>
+                        <space></space>
+                        <w xml:id="w-151" n="173" lemma="Latine" pos="ADV" msd="Case=Voc|Deg=Pos">Latine</w>
+                        <space></space>
+                        <w xml:id="w-152" n="174" lemma="scio" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=3">sciunt
+                        </w>
+                        <pc xml:id="pc-23" n="175">.</pc>
+                        <space></space>
+                        <w xml:id="w-153" n="176" lemma="hic1" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Masc">Hic</w>
+                        <space></space>
+                        <w xml:id="w-154" n="177" lemma="enim2" pos="CONcoo" msd="MORPH=empty">enim</w>
+                        <space></space>
+                        <w xml:id="w-155" n="178" lemma="aut" pos="CONcoo" msd="MORPH=empty">aut</w>
+                        <space></space>
+                        <w xml:id="w-156" n="179" lemma="barbarus1" pos="NOMcom" msd="Case=Nom|Numb=Sing">barbarus</w>
+                        <space></space>
+                        <w xml:id="w-157" n="180" lemma="senex1" pos="NOMcom" msd="Case=Dat|Numb=Sing">seni</w>
+                        <space></space>
+                        <w xml:id="w-158" n="181" lemma="sermo" pos="NOMcom" msd="Case=Nom|Numb=Sing">sermo</w>
+                        <space></space>
+                        <w xml:id="w-159" n="182" lemma="disco" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Adj|Voice=Pass">discendus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-160" n="183" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-161" n="184" lemma="aut" pos="CONcoo" msd="MORPH=empty">aut</w>
+                        <space></space>
+                        <w xml:id="w-162" n="185" lemma="taceo" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Neut|Mood=Adj|Voice=Pass">tacendum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-163" n="186" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <pc xml:id="pc-24" n="187">.</pc>
+                        <space></space>
+                        <w xml:id="w-164" n="188" lemma="quotienscumque" pos="ADVrel" msd="MORPH=empty">Quo<lb n="7"
+                                                                                                               break="no"/>
+                            tienscumque
+                        </w>
+                        <space></space>
+                        <w xml:id="w-165" n="189" lemma="carus" pos="ADJqua" msd="Case=Acc|Numb=Plur|Gend=Masc|Deg=Sup">
+                            carissimos
+                        </w>
+                        <space></space>
+                        <w xml:id="w-166" n="190" lemma="ego" pos="PROper" msd="Case=Dat|Numb=Sing">mihi</w>
+                        <space></space>
+                        <w xml:id="w-167" n="191" lemma="uultus" pos="NOMcom" msd="Case=Acc|Numb=Plur">uultus</w>
+                        <space></space>
+                        <w xml:id="w-168" n="192" lemma="notus2" pos="ADJqua" msd="Case=Nom|Numb=Plur|Deg=Pos">notae</w>
+                        <space></space>
+                        <w xml:id="w-169" n="193" lemma="manus1" pos="NOMcom" msd="Case=Nom|Numb=Plur">manus</w>
+                        <space></space>
+                        <w xml:id="w-170" n="194" lemma="refero" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=3">referunt
+                        </w>
+                        <space></space>
+                        <w xml:id="w-171" n="195" lemma="imprimo" pos="VER"
+                           msd="Case=Acc|Numb=Plur|Gend=Neut|Mood=Par|Tense=Perf|Voice=Pass">inpressa
+                        </w>
+                        <space></space>
+                        <w xml:id="w-172" n="196" lemma="uestigium" pos="NOMcom" msd="Case=Acc|Numb=Plur">uestigia</w>
+                        <pc xml:id="pc-25" n="197">,</pc>
+                        <space></space>
+                        <w xml:id="w-173" n="198" lemma="totiens" pos="ADV" msd="Deg=Pos">totiens</w>
+                        <space></space>
+                        <w xml:id="w-174" n="199" lemma="aut" pos="CONcoo" msd="MORPH=empty">aut</w>
+                        <space></space>
+                        <w xml:id="w-175" n="200" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <space></space>
+                        <w xml:id="w-176" n="201" lemma="hic2" pos="ADV" msd="Case=Nom|Numb=Sing|Deg=Pos">hic</w>
+                        <space></space>
+                        <w xml:id="w-177" n="202" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-178" n="203" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">sum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-179" n="204" lemma="aut" pos="CONcoo" msd="MORPH=empty">aut</w>
+                        <space></space>
+                        <w xml:id="w-180" n="205" lemma="uos" pos="PROper" msd="Case=Nom|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-181" n="206" lemma="hic2" pos="ADV" msd="Deg=Pos">hic</w>
+                        <space></space>
+                        <w xml:id="w-182" n="207" lemma="sum1" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=2">estis
+                        </w>
+                        <pc xml:id="pc-26" n="208">.</pc>
+                        <space></space>
+                        <w xml:id="w-183" n="209" lemma="credo" pos="VER"
+                           msd="Numb=Plur|Mood=Imp|Tense=Pres|Voice=Act|Person=2">Credite
+                        </w>
+                        <space></space>
+                        <w xml:id="w-184" n="210" lemma="amor" pos="NOMcom" msd="Case=Dat|Numb=Sing">amori</w>
+                        <space></space>
+                        <w xml:id="w-185" n="211" lemma="uerum1" pos="ADJqua" msd="Case=Acc|Numb=Plur">uera</w>
+                        <space></space>
+                        <w xml:id="w-186" n="212" lemma="dico2" pos="VER"
+                           msd="Case=Dat|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">dicenti
+                        </w>
+                        <pc xml:id="pc-27" n="213">:</pc>
+                        <space></space>
+                        <w xml:id="w-187" n="214" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-188" n="215" lemma="cum3" pos="CONsub" msd="MORPH=empty">cum</w>
+                        <space></space>
+                        <w xml:id="w-189" n="216" lemma="hic1" pos="PROdem" msd="Case=Acc|Numb=Plur|Gend=Fem">has</w>
+                        <space></space>
+                        <w xml:id="w-190" n="217" lemma="scribo" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Impa|Voice=Act|Person=1">scriberem
+                        </w>
+                        <pc xml:id="pc-28" n="218">,</pc>
+                        <space></space>
+                        <w xml:id="w-191" n="219" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-192" n="220" lemma="uideo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Impa|Voice=Act|Person=1">uidebam
+                        </w>
+                        <pc xml:id="pc-29" n="221">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+                <div xml:id="chap_2-sec_2" n="2" type="section">
+                    <p>
+                        <w xml:id="w-193" n="222" lemma="qui1" pos="PROrel" msd="Case=Abl|Numb=Plur|Gend=Com">Quibus</w>
+                        <space></space>
+                        <w xml:id="w-194" n="223" lemma="hic1" pos="PROdem" msd="Case=Acc|Numb=Sing|Gend=Neut">hoc</w>
+                        <space></space>
+                        <w xml:id="w-195" n="224" lemma="primum" pos="ADJadv.ord" msd="Deg=Sup">primum</w>
+                        <space></space>
+                        <w xml:id="w-196" n="225" lemma="queror" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Dep|Person=1">queror
+                        </w>
+                        <pc xml:id="pc-30" n="226">,</pc>
+                        <space></space>
+                        <w xml:id="w-197" n="227" lemma="cur" pos="ADVint" msd="MORPH=empty">cur</w>
+                        <space></space>
+                        <w xml:id="w-198" n="228" lemma="tot" pos="PROdem" msd="Case=Ind">tot</w>
+                        <space></space>
+                        <w xml:id="w-199" n="229" lemma="interiaceo" pos="VER"
+                           msd="Case=Abl|Numb=Plur|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">interiacentibus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-200" n="230" lemma="spatium" pos="NOMcom" msd="Case=Abl|Numb=Plur">spatiis</w>
+                        <space></space>
+                        <w xml:id="w-201" n="231" lemma="mare" pos="NOMcom" msd="Case=Gen|Numb=Sing">maris</w>
+                        <space></space>
+                        <w xml:id="w-202" n="232" lemma="atque1" pos="CONcoo" msd="MORPH=empty">atque</w>
+                        <space></space>
+                        <w xml:id="w-203" n="233" lemma="terra" pos="NOMcom" msd="Case=Gen|Numb=Plur">terrarum</w>
+                        <space></space>
+                        <w xml:id="w-204" n="234" lemma="tam" pos="ADV" msd="Deg=Pos">tam</w>
+                        <space></space>
+                        <w xml:id="w-205" n="235" lemma="paruus2" pos="ADJqua"
+                           msd="Case=Acc|Numb=Sing|Gend=Fem|Deg=Pos">paruam
+                        </w>
+                        <space></space>
+                        <w xml:id="w-206" n="236" lemma="epistola" pos="NOMcom" msd="Case=Acc|Numb=Sing">epistulam</w>
+                        <space></space>
+                        <w xml:id="w-207" n="237" lemma="mitto" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=2">miseritis
+                        </w>
+                        <pc xml:id="pc-31" n="238">,</pc>
+                        <space></space>
+                        <w xml:id="w-208" n="239" lemma="nisi" pos="CONsub" msd="MORPH=empty">nisi</w>
+                        <space></space>
+                        <w xml:id="w-209" n="240" lemma="qui2" pos="CONsub" msd="MORPH=empty">quod</w>
+                        <space></space>
+                        <w xml:id="w-210" n="241" lemma="ita" pos="ADV" msd="Deg=Pos">ita</w>
+                        <space></space>
+                        <w xml:id="w-211" n="242" lemma="mereo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=1">merui
+                        </w>
+                        <pc xml:id="pc-32" n="243">,</pc>
+                        <space></space>
+                        <w xml:id="w-212" n="244" lemma="qui1" pos="PROrel" msd="Case=Nom|Numb=Sing|Gend=Masc">qui</w>
+                        <space></space>
+                        <w xml:id="w-213" n="245" lemma="uos" pos="PROper" msd="Case=Dat|Numb=Plur">uobis</w>
+                        <pc xml:id="pc-33" n="246">,</pc>
+                        <space></space>
+                        <w xml:id="w-214" n="247" lemma="ut1" pos="ADVrel" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-215" n="248" lemma="scribo" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=2">scribitis
+                        </w>
+                        <pc xml:id="pc-34" n="249">,</pc>
+                        <space></space>
+                        <w xml:id="w-216" n="250" lemma="ante1" pos="ADV" msd="Deg=Pos">ante</w>
+                        <space></space>
+                        <w xml:id="w-217" n="251" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-218" n="252" lemma="scribo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=1">scripsi
+                        </w>
+                        <pc xml:id="pc-35" n="253">.</pc>
+                        <space></space>
+                        <w xml:id="w-219" n="254" lemma="charta" pos="NOMcom" msd="Case=Acc|Numb=Sing">Chartam</w>
+                        <space></space>
+                        <w xml:id="w-220" n="255" lemma="desum1" pos="VER" msd="Mood=Inf|Tense=Perf|Voice=Act">
+                            defuisse
+                        </w>
+                        <space></space>
+                        <w xml:id="w-221" n="256" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-222" n="257" lemma="puto" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">puto
+                        </w>
+                        <space></space>
+                        <placeName xml:id="placeName-3" ref="Q202311" resp="#resp_NB" cert="high">
+                            <w xml:id="w-223" n="258" lemma="Aegyptus" pos="NOMpro" msd="Case=Abl|Numb=Sing">Aegypto</w>
+                        </placeName>
+                        <space></space>
+                        <w xml:id="w-224" n="259" lemma="ministro" pos="VER"
+                           msd="Case=Abl|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">ministrante
+                        </w>
+                        <space></space>
+                        <w xml:id="w-225" n="260" lemma="commercium" pos="NOMcom" msd="Case=Acc|Numb=Plur">commercia</w>
+                        <pc xml:id="pc-36" n="261">.</pc>
+                        <space></space>
+                        <w xml:id="w-226" n="262" lemma="et2" pos="CONcoo" msd="MORPH=empty">Et</w>
+                        <space></space>
+                        <w xml:id="w-227" n="263" lemma="si2" pos="CONsub" msd="MORPH=empty">si</w>
+                        <space></space>
+                        <w xml:id="w-228" n="264" lemma="aliquis" pos="PROind" msd="Case=Nom|Numb=Sing|Gend=Masc">
+                            aliqui
+                        </w>
+                        <space></space>
+                        <orgName xml:id="orgName-4" ref="Q131976" resp="#resp_NB" cert="medium">
+                            <w xml:id="w-229" n="265" lemma="Ptolemaeus" pos="ADJqua" msd="Case=Nom|Numb=Sing">
+                                Ptolomaeus
+                            </w>
+                        </orgName>
+                        <space></space>
+                        <w xml:id="w-230" n="266" lemma="mare" pos="NOMcom" msd="Case=Acc|Numb=Plur">maria</w>
+                        <space></space>
+                        <w xml:id="w-231" n="267" lemma="claudo1" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pqp|Voice=Act|Person=3">clausisset
+                        </w>
+                        <pc xml:id="pc-37" n="268">,</pc>
+                        <space></space>
+                        <w xml:id="w-232" n="269" lemma="tamen" pos="ADV" msd="Deg=Pos">tamen</w>
+                        <space></space>
+                        <w xml:id="w-233" n="270" lemma="rex" pos="NOMcom" msd="Case=Nom|Numb=Sing">rex</w>
+                        <space></space>
+                        <persName xml:id="persName-5" ref="Q110745" resp="#resp_NB" cert="medium">
+                            <w xml:id="w-234" n="271" lemma="Attalus" pos="NOMpro" msd="Case=Nom|Numb=Sing">Attalus</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-235" n="272" lemma="membrana" pos="NOMcom" msd="Case=Acc|Numb=Plur">mem<lb n="15"
+                                                                                                                break="no"/>
+                            branas
+                        </w>
+                        <space></space>
+                        <w xml:id="w-236" n="273" lemma="ex" pos="PRE" msd="MORPH=empty">e</w>
+                        <space></space>
+                        <placeName xml:id="placeName-4" ref="Q18986" resp="#resp_NB" cert="high">
+                            <w xml:id="w-237" n="274" lemma="Pergamum" pos="NOMpro" msd="Case=Abl|Numb=Sing">Pergamo</w>
+                        </placeName>
+                        <space></space>
+                        <w xml:id="w-238" n="275" lemma="mitto" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pqp|Voice=Act|Person=3">miserat
+                        </w>
+                        <pc xml:id="pc-38" n="276">,</pc>
+                        <space></space>
+                        <w xml:id="w-239" n="277" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-240" n="278" lemma="penuria" pos="NOMcom" msd="Case=Abl|Numb=Sing">penuria</w>
+                        <space></space>
+                        <w xml:id="w-241" n="279" lemma="charta" pos="NOMcom" msd="Case=Gen|Numb=Sing">chartae</w>
+                        <space></space>
+                        <w xml:id="w-242" n="280" lemma="pellis" pos="NOMcom" msd="Case=Abl|Numb=Plur">pellibus</w>
+                        <space></space>
+                        <w xml:id="w-243" n="281" lemma="penso" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Impa|Voice=Pass|Person=3">pensa<lb n="16" break="no"/>retur
+                        </w>
+                        <pc xml:id="pc-39" n="282">;</pc>
+                        <space></space>
+                        <w xml:id="w-244" n="283" lemma="unde1" pos="ADVrel" msd="MORPH=empty">unde</w>
+                        <space></space>
+                        <w xml:id="w-245" n="284" lemma="pergamenus" pos="ADJqua"
+                           msd="Case=Gen|Numb=Plur|Gend=Fem|Deg=Pos">pergamenarum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-246" n="285" lemma="nomen" pos="NOMcom" msd="Case=Nom|Numb=Sing">nomen</w>
+                        <space></space>
+                        <w xml:id="w-247" n="286" lemma="ad2" pos="PRE" msd="MORPH=empty">ad</w>
+                        <space></space>
+                        <w xml:id="w-248" n="287" lemma="hic1" pos="PROdem" msd="Case=Acc|Numb=Sing|Gend=Fem">hanc</w>
+                        <space></space>
+                        <w xml:id="w-249" n="288" lemma="usque" pos="ADV" msd="Deg=Pos">usque</w>
+                        <space></space>
+                        <w xml:id="w-250" n="289" lemma="dies" pos="NOMcom" msd="Case=Acc|Numb=Sing">diem</w>
+                        <space></space>
+                        <w xml:id="w-251" n="290" lemma="trado" pos="VER"
+                           msd="Case=Abl|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">tradente
+                        </w>
+                        <space></space>
+                        <w xml:id="w-252" n="291" lemma="sui1" pos="PROref" msd="Case=Dat|Numb=Sing">sibi</w>
+                        <space></space>
+                        <w xml:id="w-253" n="292" lemma="inuicem" pos="ADV" msd="Deg=Pos">inuicem</w>
+                        <space></space>
+                        <w xml:id="w-254" n="293" lemma="posteritas" pos="NOMcom" msd="Case=Abl|Numb=Sing">posteritate
+                        </w>
+                        <space></space>
+                        <w xml:id="w-255" n="294" lemma="seruo" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Neut|Mood=Par|Tense=Perf|Voice=Pass">seruatum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-256" n="295" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <pc xml:id="pc-40" n="296">.</pc>
+                        <space></space>
+                        <w xml:id="w-257" n="297" lemma="quis1" pos="PROint" msd="Case=Nom|Numb=Sing|Gend=Neut">Quid</w>
+                        <space></space>
+                        <w xml:id="w-258" n="298" lemma="igitur" pos="CONcoo" msd="MORPH=empty">igitur</w>
+                        <pc xml:id="pc-41" n="299">?</pc>
+                        <space></space>
+                    </p>
+                </div>
+                <div xml:id="chap_2-sec_3" n="3" type="section">
+                    <p>
+                        <w xml:id="w-259" n="300" lemma="arbitror" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Dep|Person=1">Arbitrer
+                        </w>
+                        <space></space>
+                        <w xml:id="w-260" n="301" lemma="baiulus" pos="NOMcom" msd="Case=Acc|Numb=Sing">baiulum</w>
+                        <space></space>
+                        <w xml:id="w-261" n="302" lemma="festino" pos="VER" msd="Mood=Inf|Tense=Perf|Voice=Act">
+                            festinasse
+                        </w>
+                        <pc xml:id="pc-42" n="303">?</pc>
+                        <space></space>
+                        <w xml:id="w-262" n="304" lemma="quamuis1" pos="ADVrel" msd="MORPH=empty">Quamuis</w>
+                        <space></space>
+                        <w xml:id="w-263" n="305" lemma="longus" pos="ADJqua" msd="Case=Dat|Numb=Plur|Gend=Fem|Deg=Pos">
+                            longae
+                        </w>
+                        <space></space>
+                        <w xml:id="w-264" n="306" lemma="epistola" pos="NOMcom" msd="Case=Nom|Numb=Sing">epistulae</w>
+                        <space></space>
+                        <w xml:id="w-265" n="307" lemma="unus" pos="ADJcar" msd="Case=Nom|Numb=Sing|Gend=Fem">una</w>
+                        <space></space>
+                        <w xml:id="w-266" n="308" lemma="nox" pos="NOMcom" msd="Case=Nom|Numb=Sing">nox</w>
+                        <space></space>
+                        <w xml:id="w-267" n="309" lemma="sufficio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">sufficit
+                        </w>
+                        <pc xml:id="pc-43" n="310">.</pc>
+                        <space></space>
+                        <w xml:id="w-268" n="311" lemma="an" pos="ADVint" msd="MORPH=empty">an</w>
+                        <space></space>
+                        <w xml:id="w-269" n="312" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-270" n="313" lemma="aliquis" pos="PROind" msd="Case=Abl|Numb=Sing|Gend=Fem">
+                            aliqua
+                        </w>
+                        <space></space>
+                        <w xml:id="w-271" n="314" lemma="occupatio" pos="NOMcom" msd="Case=Abl|Numb=Sing">occupatione
+                        </w>
+                        <space></space>
+                        <w xml:id="w-272" n="315" lemma="detineo" pos="VER"
+                           msd="Case=Acc|Numb=Plur|Gend=Masc|Mood=Par|Tense=Perf|Voice=Pass">detentos
+                        </w>
+                        <pc xml:id="pc-44" n="316">?</pc>
+                        <space></space>
+                        <w xml:id="w-273" n="317" lemma="nullus" pos="PROind" msd="Case=Nom|Numb=Sing|Gend=Fem">Nulla
+                        </w>
+                        <space></space>
+                        <w xml:id="w-274" n="318" lemma="necessitas" pos="NOMcom" msd="Case=Nom|Numb=Sing">necessitas
+                        </w>
+                        <space></space>
+                        <w xml:id="w-275" n="319" lemma="magnus" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=MascFem|Deg=Comp">maior
+                        </w>
+                        <space></space>
+                        <w xml:id="w-276" n="320" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-277" n="321" lemma="caritas" pos="NOMcom" msd="Case=Abl|Numb=Sing">caritate</w>
+                        <pc xml:id="pc-45" n="322">.</pc>
+                        <space></space>
+                        <w xml:id="w-278" n="323" lemma="resto" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=3">Restant
+                        </w>
+                        <space></space>
+                        <w xml:id="w-279" n="324" lemma="duo" pos="ADJcar" msd="Case=Nom|Numb=Plur|Gend=Masc">duo</w>
+                        <pc xml:id="pc-46" n="325">,</pc>
+                        <space></space>
+                        <w xml:id="w-280" n="326" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-281" n="327" lemma="aut" pos="CONcoo" msd="MORPH=empty">aut</w>
+                        <space></space>
+                        <w xml:id="w-282" n="328" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-283" n="329" lemma="piget" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Perf|Voice=Act|Person=3">piguerit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-284" n="330" lemma="aut" pos="CONcoo" msd="MORPH=empty">aut</w>
+                        <space></space>
+                        <w xml:id="w-285" n="331" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <space></space>
+                        <w xml:id="w-286" n="332" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-287" n="333" lemma="mereo" pos="VER" msd="Case=Nom|Numb=Sing">merue</w>
+                        <space></space>
+                        <pc xml:id="pc-47" n="334">.</pc>
+                        <space></space>
+                        <w xml:id="w-288" n="335" lemma="ex" pos="PRE" msd="MORPH=empty">E</w>
+                        <space></space>
+                        <w xml:id="w-289" n="336" lemma="qui1" pos="PROrel" msd="Case=Abl|Numb=Plur|Gend=Com">quibus</w>
+                        <space></space>
+                        <w xml:id="w-290" n="337" lemma="malo" pos="VER"
+                           msd="Numb=Sing|Deg=Pos|Mood=Ind|Tense=Pres|Voice=Act|Person=1">malo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-291" n="338" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-292" n="339" lemma="incesso" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Perf|Voice=Act">incessere
+                        </w>
+                        <space></space>
+                        <w xml:id="w-293" n="340" lemma="tarditas" pos="NOMcom" msd="Case=Gen|Numb=Sing">tarditatis</w>
+                        <pc xml:id="pc-48" n="341">,</pc>
+                        <space></space>
+                        <w xml:id="w-294" n="342" lemma="quam1" pos="ADVrel" msd="MORPH=empty">quam</w>
+                        <space></space>
+                        <w xml:id="w-295" n="343" lemma="ego" pos="PROper" msd="Case=Acc|Numb=Sing">me</w>
+                        <space></space>
+                        <w xml:id="w-296" n="344" lemma="condemno" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">condem
+                            <lb n="2" break="no"/>nare
+                        </w>
+                        <space></space>
+                        <w xml:id="w-297" n="345" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-298" n="346" lemma="meritus" pos="NOMcom" msd="Case=Nom|Numb=Plur">meriti</w>
+                        <pc xml:id="pc-49" n="347">.</pc>
+                        <space></space>
+                        <w xml:id="w-299" n="348" lemma="facile" pos="ADV" msd="Deg=Comp">Facilius</w>
+                        <space></space>
+                        <w xml:id="w-300" n="349" lemma="enim2" pos="CONcoo" msd="MORPH=empty">enim</w>
+                        <space></space>
+                        <w xml:id="w-301" n="350" lemma="negligentia" pos="NOMcom" msd="Case=Nom|Numb=Sing">
+                            neglegentia
+                        </w>
+                        <space></space>
+                        <w xml:id="w-302" n="351" lemma="emendo" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Pass">
+                            emendari
+                        </w>
+                        <space></space>
+                        <w xml:id="w-303" n="352" lemma="possum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">potest
+                        </w>
+                        <pc xml:id="pc-50" n="353">,</pc>
+                        <space></space>
+                        <w xml:id="w-304" n="354" lemma="quam1" pos="ADVrel" msd="MORPH=empty">quam</w>
+                        <space></space>
+                        <w xml:id="w-305" n="355" lemma="amor" pos="NOMcom" msd="Case=Nom|Numb=Sing">amor</w>
+                        <space></space>
+                        <w xml:id="w-306" n="356" lemma="nascor" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Dep">nasci</w>
+                        <pc xml:id="pc-51" n="357">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+            </div>
+            <div xml:id="chap_3" n="3" type="chapter">
+                <div xml:id="chap_3-sec_1" n="1" type="section">
+                    <p>
+                        <persName xml:id="persName-6" ref="Q127377961" resp="#resp_NB" cert="high">
+                            <w xml:id="w-307" n="358" lemma="bonosus" pos="NOMpro" msd="Case=Nom|Numb=Sing|Gend=Masc">
+                                Bonosus
+                            </w>
+                        </persName>
+                        <pc xml:id="pc-52" n="359">,</pc>
+                        <space></space>
+                        <w xml:id="w-308" n="360" lemma="ut1" pos="ADVrel" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-309" n="361" lemma="scribo" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=2">scribitis
+                        </w>
+                        <pc xml:id="pc-53" n="362">,</pc>
+                        <space></space>
+                        <w xml:id="w-310" n="363" lemma="quasi1" pos="ADVrel" msd="MORPH=empty">quasi</w>
+                        <space></space>
+                        <w xml:id="w-311" n="364" lemma="filius" pos="NOMcom" msd="Case=Nom|Numb=Sing">filius</w>
+                        <space></space>
+                        <foreign xml:lang="grc">
+                            <persName xml:id="persName-7" ref="Q302" resp="#resp_NB" cert="high">
+                                <w xml:id="w-312" n="365" lemma="[Greek]" pos="FOR" msd="MORPH=empty">ἰχθύος</w>
+                            </persName>
+                            <space></space>
+                        </foreign>
+                        <w xml:id="w-313" n="366" lemma="aquosus" pos="ADJqua"
+                           msd="Case=Abl|Numb=Sing|Gend=Fem|Deg=Pos">aquosa
+                        </w>
+                        <space></space>
+                        <w xml:id="w-314" n="367" lemma="peto" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">petiit
+                        </w>
+                        <pc xml:id="pc-54" n="368">,</pc>
+                        <space></space>
+                        <w xml:id="w-315" n="369" lemma="nos" pos="PROper" msd="Case=Nom|Numb=Plur">nos</w>
+                        <space></space>
+                        <w xml:id="w-316" n="370" lemma="pristinus" pos="ADJqua"
+                           msd="Case=Abl|Numb=Sing|Gend=Fem|Deg=Pos">pristina
+                        </w>
+                        <space></space>
+                        <w xml:id="w-317" n="371" lemma="contagio" pos="NOMcom" msd="Case=Abl|Numb=Sing">contagione</w>
+                        <space></space>
+                        <w xml:id="w-318" n="372" lemma="sordeo" pos="VER"
+                           msd="Case=Nom|Numb=Plur|Gend=MascFem|Mood=Par|Tense=Pres|Voice=Act">sordentes
+                        </w>
+                        <space></space>
+                        <w xml:id="w-319" n="373" lemma="quasi1" pos="ADVrel" msd="MORPH=empty">quasi</w>
+                        <space></space>
+                        <w xml:id="w-320" n="374" lemma="regulus" pos="NOMcom" msd="Case=Nom|Numb=Plur">reguli</w>
+                        <space></space>
+                        <w xml:id="w-321" n="375" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-322" n="376" lemma="scorpio" pos="NOMcom" msd="Case=Nom|Numb=Plur">scorpiones</w>
+                        <space></space>
+                        <w xml:id="w-323" n="377" lemma="areo" pos="VER"
+                           msd="Case=Nom|Numb=Plur|Gend=Neut|Mood=Par|Tense=Pres|Voice=Act">arentia
+                        </w>
+                        <space></space>
+                        <w xml:id="w-324" n="378" lemma="qui" pos="PROind" msd="Case=Acc|Numb=Plur|Gend=Neut">quae</w>
+                        <space></space>
+                        <w xml:id="w-325" n="379" join="left" lemma="que" pos="CON" msd="MORPH=empty">que</w>
+                        <space></space>
+                        <w xml:id="w-326" n="380" lemma="sector2" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Dep|Person=1">sectamur
+                        </w>
+                        <pc xml:id="pc-55" n="381">.</pc>
+                        <space></space>
+                        <w xml:id="w-327" n="382" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Masc">Ille</w>
+                        <space></space>
+                        <w xml:id="w-328" n="383" lemma="iam" pos="ADV" msd="Deg=Pos">iam</w>
+                        <space></space>
+                        <w xml:id="w-329" n="384" lemma="calco" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">calcat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-330" n="385" lemma="super2" pos="PRE" msd="MORPH=empty">super</w>
+                        <space></space>
+                        <w xml:id="w-331" n="386" lemma="colubris" pos="NOMcom" msd="Case=Gen|Numb=Sing">colubri</w>
+                        <space></space>
+                        <w xml:id="w-332" n="387" lemma="caput" pos="NOMcom" msd="Case=Acc|Numb=Sing">caput</w>
+                        <pc xml:id="pc-56" n="388">,</pc>
+                        <space></space>
+                        <w xml:id="w-333" n="389" lemma="nos" pos="PROper" msd="Case=Nom|Numb=Plur">nos</w>
+                        <space></space>
+                        <w xml:id="w-334" n="390" lemma="serpens" pos="NOMcom" msd="Case=Dat|Numb=Sing">ser<lb n="7"
+                                                                                                               break="no"/>
+                            penti
+                        </w>
+                        <space></space>
+                        <w xml:id="w-335" n="391" lemma="terra" pos="NOMcom" msd="Case=Acc|Numb=Sing">terram</w>
+                        <space></space>
+                        <w xml:id="w-336" n="392" lemma="ex" pos="PRE" msd="MORPH=empty">ex</w>
+                        <space></space>
+                        <w xml:id="w-337" n="393" lemma="diuinus2" pos="ADJqua"
+                           msd="Case=Abl|Numb=Sing|Gend=Fem|Deg=Pos">diuina
+                        </w>
+                        <space></space>
+                        <w xml:id="w-338" n="394" lemma="sententia" pos="NOMcom" msd="Case=Abl|Numb=Sing">sententia</w>
+                        <space></space>
+                        <w xml:id="w-339" n="395" lemma="comedo2" pos="VER"
+                           msd="Case=Dat|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">comedenti
+                        </w>
+                        <space></space>
+                        <w xml:id="w-340" n="396" lemma="adhuc" pos="ADV" msd="Deg=Pos">adhuc</w>
+                        <space></space>
+                        <w xml:id="w-341" n="397" lemma="cibus" pos="NOMcom" msd="Case=Dat|Numb=Sing">cibo</w>
+                        <space></space>
+                        <w xml:id="w-342" n="398" lemma="sum1" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=1">sumus
+                        </w>
+                        <pc xml:id="pc-57" n="399">.</pc>
+                        <space></space>
+                        <w xml:id="w-343" n="400" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Masc">Ille</w>
+                        <space></space>
+                        <w xml:id="w-344" n="401" lemma="iam" pos="ADV" msd="Deg=Pos">iam</w>
+                        <space></space>
+                        <w xml:id="w-345" n="402" lemma="possum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">potest
+                        </w>
+                        <space></space>
+                        <w xml:id="w-346" n="403" lemma="superus" pos="ADJqua"
+                           msd="Case=Acc|Numb=Sing|Gend=MascNeut|Deg=Sup">summum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-347" n="404" lemma="graduum" pos="NOMcom" msd="Case=Nom|Numb=Sing">graduum</w>
+                        <space></space>
+                        <w xml:id="w-348" n="405" lemma="psalmus" pos="NOMcom" msd="Case=Acc|Numb=Sing">psalmum</w>
+                        <space></space>
+                        <w xml:id="w-349" n="406" lemma="scando" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">
+                            scandere
+                        </w>
+                        <pc xml:id="pc-58" n="407">,</pc>
+                        <space></space>
+                        <w xml:id="w-350" n="408" lemma="nos" pos="PROper" msd="Case=Dat|Numb=Plur">nobis</w>
+                        <space></space>
+                        <w xml:id="w-351" n="409" lemma="adhuc" pos="ADV" msd="Deg=Pos">adhuc</w>
+                        <space></space>
+                        <w xml:id="w-352" n="410" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-353" n="411" lemma="primus" pos="ADJord"
+                           msd="Case=Abl|Numb=Sing|Gend=MascNeut|Deg=Sup">primo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-354" n="412" lemma="ascensus" pos="NOMcom" msd="Case=Abl|Numb=Sing">ascensu</w>
+                        <space></space>
+                        <w xml:id="w-355" n="413" lemma="fleo" pos="VER"
+                           msd="Case=Abl|Numb=Plur|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">flentibus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-356" n="414" lemma="nescio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">nescio
+                        </w>
+                        <space></space>
+                        <w xml:id="w-357" n="415" lemma="an" pos="ADVint" msd="MORPH=empty">an</w>
+                        <space></space>
+                        <w xml:id="w-358" n="416" lemma="dico2" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">dicere</w>
+                        <space></space>
+                        <w xml:id="w-359" n="417" lemma="aliquando" pos="ADV" msd="Deg=Pos">aliquando</w>
+                        <space></space>
+                        <w xml:id="w-360" n="418" lemma="contingo1" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">contingat
+                        </w>
+                        <pc xml:id="pc-59" n="419">:</pc>
+                        <space></space>
+                        <w xml:id="w-361" n="420" lemma="leuo1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=1">leuaui
+                        </w>
+                        <space></space>
+                        <w xml:id="w-362" n="421" lemma="oculus" pos="NOMcom" msd="Case=Acc|Numb=Plur">oculos</w>
+                        <space></space>
+                        <w xml:id="w-363" n="422" lemma="meus" pos="PROpos" msd="Case=Acc|Numb=Plur|Gend=Masc">meos</w>
+                        <space></space>
+                        <w xml:id="w-364" n="423" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-365" n="424" lemma="mons" pos="NOMcom" msd="Case=Acc|Numb=Plur">montes</w>
+                        <pc xml:id="pc-60" n="425">,</pc>
+                        <space></space>
+                        <w xml:id="w-366" n="426" lemma="unde1" pos="ADVrel" msd="MORPH=empty">unde</w>
+                        <space></space>
+                        <w xml:id="w-367" n="427" lemma="uenio" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">ueniat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-368" n="428" lemma="auxilium" pos="NOMcom" msd="Case=Nom|Numb=Sing">auxilium</w>
+                        <space></space>
+                        <w xml:id="w-369" n="429" lemma="ego" pos="PROper" msd="Case=Dat|Numb=Sing">mihi</w>
+                        <pc xml:id="pc-61" n="430">.</pc>
+                        <space></space>
+                        <w xml:id="w-370" n="431" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Masc">Ille</w>
+                        <space></space>
+                        <w xml:id="w-371" n="432" lemma="inter" pos="PRE" msd="MORPH=empty">inter</w>
+                        <space></space>
+                        <w xml:id="w-372" n="433" lemma="minax" pos="ADJqua"
+                           msd="Case=Acc|Numb=Plur|Gend=MascFem|Deg=Pos">minaces
+                        </w>
+                        <space></space>
+                        <w xml:id="w-373" n="434" lemma="saeculum" pos="NOMcom" msd="Case=Gen|Numb=Sing">saeculi</w>
+                        <space></space>
+                        <w xml:id="w-374" n="435" lemma="fluctus" pos="NOMcom" msd="Case=Acc|Numb=Sing">fluctus</w>
+                        <space></space>
+                        <w xml:id="w-375" n="436" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-376" n="437" lemma="tutum" pos="NOMcom" msd="Case=Abl|Numb=Sing">tuto</w>
+                        <space></space>
+                        <w xml:id="w-377" n="438" lemma="insula" pos="NOMcom" msd="Case=Gen|Numb=Sing">insulae</w>
+                        <pc xml:id="pc-62" n="439">,</pc>
+                        <space></space>
+                        <w xml:id="w-378" n="440" lemma="hic1" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Neut">hoc</w>
+                        <space></space>
+                        <w xml:id="w-379" n="441" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-380" n="442" lemma="ecclesia" pos="NOMcom" msd="Case=Gen|Numb=Sing">ecclesiae</w>
+                        <space></space>
+                        <w xml:id="w-381" n="443" lemma="gremium" pos="NOMcom" msd="Case=Abl|Numb=Sing">gremio</w>
+                        <pc xml:id="pc-63" n="444">,</pc>
+                        <space></space>
+                        <w xml:id="w-382" n="445" lemma="sedeo" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">sedens
+                        </w>
+                        <space></space>
+                        <w xml:id="w-383" n="446" lemma="ad2" pos="PRE" msd="MORPH=empty">ad</w>
+                        <space></space>
+                        <w xml:id="w-384" n="447" lemma="exemplum" pos="NOMcom" msd="Case=Acc|Numb=Sing">exemplum</w>
+                        <space></space>
+                        <persName xml:id="persName-8" ref="Q44015" resp="#resp_NB" cert="medium">
+                            <w xml:id="w-385" n="448" lemma="Ioannes" pos="NOMpro" msd="Case=Gen|Numb=Sing">Iohannis</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-386" n="449" lemma="liber1" pos="NOMcom" msd="Case=Acc|Numb=Sing">librum</w>
+                        <space></space>
+                        <w xml:id="w-387" n="450" lemma="forte" pos="ADV" msd="Deg=Pos">forte</w>
+                        <space></space>
+                        <w xml:id="w-388" n="451" lemma="iam" pos="ADV" msd="Deg=Pos">iam</w>
+                        <space></space>
+                        <w xml:id="w-389" n="452" lemma="deuoro" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">deuorat
+                        </w>
+                        <pc xml:id="pc-64" n="453">,</pc>
+                        <space></space>
+                        <w xml:id="w-390" n="454" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <space></space>
+                        <w xml:id="w-391" n="455" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-392" n="456" lemma="scelus" pos="NOMcom" msd="Case=Gen|Numb=Plur">scelerum</w>
+                        <space></space>
+                        <w xml:id="w-393" n="457" lemma="meus" pos="PROpos" msd="Case=Gen|Numb=Plur|Gend=MascNeut">
+                            meorum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-394" n="458" lemma="sepulcrum" pos="NOMcom" msd="Case=Abl|Numb=Sing">sepulchro</w>
+                        <space></space>
+                        <w xml:id="w-395" n="459" lemma="iaceo" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">iacens
+                        </w>
+                        <space></space>
+                        <w xml:id="w-396" n="460" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-397" n="461" lemma="peccator" pos="NOMcom" msd="Case=Gen|Numb=Plur">peccatorum</w>
+                        <space></space>
+                        <w xml:id="w-398" n="462" lemma="uinculum" pos="NOMcom" msd="Case=Abl|Numb=Plur">uinculis</w>
+                        <space></space>
+                        <w xml:id="w-399" n="463" lemma="colligo3" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Par|Tense=Perf|Voice=Pass">conligatus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-400" n="464" lemma="dominicus" pos="ADJqua"
+                           msd="Case=Acc|Numb=Sing|Gend=MascNeut|Deg=Pos">dominicum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-401" n="465" lemma="de" pos="PRE" msd="MORPH=empty">de</w>
+                        <space></space>
+                        <w xml:id="w-402" n="466" lemma="euangelium" pos="NOMcom" msd="Case=Abl|Numb=Sing">euan<lb
+                                n="15" break="no"/>gelio
+                        </w>
+                        <space></space>
+                        <w xml:id="w-403" n="467" lemma="exspecto" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">expecto
+                        </w>
+                        <space></space>
+                        <w xml:id="w-404" n="468" lemma="clamor" pos="NOMcom" msd="Case=Acc|Numb=Sing">clamorem</w>
+                        <pc xml:id="pc-65" n="469">:</pc>
+                        <space></space>
+                        <c>\'</c>
+                        <persName xml:id="persName-9" ref="Q44248" resp="#resp_NB" cert="high">
+                            <w xml:id="w-405" n="470" lemma="Hieronymus" pos="NOMpro" msd="Case=Voc|Numb=Sing">
+                                Hieronyme
+                            </w>
+                        </persName>
+                        <pc xml:id="pc-66" n="471">,</pc>
+                        <space></space>
+                        <w xml:id="w-406" n="472" lemma="uenio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=1">ueni
+                        </w>
+                        <space></space>
+                        <w xml:id="w-407" n="473" lemma="foras" pos="ADV" msd="Deg=Pos">foras</w>
+                        <space></space>
+                        <c>\'</c>
+                        <pc xml:id="pc-67" n="474">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+                <div xml:id="chap_3-sec_2" n="2" type="section">
+                    <p>
+                        <persName xml:id="persName-10" ref="Q127377961" resp="#resp_NB" cert="high">
+                            <w xml:id="w-408" n="475" lemma="bonosus" pos="NOMpro"
+                               msd="Case=Nom|Numb=Sing|Gend=Masc|Deg=Pos">Bonosus
+                            </w>
+                        </persName>
+                        <pc xml:id="pc-68" n="476">,</pc>
+                        <space></space>
+                        <w xml:id="w-409" n="477" lemma="inquio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">inquam
+                        </w>
+                        <pc xml:id="pc-69" n="478">,</pc>
+                        <space></space>
+                        <c>—</c>
+                        <w xml:id="w-410" n="479" lemma="quia" pos="CONsub" msd="MORPH=empty">quia</w>
+                        <space></space>
+                        <w xml:id="w-411" n="480" lemma="secundum2" pos="PRE" msd="MORPH=empty">secundum</w>
+                        <space></space>
+                        <w xml:id="w-412" n="481" lemma="propheta" pos="NOMcom" msd="Case=Acc|Numb=Sing">prophetam</w>
+                        <space></space>
+                        <w xml:id="w-413" n="482" lemma="omnis" pos="PROind" msd="Case=Gen|Numb=Sing|Gend=MascFem">
+                            omnis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-414" n="483" lemma="diabolus" pos="NOMcom" msd="Case=Gen|Numb=Sing">diaboli</w>
+                        <space></space>
+                        <w xml:id="w-415" n="484" lemma="uirtus" pos="NOMcom" msd="Case=Nom|Numb=Sing">uirtus</w>
+                        <space></space>
+                        <w xml:id="w-416" n="485" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-417" n="486" lemma="lumbus" pos="NOMcom" msd="Case=Abl|Numb=Sing">lumbo</w>
+                        <space></space>
+                        <w xml:id="w-418" n="487" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <c>—</c>
+                        <w xml:id="w-419" n="488" lemma="trans2" pos="PRE" msd="MORPH=empty">trans</w>
+                        <space></space>
+                        <placeName xml:id="placeName-5" ref="Q34589" resp="#resp_NB" cert="high">
+                            <w xml:id="w-420" n="489" lemma="Euphrates" pos="NOMpro" msd="Case=Acc|Numb=Sing">
+                                Euphraten
+                            </w>
+                        </placeName>
+                        <space></space>
+                        <w xml:id="w-421" n="490" lemma="fero" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">tulit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-422" n="491" lemma="lumbo" pos="VER" msd="MORPH=empty">lumbare</w>
+                        <space></space>
+                        <w xml:id="w-423" n="492" lemma="suus" pos="PROpos.ref" msd="Case=Acc|Numb=Sing|Gend=MascNeut">
+                            suum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-424" n="493" lemma="ibi" pos="ADV" msd="Deg=Pos">ibi</w>
+                        <space></space>
+                        <w xml:id="w-425" n="494" lemma="ille" pos="PROdem" msd="Case=Acc|Numb=Sing|Gend=Neut">illud</w>
+                        <space></space>
+                        <w xml:id="w-426" n="495" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-427" n="496" lemma="foramen" pos="NOMcom" msd="Case=Abl|Numb=Sing">foramine</w>
+                        <space></space>
+                        <w xml:id="w-428" n="497" lemma="petra" pos="NOMcom" msd="Case=Gen|Numb=Sing">petrae</w>
+                        <space></space>
+                        <w xml:id="w-429" n="498" lemma="abscondo" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">abscondens
+                        </w>
+                        <space></space>
+                        <w xml:id="w-430" n="499" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-431" n="500" lemma="postea" pos="ADV" msd="Deg=Pos">postea</w>
+                        <space></space>
+                        <w xml:id="w-432" n="501" lemma="scindo" pos="VER"
+                           msd="Case=Acc|Numb=Sing|Gend=MascNeut|Mood=Par|Tense=Perf|Voice=Pass">scissum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-433" n="502" lemma="reperio" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">repperiens
+                        </w>
+                        <space></space>
+                        <w xml:id="w-434" n="503" lemma="cano" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">cecinit
+                        </w>
+                        <pc xml:id="pc-70" n="504">:</pc>
+                        <space></space>
+                        <c>\'</c>
+                        <w xml:id="w-435" n="505" lemma="dominus" pos="NOMcom" msd="Case=Voc|Numb=Sing">domine</w>
+                        <pc xml:id="pc-71" n="506">,</pc>
+                        <space></space>
+                        <w xml:id="w-436" n="507" lemma="tu" pos="PROper" msd="Case=Nom|Numb=Sing">tu</w>
+                        <space></space>
+                        <w xml:id="w-437" n="508" lemma="possideo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=2">possedisti
+                        </w>
+                        <space></space>
+                        <w xml:id="w-438" n="509" lemma="renes" pos="NOMcom" msd="Case=Acc|Numb=Plur">renes</w>
+                        <space></space>
+                        <w xml:id="w-439" n="510" lemma="meus" pos="PROpos" msd="Case=Acc|Numb=Plur|Gend=Masc">meos</w>
+                        <pc xml:id="pc-72" n="511">;</pc>
+                        <space></space>
+                        <w xml:id="w-440" n="512" lemma="disur" pos="NOMcom" msd="Numb=Sing">disru</w>
+                        <space></space>
+                        <w xml:id="w-441" n="513" lemma="uinculum" pos="NOMcom" msd="Case=Acc|Numb=Plur">uincula</w>
+                        <space></space>
+                        <w xml:id="w-442" n="514" lemma="meus" pos="PROpos" msd="Case=Acc|Numb=Plur|Gend=Neut">mea</w>
+                        <pc xml:id="pc-73" n="515">;</pc>
+                        <space></space>
+                        <w xml:id="w-443" n="516" lemma="tu" pos="PROper" msd="Case=Dat|Numb=Sing">tibi</w>
+                        <space></space>
+                        <w xml:id="w-444" n="517" lemma="sacrifico" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Fut|Voice=Act|Person=1">sacrificabo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-445" n="518" lemma="hostia" pos="NOMcom" msd="Case=Acc|Numb=Sing">hostiam</w>
+                        <space></space>
+                        <w xml:id="w-446" n="519" lemma="laus" pos="NOMcom" msd="Case=Gen|Numb=Sing">laudis</w>
+                        <space></space>
+                        <c>\'</c>
+                        <pc xml:id="pc-74" n="520">,</pc>
+                        <space></space>
+                        <w xml:id="w-447" n="521" lemma="ego" pos="PROper" msd="Case=Acc|Numb=Sing">me</w>
+                        <space></space>
+                        <w xml:id="w-448" n="522" lemma="uerus" pos="ADJqua" msd="Case=Nom|Numb=Sing|Gend=Masc|Deg=Pos">
+                            uerus
+                        </w>
+                        <space></space>
+                        <persName xml:id="persName-11" ref="Q12591" resp="#resp_NB" cert="high">
+                            <w xml:id="w-449" n="523" lemma="Nabuchodonosor" pos="NOMpro" msd="Case=Nom|Numb=Sing">
+                                Nabuchodonosor
+                            </w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-450" n="524" lemma="ad2" pos="PRE" msd="MORPH=empty">ad</w>
+                        <space></space>
+                        <placeName xml:id="placeName-6" ref="Q5684" resp="#resp_NB" cert="high">
+                            <w xml:id="w-451" n="525" lemma="Babylon" pos="NOMpro" msd="Case=Acc|Numb=Sing">Babylonem
+                            </w>
+                        </placeName>
+                        <pc xml:id="pc-75" n="526">,</pc>
+                        <space></space>
+                        <w xml:id="w-452" n="527" lemma="is" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Neut">id</w>
+                        <space></space>
+                        <w xml:id="w-453" n="528" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-454" n="529" lemma="confusio" pos="NOMcom" msd="Case=Acc|Numb=Sing">confusionem</w>
+                        <space></space>
+                        <w xml:id="w-455" n="530" lemma="mens" pos="NOMcom" msd="Case=Gen|Numb=Sing">mentis</w>
+                        <space></space>
+                        <w xml:id="w-456" n="531" lemma="meus" pos="PROpos" msd="Case=Gen|Numb=Sing|Gend=Fem">meae</w>
+                        <pc xml:id="pc-76" n="532">,</pc>
+                        <space></space>
+                        <w xml:id="w-457" n="533" lemma="cateno" pos="VER" msd="Case=Acc|Numb=Sing|Gend=MascNeut">
+                            catenatum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-458" n="534" lemma="duco" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">duxit
+                        </w>
+                        <pc xml:id="pc-77" n="535">;</pc>
+                        <space></space>
+                        <w xml:id="w-459" n="536" lemma="ibi" pos="ADV" msd="Deg=Pos">ibi</w>
+                        <space></space>
+                        <w xml:id="w-460" n="537" lemma="ego" pos="PROper" msd="Case=Dat|Numb=Sing">mihi</w>
+                        <space></space>
+                        <w xml:id="w-461" n="538" lemma="captiuitas" pos="NOMcom" msd="Case=Gen|Numb=Sing">
+                            captiuitatis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-462" n="539" lemma="iugum" pos="NOMcom" msd="Case=Acc|Numb=Sing">iugum</w>
+                        <space></space>
+                        <w xml:id="w-463" n="540" lemma="impono" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">inposuit
+                        </w>
+                        <pc xml:id="pc-78" n="541">,</pc>
+                        <space></space>
+                        <w xml:id="w-464" n="542" lemma="ibi" pos="ADV" msd="Deg=Pos">ibi</w>
+                        <space></space>
+                        <w xml:id="w-465" n="543" lemma="ferrum" pos="NOMcom" msd="Mood=Inf|Tense=Pres|Voice=Pass">
+                            ferri
+                        </w>
+                        <space></space>
+                        <w xml:id="w-466" n="544" lemma="circulus" pos="NOMcom" msd="Case=Acc|Numb=Sing">circulum</w>
+                        <space></space>
+                        <w xml:id="w-467" n="545" lemma="innecto" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">innectens
+                        </w>
+                        <space></space>
+                        <w xml:id="w-468" n="546" lemma="de" pos="PRE" msd="MORPH=empty">de</w>
+                        <space></space>
+                        <w xml:id="w-469" n="547" lemma="canticum" pos="NOMcom" msd="Case=Abl|Numb=Plur">canticis</w>
+                        <space></space>
+                        <placeName xml:id="placeName-7" ref="Q205318" resp="#resp_NB" cert="medium">
+                            <w xml:id="w-470" n="548" lemma="Sion" pos="NOMpro" msd="Case=Ind">Sion</w>
+                        </placeName>
+                        <space></space>
+                        <w xml:id="w-471" n="549" lemma="canto" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">cantare
+                        </w>
+                        <space></space>
+                        <w xml:id="w-472" n="550" lemma="praecipio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">praecepit
+                        </w>
+                        <pc xml:id="pc-79" n="551">.</pc>
+                        <space></space>
+                        <w xml:id="w-473" n="552" lemma="qui1" pos="PROrel" msd="Case=Dat|Numb=Sing|Gend=Com">Cui</w>
+                        <space></space>
+                        <w xml:id="w-474" n="553" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <space></space>
+                        <w xml:id="w-475" n="554" lemma="dico2" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=1">dixi
+                        </w>
+                        <pc xml:id="pc-80" n="555">:</pc>
+                        <space></space>
+                        <w xml:id="w-476" n="556" lemma="dominus" pos="NOMcom" msd="Case=Nom|Numb=Sing">dominus</w>
+                        <space></space>
+                        <w xml:id="w-477" n="557" lemma="soluo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">soluit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-478" n="558" lemma="compedio" pos="VER"
+                           msd="Case=Acc|Numb=Plur|Gend=Masc|Mood=Par|Tense=Perf|Voice=Pass">conpeditos
+                        </w>
+                        <pc xml:id="pc-81" n="559">,</pc>
+                        <space></space>
+                        <w xml:id="w-479" n="560" lemma="dominus" pos="NOMcom" msd="Case=Nom|Numb=Sing">dominus</w>
+                        <space></space>
+                        <w xml:id="w-480" n="561" lemma="illumino" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">inluminat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-481" n="562" lemma="caecus" pos="ADJqua"
+                           msd="Case=Acc|Numb=Plur|Gend=Masc|Deg=Pos">caecos
+                        </w>
+                        <pc xml:id="pc-82" n="563">;</pc>
+                        <space></space>
+                        <w xml:id="w-482" n="564" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <pc xml:id="pc-83" n="565">,</pc>
+                        <space></space>
+                        <w xml:id="w-483" n="566" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-484" n="567" lemma="breuiter" pos="ADV" msd="Deg=Pos">breuiter</w>
+                        <space></space>
+                        <w xml:id="w-485" n="568" lemma="coepio" pos="VER"
+                           msd="Case=Acc|Numb=Sing|Gend=Fem|Mood=Par|Tense=Perf|Voice=Pass">coeptam
+                        </w>
+                        <space></space>
+                        <w xml:id="w-486" n="569" lemma="dissimilitudo" pos="NOMcom" msd="Case=Acc|Numb=Sing">
+                            dissimilitudinem
+                        </w>
+                        <space></space>
+                        <w xml:id="w-487" n="570" lemma="finio" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=1">finiam
+                        </w>
+                        <pc xml:id="pc-84" n="571">,</pc>
+                        <space></space>
+                        <w xml:id="w-488" n="572" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <space></space>
+                        <w xml:id="w-489" n="573" lemma="uenio" pos="NOMcom"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=1">ueniam
+                        </w>
+                        <space></space>
+                        <w xml:id="w-490" n="574" lemma="deprecor" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Dep|Person=1">deprecor
+                        </w>
+                        <pc xml:id="pc-85" n="575">,</pc>
+                        <space></space>
+                        <w xml:id="w-491" n="576" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Masc">ille</w>
+                        <space></space>
+                        <w xml:id="w-492" n="577" lemma="exspecto" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">expectat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-493" n="578" lemma="corona" pos="NOMcom" msd="Case=Acc|Numb=Sing">coronam</w>
+                        <pc xml:id="pc-86" n="579">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+            </div>
+            <div xml:id="chap_4" n="4" type="chapter">
+                <div xml:id="chap_4-sec_1" n="1" type="section">
+                    <p>
+                        <w xml:id="w-494" n="580" lemma="soror" pos="NOMcom" msd="Case=Nom|Numb=Sing">Soror</w>
+                        <space></space>
+                        <w xml:id="w-495" n="581" lemma="meus" pos="PROpos" msd="Case=Voc|Numb=Sing|Gend=Fem">mea</w>
+                        <space></space>
+                        <w xml:id="w-496" n="582" lemma="sanctus" pos="ADJqua"
+                           msd="Case=Gen|Numb=Sing|Gend=MascNeut|Deg=Pos">sancti
+                        </w>
+                        <space></space>
+                        <persName xml:id="persName-12" resp="#resp_NB" cert="unknown">
+                            <w xml:id="w-497" n="583" lemma="Iulianus" pos="NOMpro" msd="Case=Gen|Numb=Sing">Iuliani</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-498" n="584" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <persName xml:id="persName-13" ref="Q302" resp="#resp_NB" cert="high">
+                            <w xml:id="w-499" n="585" lemma="Christus" pos="NOMpro" msd="Case=Abl|Numb=Sing">Christo</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-500" n="586" lemma="fructus" pos="NOMcom" msd="Case=Nom|Numb=Sing">fructus</w>
+                        <space></space>
+                        <w xml:id="w-501" n="587" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <pc xml:id="pc-87" n="588">:</pc>
+                        <space></space>
+                        <w xml:id="w-502" n="589" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Masc">ille</w>
+                        <space></space>
+                        <w xml:id="w-503" n="590" lemma="planto" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">plan<lb n="10" break="no"/>tauit
+                        </w>
+                        <pc xml:id="pc-88" n="591">,</pc>
+                        <space></space>
+                        <w xml:id="w-504" n="592" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-505" n="593" lemma="rigo" pos="VER"
+                           msd="Numb=Plur|Deg=Pos|Mood=Imp|Tense=Pres|Voice=Act|Person=2">rigate
+                        </w>
+                        <pc xml:id="pc-89" n="594">,</pc>
+                        <space></space>
+                        <w xml:id="w-506" n="595" lemma="dominus" pos="NOMcom" msd="Case=Nom|Numb=Sing">dominus</w>
+                        <space></space>
+                        <w xml:id="w-507" n="596" lemma="incrementum" pos="NOMcom" msd="Case=Acc|Numb=Sing">
+                            incrementum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-508" n="597" lemma="do" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Fut|Voice=Act|Person=3">dabit
+                        </w>
+                        <pc xml:id="pc-90" n="598">.</pc>
+                        <space></space>
+                        <w xml:id="w-509" n="599" lemma="hic1" pos="PROdem" msd="Case=Acc|Numb=Sing|Gend=Fem">Hanc</w>
+                        <space></space>
+                        <w xml:id="w-510" n="600" lemma="ego" pos="PROper" msd="Case=Dat|Numb=Sing">mihi</w>
+                        <space></space>
+                        <persName xml:id="persName-14" ref="Q302" cert="high" resp="#resp_NB">
+                            <w xml:id="w-511" n="601" lemma="Iesus" pos="NOMpro" msd="Case=Nom|Numb=Sing">Iesus</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-512" n="602" lemma="pro1" pos="PRE" msd="MORPH=empty">pro</w>
+                        <space></space>
+                        <w xml:id="w-513" n="603" lemma="is" pos="PROdem" msd="Case=Abl|Numb=Sing|Gend=MascNeut">eo</w>
+                        <space></space>
+                        <w xml:id="w-514" n="604" lemma="uulnus" pos="NOMcom" msd="Case=Abl|Numb=Sing">uulnere</w>
+                        <pc xml:id="pc-91" n="605">,</pc>
+                        <space></space>
+                        <w xml:id="w-515" n="606" lemma="quod1" pos="PROrel" msd="Case=Acc|Numb=Sing|Gend=Neut">quod</w>
+                        <space></space>
+                        <w xml:id="w-516" n="607" lemma="diabolus" pos="NOMcom" msd="Case=Nom|Numb=Sing">diabolus</w>
+                        <space></space>
+                        <w xml:id="w-517" n="608" lemma="infligo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pqp|Voice=Act|Person=3">inflixerat
+                        </w>
+                        <pc xml:id="pc-92" n="609">,</pc>
+                        <space></space>
+                        <w xml:id="w-518" n="610" lemma="praesto1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">praestitit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-519" n="611" lemma="uiuus1" pos="NOMcom" msd="Case=Acc|Numb=Sing|Deg=Pos">uiuam</w>
+                        <space></space>
+                        <w xml:id="w-520" n="612" lemma="reddo" pos="VER" msd="Case=Abl|Numb=Sing|Mood=Ger|Voice=Act">
+                            red<lb n="12" break="no"/>dendo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-521" n="613" lemma="pro1" pos="PRE" msd="MORPH=empty">pro</w>
+                        <space></space>
+                        <w xml:id="w-522" n="614" lemma="mortuus1" pos="NOMcom" msd="Case=Abl|Numb=Sing|Gend=Fem">
+                            mortua
+                        </w>
+                        <pc xml:id="pc-93" n="615">.</pc>
+                        <space></space>
+                        <w xml:id="w-523" n="616" lemma="hic1" pos="PROdem" msd="Case=Dat|Numb=Sing|Gend=Com">Huic</w>
+                        <space></space>
+                        <w xml:id="w-524" n="617" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <pc xml:id="pc-94" n="618">,</pc>
+                        <space></space>
+                        <w xml:id="w-525" n="619" lemma="ut1" pos="ADVrel" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-526" n="620" lemma="aio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">ait
+                        </w>
+                        <space></space>
+                        <w xml:id="w-527" n="621" lemma="gentilis1" pos="NOMcom" msd="Case=Gen|Numb=Sing">gentilis</w>
+                        <space></space>
+                        <w xml:id="w-528" n="622" lemma="poeta" pos="NOMcom" msd="Case=Nom|Numb=Sing">poeta</w>
+                        <pc xml:id="pc-95" n="623">,</pc>
+                        <space></space>
+                        <w xml:id="w-529" n="624" lemma="omnis" pos="PROind" msd="Case=Acc|Numb=Plur|Gend=Neut">omnia
+                        </w>
+                        <space></space>
+                        <w xml:id="w-530" n="625" lemma="etiam" pos="ADV" msd="Deg=Pos">etiam</w>
+                        <space></space>
+                        <w xml:id="w-531" n="626" lemma="tutus" pos="ADJqua" msd="Case=Acc|Numb=Plur|Gend=Neut|Deg=Pos">
+                            tuta
+                        </w>
+                        <space></space>
+                        <w xml:id="w-532" n="627" lemma="timeo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">timeo
+                        </w>
+                        <pc xml:id="pc-96" n="628">.</pc>
+                        <space></space>
+                        <w xml:id="w-533" n="629" lemma="scio" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=2">Scitis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-534" n="630" lemma="ipse" pos="PROdem" msd="Case=Dat|Numb=Plur|Gend=Com">ipsi</w>
+                        <space></space>
+                        <w xml:id="w-535" n="631" lemma="lubricus" pos="NOMcom"
+                           msd="Case=Acc|Numb=Sing|Gend=MascNeut|Deg=Pos">lubricum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-536" n="632" lemma="adolescentia" pos="NOMcom" msd="Case=Gen|Numb=Sing">
+                            adulescentiae
+                        </w>
+                        <space></space>
+                        <w xml:id="w-537" n="633" lemma="iter" pos="NOMcom" msd="Case=Acc|Numb=Sing">iter</w>
+                        <pc xml:id="pc-97" n="634">,</pc>
+                        <space></space>
+                        <w xml:id="w-538" n="635" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-539" n="636" lemma="qui1" pos="PROrel" msd="Case=Abl|Numb=Sing|Gend=MascNeut">quo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-540" n="637" lemma="et1" pos="ADV" msd="Deg=Pos">et</w>
+                        <space></space>
+                        <w xml:id="w-541" n="638" lemma="ego" pos="PROper" msd="Case=Nom|Numb=Sing">ego</w>
+                        <space></space>
+                        <w xml:id="w-542" n="639" lemma="labor2" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Par|Tense=Perf|Voice=Pass">lapsus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-543" n="640" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">sum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-544" n="641" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-545" n="642" lemma="uos" pos="PROper" msd="Case=Nom|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-546" n="643" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-547" n="644" lemma="sine" pos="PRE" msd="MORPH=empty">sine</w>
+                        <space></space>
+                        <w xml:id="w-548" n="645" lemma="timor" pos="NOMcom" msd="Case=Abl|Numb=Sing">timore</w>
+                        <space></space>
+                        <w xml:id="w-549" n="646" lemma="transeo1" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Perf|Voice=Act|Person=2">transistis
+                        </w>
+                        <pc xml:id="pc-98" n="647">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+                <div xml:id="chap_4-sec_2" n="2" type="section">
+                    <p>
+                        <w xml:id="w-550" n="648" lemma="hic1" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Neut">Hoc</w>
+                        <space></space>
+                        <w xml:id="w-551" n="649" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Fem">illa</w>
+                        <space></space>
+                        <w xml:id="w-552" n="650" lemma="cum1" pos="ADV" msd="Deg=Pos">cum</w>
+                        <space></space>
+                        <w xml:id="w-553" n="651" lemma="magis2" pos="ADV" msd="Deg=Sup">maxime</w>
+                        <space></space>
+                        <w xml:id="w-554" n="652" lemma="ingredior" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Dep">ingrediens
+                        </w>
+                        <space></space>
+                        <w xml:id="w-555" n="653" lemma="omnis" pos="PROind" msd="Case=Gen|Numb=Plur|Gend=Com">omnium
+                        </w>
+                        <space></space>
+                        <w xml:id="w-556" n="654" lemma="fulcio" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Fem|Mood=Adj|Voice=Pass">fulcienda
+                        </w>
+                        <space></space>
+                        <w xml:id="w-557" n="655" lemma="praeceptum" pos="NOMcom" msd="Case=Dat|Numb=Plur">praeceptis
+                        </w>
+                        <pc xml:id="pc-99" n="656">,</pc>
+                        <space></space>
+                        <w xml:id="w-558" n="657" lemma="omnis" pos="PROind" msd="Case=Gen|Numb=Plur|Gend=Com">omnium
+                        </w>
+                        <space></space>
+                        <w xml:id="w-559" n="658" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-560" n="659" lemma="sustento" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Fem|Mood=Adj|Voice=Pass">sustentanda
+                        </w>
+                        <space></space>
+                        <w xml:id="w-561" n="660" lemma="solacium" pos="NOMcom" msd="Case=Dat|Numb=Plur">solaciis</w>
+                        <pc xml:id="pc-100" n="661">,</pc>
+                        <space></space>
+                        <w xml:id="w-562" n="662" lemma="is" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Neut">id</w>
+                        <space></space>
+                        <w xml:id="w-563" n="663" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-564" n="664" lemma="creber" pos="ADJqua" msd="Case=Abl|Numb=Plur|Gend=Com|Deg=Pos">
+                            crebris
+                        </w>
+                        <space></space>
+                        <w xml:id="w-565" n="665" lemma="uester" pos="PROpos" msd="Case=Gen|Numb=Sing|Gend=Fem">
+                            uestrae
+                        </w>
+                        <space></space>
+                        <w xml:id="w-566" n="666" lemma="sanctitudo" pos="NOMcom" msd="Case=Gen|Numb=Sing">
+                            sanctitudinis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-567" n="667" lemma="epistola" pos="NOMcom" msd="Case=Abl|Numb=Plur">epistulis</w>
+                        <space></space>
+                        <w xml:id="w-568" n="668" lemma="roboro" pos="VER"
+                           msd="Case=Nom|Numb=Plur|Gend=Fem|Mood=Adj|Voice=Pass">roboranda
+                        </w>
+                        <pc xml:id="pc-101" n="669">.</pc>
+                        <space></space>
+                        <w xml:id="w-569" n="670" lemma="et2" pos="CONcoo" msd="MORPH=empty">Et</w>
+                        <space></space>
+                        <w xml:id="w-570" n="671" lemma="quia" pos="CONsub" msd="MORPH=empty">quia</w>
+                        <space></space>
+                        <w xml:id="w-571" n="672" lemma="caritas" pos="NOMcom" msd="Case=Nom|Numb=Sing">caritas</w>
+                        <space></space>
+                        <w xml:id="w-572" n="673" lemma="omnis" pos="PROind" msd="Case=Acc|Numb=Plur|Gend=Neut">omnia
+                        </w>
+                        <space></space>
+                        <w xml:id="w-573" n="674" lemma="sustineo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">sustinet
+                        </w>
+                        <pc xml:id="pc-102" n="675">,</pc>
+                        <space></space>
+                        <w xml:id="w-574" n="676" lemma="obsecro" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">obsecro
+                        </w>
+                        <space></space>
+                        <w xml:id="w-575" n="677" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-576" n="678" lemma="etiam" pos="ADV" msd="Deg=Pos">etiam</w>
+                        <space></space>
+                        <w xml:id="w-577" n="679" lemma="ab" pos="PRE" msd="MORPH=empty">a</w>
+                        <space></space>
+                        <w xml:id="w-578" n="680" lemma="papae" pos="NOMcom" msd="Case=Abl|Numb=Sing">papa</w>
+                        <space></space>
+                        <persName xml:id="persName-15" ref="Q4007834" resp="#resp_NB" cert="high">
+                            <w xml:id="w-579" n="681" lemma="Valerianus" pos="NOMpro"
+                               msd="Case=Abl|Numb=Sing|Gend=MascNeut|Deg=Pos">Valeriano
+                            </w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-580" n="682" lemma="ad2" pos="PRE" msd="MORPH=empty">ad</w>
+                        <space></space>
+                        <w xml:id="w-581" n="683" lemma="is" pos="PROdem" msd="Case=Acc|Numb=Sing|Gend=Fem">eam</w>
+                        <space></space>
+                        <w xml:id="w-582" n="684" lemma="conforto" pos="VER"
+                           msd="Case=Acc|Numb=Sing|Gend=Fem|Mood=Adj|Voice=Pass">confortandam
+                        </w>
+                        <space></space>
+                        <w xml:id="w-583" n="685" lemma="littera" pos="NOMcom" msd="Case=Acc|Numb=Plur">litteras</w>
+                        <space></space>
+                        <w xml:id="w-584" n="686" lemma="exigo" pos="VER"
+                           msd="Numb=Plur|Mood=Sub|Tense=Pres|Voice=Act|Person=2">exigatis
+                        </w>
+                        <pc xml:id="pc-103" n="687">.</pc>
+                        <space></space>
+                        <w xml:id="w-585" n="688" lemma="nosco" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Perf|Voice=Act|Person=2">Nostis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-586" n="689" lemma="puellaris" pos="ADJqua"
+                           msd="Case=Acc|Numb=Plur|Gend=MascFem|Deg=Pos">puellares
+                        </w>
+                        <space></space>
+                        <w xml:id="w-587" n="690" lemma="animus" pos="NOMcom" msd="Case=Acc|Numb=Plur">animos</w>
+                        <space></space>
+                        <w xml:id="w-588" n="691" lemma="hic1" pos="PROdem" msd="Case=Abl|Numb=Plur|Gend=Com">his</w>
+                        <space></space>
+                        <w xml:id="w-589" n="692" lemma="res" pos="NOMcom" msd="Case=Abl|Numb=Plur">rebus</w>
+                        <space></space>
+                        <w xml:id="w-590" n="693" lemma="plerumque" pos="ADV" msd="Deg=Pos">plerumque</w>
+                        <space></space>
+                        <w xml:id="w-591" n="694" lemma="solido" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Pass">
+                            solidari
+                        </w>
+                        <pc xml:id="pc-104" n="695">,</pc>
+                        <space></space>
+                        <w xml:id="w-592" n="696" lemma="si2" pos="CONsub" msd="MORPH=empty">si</w>
+                        <space></space>
+                        <w xml:id="w-593" n="697" lemma="sui1" pos="PROref" msd="Case=Acc|Numb=Sing">se</w>
+                        <space></space>
+                        <w xml:id="w-594" n="698" lemma="intelligo" pos="VER"
+                           msd="Numb=Plur|Mood=Sub|Tense=Pres|Voice=Act|Person=3">intellegant
+                        </w>
+                        <space></space>
+                        <w xml:id="w-595" n="699" lemma="cura" pos="NOMcom" msd="Case=Dat|Numb=Sing">curae</w>
+                        <space></space>
+                        <w xml:id="w-596" n="700" lemma="sum1" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">esse</w>
+                        <space></space>
+                        <w xml:id="w-597" n="701" lemma="magnus" pos="ADJqua"
+                           msd="Case=Dat|Numb=Plur|Gend=Com|Deg=Comp">maioribus
+                        </w>
+                        <pc xml:id="pc-105" n="702">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+            </div>
+            <div xml:id="chap_5" n="5" type="chapter">
+                <div xml:id="chap_5-sec_1" n="1" type="section">
+                    <p>
+                        <w xml:id="w-598" n="703" lemma="in" pos="PRE" msd="MORPH=empty">In</w>
+                        <space></space>
+                        <w xml:id="w-599" n="704" lemma="meus" pos="PROpos" msd="Case=Abl|Numb=Sing|Gend=Fem">mea</w>
+                        <space></space>
+                        <w xml:id="w-600" n="705" lemma="enim2" pos="CONcoo" msd="MORPH=empty">enim</w>
+                        <space></space>
+                        <w xml:id="w-601" n="706" lemma="patria" pos="NOMcom" msd="Case=Abl|Numb=Sing">patria</w>
+                        <space></space>
+                        <w xml:id="w-602" n="707" lemma="rusticitas" pos="NOMcom" msd="Case=Gen|Numb=Sing">
+                            rusticitatis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-603" n="708" lemma="uernaculus2" pos="ADJqua"
+                           msd="Case=Abl|Numb=Sing|Gend=Fem|Deg=Pos">uernacula
+                        </w>
+                        <space></space>
+                        <w xml:id="w-604" n="709" lemma="deus" pos="NOMcom" msd="Case=Nom|Numb=Sing">deus</w>
+                        <space></space>
+                        <w xml:id="w-605" n="710" lemma="uenter" pos="NOMcom" msd="Case=Nom|Numb=Sing">uenter</w>
+                        <space></space>
+                        <w xml:id="w-606" n="711" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-607" n="712" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-608" n="713" lemma="de" pos="PRE" msd="MORPH=empty">de</w>
+                        <space></space>
+                        <w xml:id="w-609" n="714" lemma="dies" pos="NOMcom" msd="Case=Abl|Numb=Sing">die</w>
+                        <space></space>
+                        <w xml:id="w-610" n="715" lemma="uiuo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Pass|Person=3">uiuitur
+                        </w>
+                        <pc xml:id="pc-106" n="716">:</pc>
+                        <space></space>
+                        <w xml:id="w-611" n="717" lemma="sanctus" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=MascFem|Deg=Comp">sanctior
+                        </w>
+                        <space></space>
+                        <w xml:id="w-612" n="718" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                        <w xml:id="w-613" n="719" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=Masc">ille</w>
+                        <pc xml:id="pc-107" n="720">,</pc>
+                        <space></space>
+                        <w xml:id="w-614" n="721" lemma="qui1" pos="PROrel" msd="Case=Nom|Numb=Sing|Gend=Masc">qui</w>
+                        <space></space>
+                        <w xml:id="w-615" n="722" lemma="diues" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=MascFem|Deg=Comp">ditior
+                        </w>
+                        <space></space>
+                        <w xml:id="w-616" n="723" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <pc xml:id="pc-108" n="724">.</pc>
+                        <space></space>
+                        <w xml:id="w-617" n="725" lemma="accedo1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">Accessit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-618" n="726" lemma="hic1" pos="PROdem" msd="Case=Dat|Numb=Sing|Gend=Com">huic</w>
+                        <space></space>
+                        <w xml:id="w-619" n="727" lemma="patella" pos="NOMcom" msd="Case=Dat|Numb=Sing">patellae</w>
+                        <space></space>
+                        <w xml:id="w-620" n="728" lemma="iuxta2" pos="PRE" msd="MORPH=empty">iuxta</w>
+                        <space></space>
+                        <w xml:id="w-621" n="729" lemma="tero" pos="VER"
+                           msd="Case=Acc|Numb=Sing|Gend=MascNeut|Mood=Par|Tense=Perf|Voice=Pass">tritum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-622" n="730" lemma="populus1" pos="NOMcom" msd="Case=Gen|Numb=Sing">populi</w>
+                        <space></space>
+                        <w xml:id="w-623" n="731" lemma="sermo" pos="NOMcom" msd="Case=Abl|Numb=Sing">sermone</w>
+                        <space></space>
+                        <w xml:id="w-624" n="732" lemma="prouerbium" pos="NOMcom" msd="Case=Nom|Numb=Sing">prouerbium
+                        </w>
+                        <space></space>
+                        <w xml:id="w-625" n="733" lemma="dignus" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=Neut|Deg=Pos">dignum
+                        </w>
+                        <space></space>
+                        <w xml:id="w-626" n="734" lemma="operculum" pos="NOMcom" msd="Case=Acc|Numb=Sing">oper<lb n="2"
+                                                                                                                  break="no"/>
+                            culum
+                        </w>
+                        <pc xml:id="pc-109" n="735">,</pc>
+                        <space></space>
+                        <persName xml:id="persName-16" resp="#resp_NB" cert="unknown">
+                            <w xml:id="w-627" n="736" lemma="Lupicinus" pos="NOMpro" msd="Case=Nom|Numb=Sing">
+                                Lupicinus
+                            </w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-628" n="737" lemma="sacerdos" pos="NOMcom" msd="Case=Nom|Numb=Sing">sacerdos</w>
+                        <space></space>
+                        <c>—</c>
+                        <w xml:id="w-629" n="738" lemma="secundum2" pos="PRE" msd="Numb=Sing">secundum</w>
+                        <space></space>
+                        <w xml:id="w-630" n="739" lemma="ille" pos="PROdem" msd="Case=Acc|Numb=Sing|Gend=Neut">illud</w>
+                        <space></space>
+                        <w xml:id="w-631" n="740" lemma="quoque" pos="ADV" msd="Deg=Pos">quoque</w>
+                        <pc xml:id="pc-110" n="741">,</pc>
+                        <space></space>
+                        <w xml:id="w-632" n="742" lemma="de" pos="PRE" msd="MORPH=empty">de</w>
+                        <space></space>
+                        <w xml:id="w-633" n="743" lemma="qui1" pos="PROrel" msd="Case=Abl|Numb=Sing|Gend=MascNeut">quo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-634" n="744" lemma="semel" pos="ADJadv.mul" msd="MORPH=empty">semel</w>
+                        <space></space>
+                        <w xml:id="w-635" n="745" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-636" n="746" lemma="uita" pos="NOMcom" msd="Case=Abl|Numb=Sing">uita</w>
+                        <space></space>
+                        <persName xml:id="persName-17" ref="Q175121" resp="#resp_NB" cert="medium">
+                            <w xml:id="w-637" n="747" lemma="Crassus" pos="NOMpro" msd="Case=Acc|Numb=Sing">Crassum</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-638" n="748" lemma="aio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">ait
+                        </w>
+                        <space></space>
+                        <w xml:id="w-639" n="749" lemma="rideo" pos="VER" msd="Mood=Inf|Tense=Perf|Voice=Act">risisse
+                        </w>
+                        <space></space>
+                        <persName xml:id="persName-18" ref="Q298729" resp="#resp_NB" cert="high">
+                            <w xml:id="w-640" n="750" lemma="Lucilius" pos="NOMpro" msd="Case=Nom|Numb=Sing">Lucilius
+                            </w>
+                        </persName>
+                        <pc xml:id="pc-111" n="751">:</pc>
+                        <space></space>
+                        <c>\'</c>
+                        <w xml:id="w-641" n="752" lemma="similis" pos="ADJqua"
+                           msd="Case=Acc|Numb=Sing|Gend=MascFem|Deg=Pos">similem
+                        </w>
+                        <space></space>
+                        <w xml:id="w-642" n="753" lemma="habeo" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=3">habent
+                        </w>
+                        <space></space>
+                        <w xml:id="w-643" n="754" lemma="labrum1" pos="NOMcom" msd="Case=Acc|Numb=Plur">labra</w>
+                        <space></space>
+                        <w xml:id="w-644" n="755" lemma="lactuca" pos="NOMcom" msd="Case=Acc|Numb=Sing">lactucam</w>
+                        <space></space>
+                        <w xml:id="w-645" n="756" lemma="asinus" pos="NOMcom" msd="Case=Abl|Numb=Sing">asino</w>
+                        <space></space>
+                        <w xml:id="w-646" n="757" lemma="cardus" pos="NOMcom" msd="Case=Nom|Numb=Sing|Gend=Masc">
+                            cardus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-647" n="758" lemma="comedo2" pos="VER"
+                           msd="Case=Abl|Numb=Sing|Gend=Com|Mood=Par|Tense=Pres|Voice=Act">comedente
+                        </w>
+                        <space></space>
+                        <c>\' —</c>
+                        <pc xml:id="pc-112" n="759">,</pc>
+                        <space></space>
+                        <w xml:id="w-648" n="760" lemma="uidelicet" pos="ADV" msd="Deg=Pos">uidelicet</w>
+                        <space></space>
+                        <w xml:id="w-649" n="761" lemma="ut4" pos="CONsub" msd="MORPH=empty">ut</w>
+                        <space></space>
+                        <w xml:id="w-650" n="762" lemma="perforo" pos="VER"
+                           msd="Case=Acc|Numb=Sing|Gend=Fem|Mood=Par|Tense=Perf|Voice=Pass">perforatam
+                        </w>
+                        <space></space>
+                        <w xml:id="w-651" n="763" lemma="nauis" pos="NOMcom" msd="Case=Acc|Numb=Sing">nauem</w>
+                        <space></space>
+                        <w xml:id="w-652" n="764" lemma="debilis" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=MascFem|Deg=Pos">debilis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-653" n="765" lemma="gubernator" pos="NOMcom" msd="Case=Nom|Numb=Sing">gubernator
+                        </w>
+                        <space></space>
+                        <w xml:id="w-654" n="766" lemma="rego" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">regat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-655" n="767" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-656" n="768" lemma="caecus" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Deg=Pos">caecus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-657" n="769" lemma="caecus" pos="ADJqua"
+                           msd="Case=Acc|Numb=Plur|Gend=Masc|Deg=Pos">caecos
+                        </w>
+                        <space></space>
+                        <w xml:id="w-658" n="770" lemma="duco" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">ducat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-659" n="771" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-660" n="772" lemma="fouea" pos="NOMcom" msd="Case=Acc|Numb=Sing">foueam</w>
+                        <space></space>
+                        <w xml:id="w-661" n="773" lemma="talis" pos="PROdem" msd="Case=Nom|Numb=Sing|Gend=MascFem">
+                            talis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-662" n="774" join="left" lemma="que" pos="CON" msd="MORPH=empty">que</w>
+                        <space></space>
+                        <w xml:id="w-663" n="775" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">sit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-664" n="776" lemma="rector" pos="NOMcom" msd="Case=Nom|Numb=Sing">rector</w>
+                        <pc xml:id="pc-113" n="777">,</pc>
+                        <space></space>
+                        <w xml:id="w-665" n="778" lemma="qualis1" pos="PROrel" msd="Case=Nom|Numb=Plur|Gend=MascFem">
+                            quales
+                        </w>
+                        <space></space>
+                        <w xml:id="w-666" n="779" lemma="ille" pos="PROdem" msd="Case=Nom|Numb=Plur|Gend=Masc">illi</w>
+                        <space></space>
+                        <w xml:id="w-667" n="780" lemma="qui1" pos="PROrel" msd="Case=Nom|Numb=Plur|Gend=Masc">qui</w>
+                        <space></space>
+                        <w xml:id="w-668" n="781" lemma="rego" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Pass|Person=3">reguntur
+                        </w>
+                        <pc xml:id="pc-114" n="782">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+            </div>
+            <div xml:id="chap_6" n="6" type="chapter">
+                <div xml:id="chap_6-sec_1" n="1" type="section">
+                    <p>
+                        <w xml:id="w-669" n="783" lemma="mater" pos="NOMcom" msd="Case=Acc|Numb=Sing">Matrem</w>
+                        <space></space>
+                        <w xml:id="w-670" n="784" lemma="communis" pos="ADJqua"
+                           msd="Case=Acc|Numb=Sing|Gend=MascFem|Deg=Pos">communem
+                        </w>
+                        <pc xml:id="pc-115" n="785">,</pc>
+                        <space></space>
+                        <w xml:id="w-671" n="786" lemma="qui1" pos="PROrel" msd="Case=Nom|Numb=Sing|Gend=Fem">quae</w>
+                        <pc xml:id="pc-116" n="787">,</pc>
+                        <space></space>
+                        <w xml:id="w-672" n="788" lemma="cum3" pos="CONsub" msd="MORPH=empty">cum</w>
+                        <space></space>
+                        <w xml:id="w-673" n="789" lemma="uos" pos="PROper" msd="Case=Abl|Numb=Plur">uobis</w>
+                        <space></space>
+                        <w xml:id="w-674" n="790" lemma="sanctitas" pos="NOMcom" msd="Case=Abl|Numb=Sing">sanctitate</w>
+                        <space></space>
+                        <w xml:id="w-675" n="791" lemma="socio" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Pass|Person=3">societur
+                        </w>
+                        <pc xml:id="pc-117" n="792">,</pc>
+                        <space></space>
+                        <w xml:id="w-676" n="793" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-677" n="794" lemma="is" pos="PROdem" msd="Case=Abl|Numb=Sing|Gend=MascNeut">eo</w>
+                        <space></space>
+                        <w xml:id="w-678" n="795" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-679" n="796" lemma="praeuenio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">praeuenit
+                        </w>
+                        <pc xml:id="pc-118" n="797">,</pc>
+                        <space></space>
+                        <w xml:id="w-680" n="798" lemma="quia" pos="CONsub" msd="MORPH=empty">quia</w>
+                        <space></space>
+                        <w xml:id="w-681" n="799" lemma="talis" pos="PROdem" msd="Case=Acc|Numb=Plur|Gend=MascFem">
+                            tales
+                        </w>
+                        <space></space>
+                        <w xml:id="w-682" n="800" lemma="gigno" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">genuit
+                        </w>
+                        <pc xml:id="pc-119" n="801">,</pc>
+                        <space></space>
+                        <w xml:id="w-683" n="802" lemma="qui1" pos="PROrel" msd="Case=Gen|Numb=Sing|Gend=Com">cuius</w>
+                        <space></space>
+                        <w xml:id="w-684" n="803" lemma="uere" pos="ADV" msd="Deg=Pos">uere</w>
+                        <space></space>
+                        <w xml:id="w-685" n="804" lemma="uenter" pos="NOMcom" msd="Case=Nom|Numb=Sing">uenter</w>
+                        <space></space>
+                        <w xml:id="w-686" n="805" lemma="aureus2" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Deg=Pos">aureus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-687" n="806" lemma="possum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">potest
+                        </w>
+                        <space></space>
+                        <w xml:id="w-688" n="807" lemma="dico2" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Pass">dici</w>
+                        <pc xml:id="pc-120" n="808">,</pc>
+                        <space></space>
+                        <w xml:id="w-689" n="809" lemma="eo3" pos="PROdem"
+                           msd="Case=Abl|Numb=Sing|Gend=MascNeut|Deg=Pos">eo
+                        </w>
+                        <space></space>
+                        <w xml:id="w-690" n="810" lemma="saluto" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=1">salutamus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-691" n="811" lemma="honor" pos="NOMcom" msd="Case=Abl|Numb=Sing">honore</w>
+                        <pc xml:id="pc-121" n="812">,</pc>
+                        <space></space>
+                        <w xml:id="w-692" n="813" lemma="qui1" pos="PROrel" msd="Numb=Sing|Gend=MascNeut">quo</w>
+                        <space></space>
+                        <w xml:id="w-693" n="814" lemma="nosco" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Perf|Voice=Act|Person=2">nostis
+                        </w>
+                        <pc xml:id="pc-122" n="815">;</pc>
+                        <space></space>
+                        <w xml:id="w-694" n="816" lemma="una" pos="ADV" msd="Numb=Sing|Gend=Fem">una</w>
+                        <space></space>
+                        <w xml:id="w-695" n="817" lemma="quoque" pos="ADV" msd="Deg=Pos">quo<lb n="10" break="no"/>que
+                        </w>
+                        <space></space>
+                        <w xml:id="w-696" n="818" lemma="suspicio2" pos="VER"
+                           msd="Case=Acc|Numb=Plur|Gend=Fem|Mood=Adj|Voice=Pass">suspiciendas
+                        </w>
+                        <space></space>
+                        <w xml:id="w-697" n="819" lemma="cunctus" pos="ADJqua"
+                           msd="Case=Dat|Numb=Plur|Gend=Com|Deg=Pos">cunctis
+                        </w>
+                        <space></space>
+                        <w xml:id="w-698" n="820" lemma="soror" pos="NOMcom" msd="Case=Acc|Numb=Plur">sorores</w>
+                        <pc xml:id="pc-123" n="821">,</pc>
+                        <space></space>
+                        <w xml:id="w-699" n="822" lemma="qui1" pos="PROrel" msd="Case=Nom|Numb=Plur|Gend=Fem">quae</w>
+                        <space></space>
+                        <w xml:id="w-700" n="823" lemma="sexus" pos="NOMcom" msd="Case=Acc|Numb=Sing">sexum</w>
+                        <space></space>
+                        <w xml:id="w-701" n="824" lemma="uinco" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Perf|Voice=Act|Person=3">uicere
+                        </w>
+                        <space></space>
+                        <w xml:id="w-702" n="825" lemma="cum2" pos="PRE" msd="MORPH=empty">cum</w>
+                        <space></space>
+                        <w xml:id="w-703" n="826" lemma="saeculum" pos="NOMcom" msd="Case=Abl|Numb=Sing">sae<lb n="11"
+                                                                                                                break="no"/>
+                            culo
+                        </w>
+                        <pc xml:id="pc-124" n="827">,</pc>
+                        <space></space>
+                        <w xml:id="w-704" n="828" lemma="qui1" pos="PROrel" msd="Case=Nom|Numb=Plur|Gend=Neut">quae</w>
+                        <space></space>
+                        <w xml:id="w-705" n="829" lemma="oleum" pos="NOMcom" msd="Case=Abl|Numb=Sing">oleo</w>
+                        <space></space>
+                        <w xml:id="w-706" n="830" lemma="ad2" pos="PRE" msd="MORPH=empty">ad</w>
+                        <space></space>
+                        <w xml:id="w-707" n="831" lemma="lampas" pos="NOMcom" msd="Case=Acc|Numb=Plur">lampadas</w>
+                        <space></space>
+                        <w xml:id="w-708" n="832" lemma="largiter" pos="ADV" msd="Deg=Pos">largiter</w>
+                        <space></space>
+                        <w xml:id="w-709" n="833" lemma="praeparo2" pos="VER"
+                           msd="Numb=Sing|Gend=MascNeut|Mood=Par|Tense=Perf|Voice=Pass">praeparato
+                        </w>
+                        <space></space>
+                        <w xml:id="w-710" n="834" lemma="sponsus1" pos="NOMcom" msd="Case=Nom|Numb=Plur">sponsi</w>
+                        <space></space>
+                        <w xml:id="w-711" n="835" lemma="opperior" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Dep|Person=3">oppe<lb n="12" break="no"/>riuntur
+                        </w>
+                        <space></space>
+                        <w xml:id="w-712" n="836" lemma="aduentus" pos="NOMcom" msd="Case=Acc|Numb=Sing">aduentum</w>
+                        <pc xml:id="pc-125" n="837">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+                <div xml:id="chap_6-sec_2" n="2" type="section">
+                    <p>
+                        <w xml:id="w-713" n="838" lemma="o" pos="INJ" msd="MORPH=empty">O</w>
+                        <space></space>
+                        <w xml:id="w-714" n="839" lemma="beatus" pos="ADJqua" msd="Case=Voc|Numb=Sing|Gend=Fem|Deg=Pos">
+                            beata
+                        </w>
+                        <space></space>
+                        <w xml:id="w-715" n="840" lemma="domus" pos="NOMcom" msd="Case=Gen|Numb=Sing">domus</w>
+                        <pc xml:id="pc-126" n="841">,</pc>
+                        <space></space>
+                        <w xml:id="w-716" n="842" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-717" n="843" lemma="qui1" pos="PROrel" msd="Case=Abl|Numb=Sing|Gend=Fem">qua</w>
+                        <space></space>
+                        <w xml:id="w-718" n="844" lemma="moror1" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Dep|Person=3">morantur
+                        </w>
+                        <space></space>
+                        <persName xml:id="persName-19" ref="Q1774668" resp="#resp_NB" cert="high">
+                            <w xml:id="w-719" n="845" lemma="Anna" pos="NOMpro" msd="Case=Nom|Numb=Sing">Anna</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-720" n="846" lemma="uiduus" pos="NOMcom" msd="Case=Nom|Numb=Sing|Gend=Fem">uidua
+                        </w>
+                        <pc xml:id="pc-127" n="847">,</pc>
+                        <space></space>
+                        <w xml:id="w-721" n="848" lemma="uirgo" pos="NOMcom" msd="Case=Nom|Numb=Plur">uirgines</w>
+                        <space></space>
+                        <w xml:id="w-722" n="849" lemma="prophetissa" pos="NOMcom" msd="Case=Nom|Numb=Plur">
+                            prophetissae
+                        </w>
+                        <pc xml:id="pc-128" n="850">,</pc>
+                        <space></space>
+                        <w xml:id="w-723" n="851" lemma="geminus" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Deg=Pos">geminus
+                        </w>
+                        <space></space>
+                        <persName xml:id="persName-20" ref="Q6577515" resp="#resp_NB" cert="high">
+                            <w xml:id="w-724" n="852" lemma="Samuel" pos="NOMpro" msd="Case=Ind">Samuhel</w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-725" n="853" lemma="nutrio" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Par|Tense=Perf|Voice=Pass">nutritus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-726" n="854" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-727" n="855" lemma="templum" pos="NOMcom" msd="Case=Abl|Numb=Sing">templo</w>
+                        <pc xml:id="pc-129" n="856">!</pc>
+                        <space></space>
+                        <w xml:id="w-728" n="857" lemma="o" pos="INJ" msd="MORPH=empty">O</w>
+                        <space></space>
+                        <w xml:id="w-729" n="858" lemma="tectum" pos="NOMcom" msd="Case=Acc|Numb=Plur">tecta</w>
+                        <space></space>
+                        <w xml:id="w-730" n="859" lemma="felix" pos="ADJqua" msd="Case=Acc|Numb=Plur|Gend=Neut|Deg=Pos">
+                            felicia
+                        </w>
+                        <pc xml:id="pc-130" n="860">,</pc>
+                        <space></space>
+                        <w xml:id="w-731" n="861" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-732" n="862" lemma="qui1" pos="PROrel" msd="Case=Abl|Numb=Plur|Gend=Com">quibus</w>
+                        <space></space>
+                        <w xml:id="w-733" n="863" lemma="cerno" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=1">cernimus
+                        </w>
+                        <space></space>
+                        <orgName xml:id="orgName-5" ref="Q400019" resp="#resp_NB" cert="high">
+                            <w xml:id="w-734" n="864" lemma="Macchabaei" pos="NOMpro" msd="Case=Gen|Numb=Plur">
+                                Macchabaeorum
+                            </w>
+                        </orgName>
+                        <space></space>
+                        <w xml:id="w-735" n="865" lemma="martyr" pos="NOMcom" msd="Case=Gen|Numb=Plur">martyrum</w>
+                        <space></space>
+                        <w xml:id="w-736" n="866" lemma="corona" pos="NOMcom" msd="Case=Abl|Numb=Plur">coronis</w>
+                        <space></space>
+                        <w xml:id="w-737" n="867" lemma="cingo" pos="VER"
+                           msd="Case=Acc|Numb=Sing|Gend=Fem|Mood=Par|Tense=Perf|Voice=Pass">cinctam
+                        </w>
+                        <space></space>
+                        <w xml:id="w-738" n="868" lemma="martyr" pos="NOMcom" msd="Case=Acc|Numb=Sing">martyrem</w>
+                        <space></space>
+                        <w xml:id="w-739" n="869" lemma="mater" pos="NOMcom" msd="Case=Acc|Numb=Sing">matrem</w>
+                        <pc xml:id="pc-131" n="870">!</pc>
+                        <space></space>
+                        <w xml:id="w-740" n="871" lemma="nam" pos="CONcoo" msd="MORPH=empty">Nam</w>
+                        <space></space>
+                        <w xml:id="w-741" n="872" lemma="licet1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act">licet
+                        </w>
+                        <space></space>
+                        <w xml:id="w-742" n="873" lemma="cotidie" pos="ADV" msd="Deg=Pos">cotidie</w>
+                        <space></space>
+                        <persName xml:id="persName-21" ref="Q302" resp="#resp_NB" cert="high">
+                            <w xml:id="w-743" n="874" lemma="Christus" pos="NOMpro" msd="Case=Acc|Numb=Sing">Christum
+                            </w>
+                        </persName>
+                        <space></space>
+                        <w xml:id="w-744" n="875" lemma="confiteor" pos="VER"
+                           msd="Numb=Plur|Mood=Sub|Tense=Pres|Voice=Dep|Person=2">confiteamini
+                        </w>
+                        <pc xml:id="pc-132" n="876">,</pc>
+                        <space></space>
+                        <w xml:id="w-745" n="877" lemma="dum2" pos="CONsub" msd="MORPH=empty">dum</w>
+                        <space></space>
+                        <w xml:id="w-746" n="878" lemma="is" pos="PROdem" msd="Case=Gen|Numb=Sing|Gend=Com">eius</w>
+                        <space></space>
+                        <w xml:id="w-747" n="879" lemma="praeceptum" pos="NOMcom" msd="Case=Acc|Numb=Plur">praecepta</w>
+                        <space></space>
+                        <w xml:id="w-748" n="880" lemma="seruo" pos="VER"
+                           msd="Numb=Plur|Mood=Ind|Tense=Pres|Voice=Act|Person=2">seruatis
+                        </w>
+                        <pc xml:id="pc-133" n="881">,</pc>
+                        <space></space>
+                        <w xml:id="w-749" n="882" lemma="tamen" pos="ADV" msd="Deg=Pos">tamen</w>
+                        <space></space>
+                        <w xml:id="w-750" n="883" lemma="ad2" pos="PRE" msd="MORPH=empty">ad</w>
+                        <space></space>
+                        <w xml:id="w-751" n="884" lemma="priuatus" pos="ADJqua"
+                           msd="Case=Acc|Numb=Sing|Gend=Fem|Deg=Pos">priuatam
+                        </w>
+                        <space></space>
+                        <w xml:id="w-752" n="885" lemma="gloria" pos="NOMcom" msd="Case=Acc|Numb=Sing">gloriam</w>
+                        <space></space>
+                        <w xml:id="w-753" n="886" lemma="publicus2" pos="ADJqua"
+                           msd="Case=Nom|Numb=Plur|Gend=Fem|Deg=Pos">publica
+                        </w>
+                        <space></space>
+                        <w xml:id="w-754" n="887" lemma="hic1" pos="PROdem" msd="Case=Nom|Numb=Plur|Gend=Neut">haec</w>
+                        <space></space>
+                        <w xml:id="w-755" n="888" lemma="accedo1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Perf|Voice=Act|Person=3">accessit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-756" n="889" lemma="uos" pos="PROper" msd="Case=Dat|Numb=Plur">uobis</w>
+                        <space></space>
+                        <w xml:id="w-757" n="890" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-758" n="891" lemma="aperio" pos="ADJqua" msd="Case=Nom|Numb=Sing|Gend=Fem">aperta
+                        </w>
+                        <space></space>
+                        <w xml:id="w-759" n="892" lemma="confessio" pos="NOMcom" msd="Case=Nom|Numb=Sing">confessio</w>
+                        <pc xml:id="pc-134" n="893">,</pc>
+                        <space></space>
+                        <w xml:id="w-760" n="894" lemma="quod2" pos="PROrel" msd="MORPH=empty">quod</w>
+                        <space></space>
+                        <w xml:id="w-761" n="895" lemma="per" pos="PRE" msd="MORPH=empty">per</w>
+                        <space></space>
+                        <w xml:id="w-762" n="896" lemma="uos" pos="PROper" msd="Case=Acc|Numb=Plur">uos</w>
+                        <space></space>
+                        <w xml:id="w-763" n="897" lemma="ab" pos="PRE" msd="MORPH=empty">ab</w>
+                        <space></space>
+                        <w xml:id="w-764" n="898" lemma="urbs" pos="NOMcom" msd="Case=Abl|Numb=Sing">urbe</w>
+                        <space></space>
+                        <w xml:id="w-765" n="899" lemma="uester" pos="PROpos" msd="Case=Abl|Numb=Sing|Gend=Fem">uestra
+                        </w>
+                        <space></space>
+                        <orgName xml:id="orgName-6" ref="Q83922" resp="#resp_NB" cert="high">
+                            <w xml:id="w-766" n="900" lemma="Arrianus" pos="NOMpro" msd="Case=Nom|Numb=Sing">Arriani</w>
+                        </orgName>
+                        <space></space>
+                        <w xml:id="w-767" n="901" lemma="quondam" pos="ADV" msd="Deg=Pos">quondam</w>
+                        <space></space>
+                        <w xml:id="w-768" n="902" lemma="dogmatus" pos="NOMcom" msd="Case=Dat|Numb=Plur">dogmatis</w>
+                        <space></space>
+                        <w xml:id="w-769" n="903" lemma="uirus" pos="NOMcom" msd="Case=Nom|Numb=Sing">uirus</w>
+                        <space></space>
+                        <w xml:id="w-770" n="904" lemma="ex" pos="PRE" msd="MORPH=empty">ex</w>
+                        <space></space>
+                        <w xml:id="w-771" n="905" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <pc xml:id="pc-135" n="906">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+                <div xml:id="chap_6-sec_3" n="3" type="section">
+                    <p>
+                        <w xml:id="w-772" n="907" lemma="et2" pos="CONcoo" msd="MORPH=empty">Et</w>
+                        <space></space>
+                        <w xml:id="w-773" n="908" lemma="miror" pos="VER"
+                           msd="Numb=Plur|Mood=Sub|Tense=Pres|Voice=Dep|Person=2">miremini
+                        </w>
+                        <space></space>
+                        <w xml:id="w-774" n="909" lemma="forsitan" pos="ADV" msd="Deg=Pos">forsitan</w>
+                        <pc xml:id="pc-136" n="910">,</pc>
+                        <space></space>
+                        <w xml:id="w-775" n="911" lemma="quod2" pos="CONsub" msd="MORPH=empty">quod</w>
+                        <space></space>
+                        <w xml:id="w-776" n="912" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                        <space></space>
+                        <w xml:id="w-777" n="913" lemma="finis" pos="NOMcom" msd="Case=Abl|Numb=Sing">fine</w>
+                        <space></space>
+                        <w xml:id="w-778" n="914" lemma="iam" pos="ADV" msd="Deg=Pos">iam</w>
+                        <space></space>
+                        <w xml:id="w-779" n="915" lemma="epistola" pos="NOMcom" msd="Case=Gen|Numb=Sing">epistulae</w>
+                        <space></space>
+                        <w xml:id="w-780" n="916" lemma="rursus" pos="ADV" msd="Deg=Pos">rursus</w>
+                        <space></space>
+                        <w xml:id="w-781" n="917" lemma="exordior" pos="VER"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Mood=Par|Tense=Perf|Voice=Dep">exorsus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-782" n="918" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=1">sim
+                        </w>
+                        <pc xml:id="pc-137" n="919">.</pc>
+                        <space></space>
+                        <w xml:id="w-783" n="920" lemma="quis1" pos="PROint" msd="Case=Acc|Numb=Sing|Gend=Neut">Quid</w>
+                        <space></space>
+                        <w xml:id="w-784" n="921" lemma="facio" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=1">faciam
+                        </w>
+                        <pc xml:id="pc-138" n="922">?</pc>
+                        <space></space>
+                        <w xml:id="w-785" n="923" lemma="uox" pos="NOMcom" msd="Case=Acc|Numb=Sing">Vocem</w>
+                        <space></space>
+                        <w xml:id="w-786" n="924" lemma="pectus" pos="NOMcom" msd="Case=Dat|Numb=Sing">pectori</w>
+                        <space></space>
+                        <w xml:id="w-787" n="925" lemma="nego" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">negare</w>
+                        <space></space>
+                        <w xml:id="w-788" n="926" lemma="non" pos="ADVneg" msd="MORPH=empty">non</w>
+                        <space></space>
+                        <w xml:id="w-789" n="927" lemma="ualeo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=1">ualeo
+                        </w>
+                        <pc xml:id="pc-139" n="928">.</pc>
+                        <space></space>
+                        <w xml:id="w-790" n="929" lemma="epistola" pos="NOMcom" msd="Case=Gen|Numb=Sing">Epistulae</w>
+                        <space></space>
+                        <w xml:id="w-791" n="930" lemma="breuitas" pos="NOMcom" msd="Case=Nom|Numb=Sing">breuitas</w>
+                        <space></space>
+                        <w xml:id="w-792" n="931" lemma="compello2" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">conpellit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-793" n="932" lemma="taceo" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">tacere</w>
+                        <pc xml:id="pc-140" n="933">,</pc>
+                        <space></space>
+                        <w xml:id="w-794" n="934" lemma="desiderium" pos="NOMcom" msd="Case=Acc|Numb=Sing">desiderium
+                        </w>
+                        <space></space>
+                        <w xml:id="w-795" n="935" lemma="uester" pos="PROper" msd="Case=Gen|Numb=Sing">uestri</w>
+                        <space></space>
+                        <w xml:id="w-796" n="936" lemma="cogo" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">cogit
+                        </w>
+                        <space></space>
+                        <w xml:id="w-797" n="937" lemma="loquor" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Dep">loqui</w>
+                        <pc xml:id="pc-141" n="938">.</pc>
+                        <space></space>
+                        <w xml:id="w-798" n="939" lemma="praeproperus" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=Masc|Deg=Pos">Praeproperus
+                        </w>
+                        <space></space>
+                        <w xml:id="w-799" n="940" lemma="sermo" pos="NOMcom" msd="Case=Nom|Numb=Sing">sermo</w>
+                        <pc xml:id="pc-142" n="941">;</pc>
+                        <space></space>
+                        <w xml:id="w-800" n="942" lemma="confusus" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=Fem|Mood=Par|Tense=Perf|Voice=Pass">confusa
+                        </w>
+                        <space></space>
+                        <w xml:id="w-801" n="943" lemma="turbo2" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Pass|Person=3">turbatur
+                        </w>
+                        <space></space>
+                        <w xml:id="w-802" n="944" lemma="oratio" pos="NOMcom" msd="Case=Nom|Numb=Sing">oratio</w>
+                        <pc xml:id="pc-143" n="945">;</pc>
+                        <space></space>
+                        <w xml:id="w-803" n="946" lemma="amor" pos="NOMcom" msd="Case=Nom|Numb=Sing">amor</w>
+                        <space></space>
+                        <w xml:id="w-804" n="947" lemma="ordo" pos="NOMcom" msd="Case=Acc|Numb=Sing">ordinem</w>
+                        <space></space>
+                        <w xml:id="w-805" n="948" lemma="nescio" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">nescit
+                        </w>
+                        <pc xml:id="pc-144" n="949">.</pc>
+                        <space></space>
+                    </p>
+                </div>
+            </div>
+        </body>
+    </text>
+</TEI>

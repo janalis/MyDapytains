@@ -280,6 +280,8 @@ if __name__ == "__main__":
         db.create_all()
 
         catalog, _ = parse(f"{basedir}/../../tests/catalog/example-collection.xml")
+        # catalog, _ = parse(f"{basedir}/../../tests/catalog/collection.xml")
+        # catalog, _ = parse(f"{basedir}/../../tests/catalog/collections.xml")
         store_catalog(catalog)
 
     app.run()

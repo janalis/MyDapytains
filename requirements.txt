@@ -1,4 +1,4 @@
-saxonche==12.5.0
+saxonche==12.6.0
 lxml
 flask
 flask-sqlalchemy
