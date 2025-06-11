@@ -1,0 +1,49 @@
+{
+  "fields": [
+    {
+      "term": "title",
+      "xpath": ".//tei:titleStmt/tei:title[@type='main']",
+      "target": "root"
+    },
+    {
+      "term": "creator",
+      "xpath": ".//tei:titleStmt/tei:author",
+      "target": "root"
+    },
+    {
+      "term": "description",
+      "xpath": ".//tei:sourceDesc//tei:title[@type='subtitle']",
+      "target": "root"
+    },
+    {
+      "term": "date",
+      "xpath": ".//tei:sourceDesc//tei:date",
+      "target": "dc"
+    },
+    {
+      "term": "publisher",
+      "xpath": ".//tei:sourceDesc//tei:publisher",
+      "target": "dc"
+    },
+    {
+      "term": "corpus",
+      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='corpus']",
+      "target": "ext"
+    },
+    {
+      "term": "authorgroup",
+      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='authorGroup']",
+      "target": "ext"
+    },
+    {
+      "term": "workgroup",
+      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='workgroup']",
+      "target": "ext"
+    },
+    {
+      "term": "work",
+      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='work']",
+      "target": "root"
+    }
+  ]
+}

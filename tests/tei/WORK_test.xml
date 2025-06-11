@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0" type="lemma">
     <teiHeader>
-        <fileDes>
+        <fileDesc>
             <titleStmt>
                 <title type="main">Sermo IIIIIIIIIIII</title>
                 <author>Isaac de l'Étoile</author>
@@ -53,8 +53,18 @@
                         <biblScope unit="volume">20</biblScope>
                     </series>
                 </bibl>
+
+                <!-- Métadonnées personnalisées sans <profileDesc> -->
+                <list type="metadata">
+                    <item type="corpus">Textes monastiques</item>
+                    <item type="authorGroup">Moyen Âge latin</item>
+                    <item type="creator" scheme="dcterms">Isaac de l'Étoile</item>
+                    <item type="workgroup">Sermons</item>
+                    <item type="work">Sermo I</item>
+                </list>
             </sourceDesc>
-        </fileDes>
+        </fileDesc>
+
         <encodingDesc>
             <refsDecl n="default">
                 <citeStructure unit="sermon" match="//body/div[@type='sermon']" use="@xml:id">

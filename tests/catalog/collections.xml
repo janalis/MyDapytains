@@ -1,6 +1,0 @@
-<collection identifier="https://corpus">
-    <title>Catalogue des collections</title>
-    <members>
-        <collection filepath="corpus/textes_monastiques/index.xml"/>
-    </members>
-</collection>

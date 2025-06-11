@@ -1,6 +1,0 @@
-<collection identifier="https://corpus/Sources_Chrétiennes">
-    <title>Corpus : Sources Chrétiennes</title>
-    <members>
-        <collection filepath="authorgroup/moyen_age_latin/index.xml"/>
-    </members>
-</collection>
