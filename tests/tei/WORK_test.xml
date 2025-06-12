@@ -3,7 +3,7 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main">Sermo IIIIIIIIIIII</title>
+                <title type="main">Sermo I</title>
                 <author>Isaac de l'Étoile</author>
                 <respStmt>
                     <resp>Encodage TEI</resp>
@@ -29,8 +29,7 @@
             <sourceDesc>
                 <bibl>
                     <author>Isaac de l'Étoile</author>
-                    <author>Isaac du triangle</author>
-                    <title type="main">Sermons, tome IIIIIIIIIIII</title>
+                    <title type="main">Sermons, tome I</title>
                     <title type="subtitle">Sermons 1-17</title>
                     <respStmt>
                         <resp>Texte et introduction critiques</resp>

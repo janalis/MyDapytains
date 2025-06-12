@@ -39,6 +39,18 @@ def clean_id_with_strip(text: str) -> str:
 def ensure_dir(path: str):
     os.makedirs(path, exist_ok=True)
 
+def unique_filename(base_name: str, existing_names: set) -> str:
+    """
+    Génère un nom unique basé sur base_name, en ajoutant _2, _3, ... si nécessaire
+    """
+    candidate = base_name
+    i = 2
+    while candidate in existing_names:
+        candidate = f"{base_name}_{i}"
+        i += 1
+    existing_names.add(candidate)
+    return candidate
+
 # === STATE MANAGEMENT ===
 
 def compute_config_hash(*paths: List[str]) -> str:
@@ -63,7 +75,7 @@ def save_state(data: Dict[str, Any]):
 def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
     res_el = ET.Element("resource", {
         "identifier": res["identifier"],
-        "filepath": os.path.normpath(relpath)
+        "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
 
     ET.SubElement(res_el, "title").text = res.get("title", "Titre inconnu")
@@ -73,25 +85,26 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
             tag = "author" if key == "creator" else key
             ET.SubElement(res_el, tag).text = res[key]
 
+    # <dublinCore xmlns="...">
     dc_el = ET.SubElement(res_el, "dublinCore")
-    for dc in res["dublin_core"]:
+    dc_el.set("xmlns", DC_NS)
+    for dc in res.get("dublin_core", []):
         el = ET.SubElement(dc_el, dc.term)
-        el.set("xmlns", DC_NS)
         el.text = dc.value
 
+    # <extensions xmlns="...">
     ext_el = ET.SubElement(res_el, "extensions")
-    for ext in res["extensions"]:
+    ext_el.set("xmlns", EXP_NS)
+    for ext in res.get("extensions", []):
         tag = ext.term.split("/")[-1] if ext.term != "serie" else "serie"
-        ns = DC_NS if ext.term.startswith("http://purl.org/dc/terms/") else EXP_NS
         el = ET.SubElement(ext_el, tag)
-        el.set("xmlns", ns)
         el.text = ext.value
 
     return res_el
 
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None, is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
     if is_reference and filepath:
-        return ET.Element("collection", {"filepath": filepath})
+        return ET.Element("collection", {"filepath": filepath.replace(os.sep, "/")})
     col_el = ET.Element("collection", {"identifier": identifier})
     ET.SubElement(col_el, "title").text = title
     if description:
@@ -132,7 +145,9 @@ def main():
             current_files[rel_path] = {"mtime": mtime}
 
             if process_all or rel_path not in previous_files or previous_files[rel_path]["mtime"] != mtime:
-                resources.append(extract_metadata(path))
+                res = extract_metadata(path)
+                res["filepath"] = rel_path
+                resources.append(res)
 
     corpora = defaultdict(list)
     for res in resources:
@@ -166,19 +181,36 @@ def main():
                 wg_members = []
                 for wg_key, wg_items in wgs.items():
                     wg_path = os.path.join(au_path, "workgroup", wg_key)
+                    ensure_dir(wg_path)
 
-                    members = []
-                    for res in wg_items:
-                        tei_file_path = os.path.abspath(res["filepath"])
-                        tei_rel_path = os.path.relpath(tei_file_path, start=wg_path).replace(os.sep, "/")
-                        members.append(build_resource_element(res, tei_rel_path))
+                    existing_names = set()
+                    resource_refs = []
 
-                    write_index_file(wg_path, wg_key, f"Regroupement d'œuvres : {wg_key}", None, members)
+                    for i, res in enumerate(wg_items, 1):
+                        raw_title = res.get("workTitle") or res.get("title") or f"sermon_{i}"
+                        base_name = clean_id_with_strip(raw_title)
+                        filename = unique_filename(base_name, existing_names) + ".xml"
+                        filepath = os.path.join(wg_path, filename)
+
+                        # Calcul chemin relatif du fichier TEI vers wg_path
+                        tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
+                        rel_path_to_tei = os.path.relpath(tei_abs_path, start=wg_path).replace(os.sep, "/")
+
+                        res_el = build_resource_element(res, rel_path_to_tei)
+                        tree = ET.ElementTree(res_el)
+                        tree.write(filepath, encoding="utf-8", xml_declaration=True)
+
+                        # Dans l'index, le filepath est juste le nom de fichier (ressource dans même dossier)
+                        resource_ref = ET.Element("resource", {"filepath": filename})
+                        resource_refs.append(resource_ref)
+
+                    write_index_file(wg_path, wg_key, f"Regroupement d'œuvres : {wg_key}", None, resource_refs)
+
                     wg_members.append(build_collection_element(
                         identifier=f"https://corpus/{corpus_key}/{ag_key}/{au_key}/{wg_key}",
                         title=f"Regroupement d'œuvres : {wg_key}",
                         is_reference=True,
-                        filepath=f"workgroup/{wg_key}/index.xml"
+                        filepath=os.path.relpath(os.path.join(wg_path, "index.xml"), start=au_path).replace(os.sep, "/")
                     ))
 
                 write_index_file(au_path, au_key, f"Auteur : {au_key}", None, wg_members)
@@ -186,7 +218,7 @@ def main():
                     identifier=f"https://corpus/{corpus_key}/{ag_key}/{au_key}",
                     title=f"Auteur : {au_key}",
                     is_reference=True,
-                    filepath=f"author/{au_key}/index.xml"
+                    filepath=os.path.relpath(os.path.join(au_path, "index.xml"), start=ag_path).replace(os.sep, "/")
                 ))
 
             write_index_file(ag_path, ag_key, f"Groupe d'auteurs : {ag_key}", None, au_members)
@@ -194,7 +226,7 @@ def main():
                 identifier=f"https://corpus/{corpus_key}/{ag_key}",
                 title=f"Groupe d'auteurs : {ag_key}",
                 is_reference=True,
-                filepath=f"authorgroup/{ag_key}/index.xml"
+                filepath=os.path.relpath(os.path.join(ag_path, "index.xml"), start=corpus_path).replace(os.sep, "/")
             ))
 
         write_index_file(corpus_path, corpus_key, f"Corpus : {corpus_name}", None, ag_members)
@@ -202,7 +234,7 @@ def main():
             identifier=f"https://corpus/{corpus_key}",
             title=f"Corpus : {corpus_name}",
             is_reference=True,
-            filepath=f"corpus/{corpus_key}/index.xml"
+            filepath=os.path.relpath(os.path.join(corpus_path, "index.xml"), start=catalog_dir).replace(os.sep, "/")
         ))
 
     write_index_file(catalog_dir, "https://corpus", "Catalogue des collections", None, root_members)
