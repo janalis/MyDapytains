@@ -8,8 +8,6 @@ from collections import defaultdict
 from typing import List, Dict, Any, Optional
 from extract_metadata import extract_metadata
 
-from dapitains.metadata.classes import DublinCore, Extension
-
 TEI_NS = {"tei": "http://www.tei-c.org/ns/1.0"}
 DC_NS = "http://purl.org/dc/terms/"
 EXP_NS = "exp.com"
@@ -40,9 +38,6 @@ def ensure_dir(path: str):
     os.makedirs(path, exist_ok=True)
 
 def unique_filename(base_name: str, existing_names: set) -> str:
-    """
-    Génère un nom unique basé sur base_name, en ajoutant _2, _3, ... si nécessaire
-    """
     candidate = base_name
     i = 2
     while candidate in existing_names:
@@ -85,14 +80,12 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
             tag = "author" if key == "creator" else key
             ET.SubElement(res_el, tag).text = res[key]
 
-    # <dublinCore xmlns="...">
     dc_el = ET.SubElement(res_el, "dublinCore")
     dc_el.set("xmlns", DC_NS)
     for dc in res.get("dublin_core", []):
         el = ET.SubElement(dc_el, dc.term)
         el.text = dc.value
 
-    # <extensions xmlns="...">
     ext_el = ET.SubElement(res_el, "extensions")
     ext_el.set("xmlns", EXP_NS)
     for ext in res.get("extensions", []):
@@ -184,7 +177,8 @@ def main():
                 for wg_key, wg_items in wgs.items():
                     wg_name = wg_items[0].get("workgroup", wg_key)
                     wg_path = os.path.join(au_path, "workgroup", wg_key)
-                    ensure_dir(wg_path)
+                    work_path = os.path.join(wg_path, "work")
+                    ensure_dir(work_path)
 
                     existing_names = set()
                     resource_refs = []
@@ -193,20 +187,20 @@ def main():
                         raw_title = res.get("workTitle") or res.get("title") or f"sermon_{i}"
                         base_name = clean_id_with_strip(raw_title)
                         filename = unique_filename(base_name, existing_names) + ".xml"
-                        filepath = os.path.join(wg_path, filename)
+                        filepath = os.path.join(work_path, filename)
 
-                        # Calcul chemin relatif du fichier TEI vers wg_path
                         tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
-                        rel_path_to_tei = os.path.relpath(tei_abs_path, start=wg_path).replace(os.sep, "/")
+                        rel_path_to_tei = os.path.relpath(tei_abs_path, start=work_path).replace(os.sep, "/")
 
                         res_el = build_resource_element(res, rel_path_to_tei)
                         tree = ET.ElementTree(res_el)
                         tree.write(filepath, encoding="utf-8", xml_declaration=True)
 
-                        # Dans l'index, le filepath est juste le nom de fichier (ressource dans même dossier)
-                        resource_ref = ET.Element("resource", {"filepath": filename})
-                        resource_refs.append(resource_ref)
+                        resource_refs.append(ET.Element("resource", {
+                            "filepath": os.path.join("work", filename).replace(os.sep, "/")
+                        }))
 
+                    # Crée index.xml dans work/, sans collection pour chaque œuvre
                     write_index_file(wg_path, wg_key, f"Regroupement d'œuvres : {wg_name}", None, resource_refs)
 
                     wg_members.append(build_collection_element(
