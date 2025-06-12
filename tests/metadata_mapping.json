@@ -1,49 +1,31 @@
 {
-  "fields": [
-    {
-      "term": "title",
-      "xpath": ".//tei:titleStmt/tei:title[@type='main']",
-      "target": "root"
+  "default": {
+    "namespaces": {
+      "dc": "http://purl.org/dc/terms/",
+      "ex": "http://example.com",
+      "foaf": "http://xmlns.com/foaf/0.1/"
     },
-    {
-      "term": "creator",
-      "xpath": ".//tei:titleStmt/tei:author",
-      "target": "root"
-    },
-    {
-      "term": "description",
-      "xpath": ".//tei:sourceDesc//tei:title[@type='subtitle']",
-      "target": "root"
-    },
-    {
-      "term": "date",
-      "xpath": ".//tei:sourceDesc//tei:date",
-      "target": "dc"
-    },
-    {
-      "term": "publisher",
-      "xpath": ".//tei:sourceDesc//tei:publisher",
-      "target": "dc"
-    },
-    {
-      "term": "corpus",
-      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='corpus']",
-      "target": "ext"
-    },
-    {
-      "term": "authorgroup",
-      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='authorGroup']",
-      "target": "ext"
-    },
-    {
-      "term": "workgroup",
-      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='workgroup']",
-      "target": "ext"
-    },
-    {
-      "term": "work",
-      "xpath": ".//tei:sourceDesc//tei:list[@type='metadata']/tei:item[@type='work']",
-      "target": "root"
+    "properties": {
+      "dc:title": ".//tei:titleStmt/tei:title[@type='main']",
+      "dc:creator": ".//tei:titleStmt/tei:author",
+      "dc:description": ".//tei:sourceDesc//tei:title[@type='subtitle']",
+      "dc:date": [
+        ".//tei:sourceDesc//tei:date",
+        ".//tei:editionStmt//tei:date"
+      ],
+      "dc:publisher": ".//tei:sourceDesc//tei:publisher",
+      "ex:corpus": "//tei:keywords[@n='corpus']/tei:term",
+      "ex:authorGroup": "//tei:keywords[@n='authorGroup']/tei:term",
+      "ex:workGroup": "//tei:keywords[@n='workGroup']/tei:term",
+      "ex:work": ".//tei:titleStmt/tei:title[@type='main']"
     }
-  ]
+  },
+  "overrides": {
+    "W0001-lemma.xml": {
+      "ex:workTitle": ".//tei:msDesc/tei:msContents/tei:title"
+    },
+    "^ISAAC_.*\\.xml$": {
+      "dc:author": ".//tei:sourceDesc/tei:bibl/tei:author"
+    }
+  }
 }

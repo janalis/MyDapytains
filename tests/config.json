@@ -1,8 +1,4 @@
 {
-  "tei_directory": "tei",
-  "output_directory": "catalog",
-  "xpath_config_file": "metadata_mapping.json",
-
   "display_order": [
     "title",
     "author",
@@ -13,12 +9,10 @@
     "publisherPlace",
     "serie"
   ],
-
   "exclude_fields": [
     "publisherPlace",
     "serie"
   ],
-
   "hierarchy": [
     {
       "key": "ex:corpus",
