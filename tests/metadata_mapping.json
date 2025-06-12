@@ -21,10 +21,10 @@
     }
   },
   "overrides": {
-    "W0001-lemma.xml": {
+    "WORK_TEI.xml": {
       "ex:workTitle": ".//tei:msDesc/tei:msContents/tei:title"
     },
-    "^ISAAC_.*\\.xml$": {
+    "^WORK_ISAAC.*\\.xml$": {
       "dc:author": ".//tei:sourceDesc/tei:bibl/tei:author"
     }
   }
