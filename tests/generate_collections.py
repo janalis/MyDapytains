@@ -164,6 +164,7 @@ def main():
 
         ag_members = []
         for ag_key, ag_items in ags.items():
+            ag_name = ag_items[0].get("authorgroup", ag_key)
             ag_path = os.path.join(corpus_path, "authorgroup", ag_key)
 
             authors = defaultdict(list)
@@ -172,6 +173,7 @@ def main():
 
             au_members = []
             for au_key, au_items in authors.items():
+                author_name = au_items[0].get("creator", au_key)
                 au_path = os.path.join(ag_path, "author", au_key)
 
                 wgs = defaultdict(list)
@@ -180,6 +182,7 @@ def main():
 
                 wg_members = []
                 for wg_key, wg_items in wgs.items():
+                    wg_name = wg_items[0].get("workgroup", wg_key)
                     wg_path = os.path.join(au_path, "workgroup", wg_key)
                     ensure_dir(wg_path)
 
@@ -204,27 +207,27 @@ def main():
                         resource_ref = ET.Element("resource", {"filepath": filename})
                         resource_refs.append(resource_ref)
 
-                    write_index_file(wg_path, wg_key, f"Regroupement d'œuvres : {wg_key}", None, resource_refs)
+                    write_index_file(wg_path, wg_key, f"Regroupement d'œuvres : {wg_name}", None, resource_refs)
 
                     wg_members.append(build_collection_element(
                         identifier=f"https://corpus/{corpus_key}/{ag_key}/{au_key}/{wg_key}",
-                        title=f"Regroupement d'œuvres : {wg_key}",
+                        title=f"Regroupement d'œuvres : {wg_name}",
                         is_reference=True,
                         filepath=os.path.relpath(os.path.join(wg_path, "index.xml"), start=au_path).replace(os.sep, "/")
                     ))
 
-                write_index_file(au_path, au_key, f"Auteur : {au_key}", None, wg_members)
+                write_index_file(au_path, au_key, f"Auteur : {author_name}", None, wg_members)
                 au_members.append(build_collection_element(
                     identifier=f"https://corpus/{corpus_key}/{ag_key}/{au_key}",
-                    title=f"Auteur : {au_key}",
+                    title=f"Auteur : {author_name}",
                     is_reference=True,
                     filepath=os.path.relpath(os.path.join(au_path, "index.xml"), start=ag_path).replace(os.sep, "/")
                 ))
 
-            write_index_file(ag_path, ag_key, f"Groupe d'auteurs : {ag_key}", None, au_members)
+            write_index_file(ag_path, ag_key, f"Groupe d'auteurs : {ag_name}", None, au_members)
             ag_members.append(build_collection_element(
                 identifier=f"https://corpus/{corpus_key}/{ag_key}",
-                title=f"Groupe d'auteurs : {ag_key}",
+                title=f"Groupe d'auteurs : {ag_name}",
                 is_reference=True,
                 filepath=os.path.relpath(os.path.join(ag_path, "index.xml"), start=corpus_path).replace(os.sep, "/")
             ))
