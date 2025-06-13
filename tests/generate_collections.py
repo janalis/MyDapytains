@@ -34,8 +34,6 @@ for ns in REQUIRED_NAMESPACES:
 def get_namespace(ns_key: str) -> str:
     return namespaces[ns_key]
 
-HIERARCHY_DIRS = ["corpus", "authorgroup", "author", "workgroup", "work"]
-
 # === UTILS ===
 
 def strip_accents(text: str) -> str:
@@ -159,10 +157,11 @@ def main():
         if level >= len(config["hierarchy"]):
             return []
 
-        key = config["hierarchy"][level]["key"]
-        title_label = config["hierarchy"][level]["title"]
+        current_config = config["hierarchy"][level]
+        key = current_config["key"]
+        title_label = current_config["title"]
+        slug = current_config["slug"]
         level_key = key.split(":")[-1]
-        subdir = HIERARCHY_DIRS[level] if level < len(HIERARCHY_DIRS) else f"level{level}"
 
         groups = defaultdict(list)
         for item in items:
@@ -173,9 +172,9 @@ def main():
         for group_id, group_items in groups.items():
             group_name = group_items[0].get(level_key, group_id)
             group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
+            group_path = os.path.join(parent_path, slug, group_id) if level < len(config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
 
             if level == len(config["hierarchy"]) - 1:
-                group_path = os.path.join(parent_path, subdir)
                 ensure_dir(group_path)
                 existing_names = set()
                 for i, res in enumerate(group_items, 1):
@@ -191,14 +190,14 @@ def main():
                     tree = ET.ElementTree(res_el)
                     tree.write(filepath, encoding="utf-8", xml_declaration=True)
 
-                    members.append(build_collection_element(
-                        identifier=f"{group_identifier}_{base_name}",
-                        title=f"{title_label} : {raw_title}",
-                        is_reference=True,
-                        filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
-                    ))
+                members.append(build_collection_element(
+                    identifier=group_identifier,
+                    title=f"{title_label} : {group_name}",
+                    is_reference=True,
+                    filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
+                ))
+
             else:
-                group_path = os.path.join(parent_path, subdir, group_id)
                 sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
                 write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
                 members.append(build_collection_element(

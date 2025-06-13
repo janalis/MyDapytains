@@ -6,24 +6,29 @@
 
   "hierarchy": [
     {
+      "title": "Corpus",
       "key": "ex:corpus",
-      "title": "Corpus"
+      "slug": "corpus"
     },
     {
+      "title": "ZGroupe d’auteurs",
       "key": "ex:authorgroup",
-      "title": "ZGroupe d’auteurs"
+      "slug": "authorgroup"
     },
     {
+      "title": "ZAuteur",
       "key": "dc:creator",
-      "title": "ZAuteur"
+      "slug": "author"
     },
     {
+      "title": "ZGroupe d’œuvres",
       "key": "ex:workgroup",
-      "title": "ZGroupe d’œuvres"
+      "slug": "workgroup"
     },
     {
+      "title": "ZŒuvre",
       "key": "ex:work",
-      "title": "ZŒuvre"
+      "slug": "work"
     }
   ]
 }
