@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" type="lemma">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title type="main">Sermo II</title>
+                <author>Bernard de Clairvaux</author>
+            </titleStmt>
+            <editionStmt>
+                <edition>
+                    <date>1975</date>
+                </edition>
+            </editionStmt>
+            <publicationStmt>
+                <authority>Éditions du Cerf</authority>
+            </publicationStmt>
+            <sourceDesc>
+                <bibl>
+                    <author>Bernard de Clairvaux</author>
+                    <title type="main">Sermons, tome II</title>
+                    <pubPlace>Paris</pubPlace>
+                    <publisher>Éditions du Cerf</publisher>
+                    <date>1975</date>
+                </bibl>
+                <list type="metadata">
+                    <item type="corpus">Textes monastiques</item>
+                    <!-- pas de authorgroup -->
+                    <item type="creator" scheme="dcterms">Bernard de Clairvaux</item>
+                    <item type="workgroup">Sermons</item>
+                    <item type="work">Sermo II</item>
+                </list>
+            </sourceDesc>
+        </fileDesc>
+
+        <encodingDesc>
+            <refsDecl n="default">
+                <citeStructure unit="sermon" match="//body/div[@type='sermon']" use="@xml:id">
+                    <citeData use="@n" property="number"/>
+
+                    <citeData property="contains"
+                              use="sort(distinct-values(for $item in //persName|//placeName return if ($item = '') then continue else normalize-space($item)))"/>
+
+                    <citeStructure unit="paragraph" match="div[@type='paragraph']" use="@xml:id" delim=".">
+                        <citeData use="@n" property="number"/>
+
+                        <!--<citeStructure unit="token" match="(//*:w|//*:pc)" use="@xml:id" delim=".">
+                            <citeData use="@lemma" property="lemma"/>
+                            <citeData use="@pos" property="pos"/>
+                            <citeData use="@msd" property="msd"/>
+                            <citeData use="child::text()" property="text"/>
+                        </citeStructure>-->
+
+                        <!--<citeStructure unit="punctuation" match="/pc" use="@xml:id" delim="#">
+                            <citeData use="child::text()" property="text"/>
+                        </citeStructure>-->
+
+                        <!--<citeStructure unit="word" match="p//w" use="@xml:id" delim="."> => voir .//w
+                            <citeData use="@lemma" property="lemma"/>
+                            <citeData use="@pos" property="pos"/>
+                            <citeData use="@msd" property="msd"/>
+                            <citeData use="child::text()" property="text"/>
+                        </citeStructure>-->
+
+                        <citeStructure match=".//seg[@type='biblicalQuotation']" use="@xml:id" unit="biblicalQuotation" delim=".">
+                    <citeData property="BiblIndexLink"
+                              use=" for $item in tokenize(@corresp,' ') return concat('https://www.biblindex.org/fr/quotations/',$item)"/>
+                    <citeData property="biblicalRef" use=".//seg[@type='biblicalRef']"/>
+                </citeStructure>
+
+
+                    </citeStructure>
+                </citeStructure>
+            </refsDecl>
+        </encodingDesc>
+    </teiHeader>
+    <text
+            xml:id="text">
+        <body>
+            <div xml:id="ser-1" n="1" type="sermon">
+                <head style="titre_1" type="titre_1">Sermo I</head>
+                <div xml:id="par-1" n="1" type="paragraph">
+                    <p>
+                        <seg xml:id="bib-1" corresp="1608717" subtype="lemma" type="biblicalQuotation">
+                            <w xml:id="w-1" n="1" lemma="uideo" pos="VER"
+                               msd="Case=Nom|Numb=Sing|Gend=MascFem|Mood=Par|Tense=Pres|Voice=Act">Videns
+                            </w>
+                            <space></space>
+                            <w xml:id="w-2" n="2" lemma="turba" pos="NOMcom" msd="Case=Acc|Numb=Plur">turbas</w>
+                            <space></space>
+                            <persName xml:id="persName-4" ref="Q302" cert="high" resp="#resp_NB">
+                                <w xml:id="w-3" n="3" lemma="Iesus" pos="NOMpro" msd="Case=Nom|Numb=Sing">Iesus</w>
+                            </persName>
+                            <space></space>
+                            <w xml:id="w-4" n="4" lemma="ascendo" pos="VER"
+                               msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">ascendit
+                            </w>
+                            <space></space>
+                            <w xml:id="w-5" n="5" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                            <space></space>
+                            <w xml:id="w-6" n="6" lemma="mons" pos="NOMcom" msd="Case=Acc|Numb=Sing">montem</w>
+                            <pc xml:id="pc-1" n="7">.</pc>
+                            <note n="1" type="biblicalNote" xml:id="ftn1">
+                                <seg type="biblicalRef">Mt 5, 1</seg>
+                            </note>
+                        </seg>
+                        <w xml:id="w-9" n="10" lemma="nos" pos="PROper" msd="Case=Acc|Numb=Plur">nos</w>
+                        <space></space>
+                        <w xml:id="w-10" n="11" lemma="contingo1" pos="VER"
+                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">contingat
+                        </w>
+                        <space></space>
+                        <w xml:id="w-11" n="12" lemma="quandoque1" pos="ADV" msd="MORPH=empty">quandoque</w>
+                        <space></space>
+                        <w xml:id="w-12" n="13" lemma="turba" pos="NOMcom" msd="Case=Acc|Numb=Plur">turbas</w>
+                        <space></space>
+                        <w xml:id="w-13" n="14" lemma="uideo" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">videre</w>
+                        <pc xml:id="pc-2" n="15">,</pc>
+                        <space></space>
+                        <w xml:id="w-14" n="16" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
+                        <space></space>
+                        <w xml:id="w-15" n="17" lemma="dimitto" pos="VER"
+                           msd="Case=Abl|Numb=Plur|Gend=Com|Mood=Par|Tense=Perf|Voice=Pass">dimissis
+                        </w>
+                        <pc xml:id="pc-3" n="18">,</pc>
+                        <space></space>
+                        <seg xml:id="bib-2" corresp="1608696" type="biblicalQuotation">
+                            <w xml:id="w-16" n="19" lemma="ascensio" pos="NOMcom" msd="Case=Acc|Numb=Plur">ascen<lb
+                                    n="3" break="no"/>siones
+                            </w>
+                            <space></space>
+                            <w xml:id="w-17" n="20" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
+                            <space></space>
+                            <w xml:id="w-18" n="21" lemma="cor" pos="NOMcom" msd="Case=Abl|Numb=Sing">corde</w>
+                            <space></space>
+                            <w xml:id="w-19" n="22" lemma="dispono" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">
+                                disponere
+                            </w>
+                            <note n="2" type="biblicalNote" xml:id="ftn2">
+                                <seg type="biblicalRef">Ps 83, 6</seg>
+                            </note>
+                        </seg>
+                        <pc xml:id="pc-4" n="23">.</pc>
+                        <space></space>
+                        <w xml:id="w-20" n="24" lemma="difficilis" pos="ADJqua"
+                           msd="Case=Nom|Numb=Sing|Gend=Neut|Deg=Pos">Difficile
+                        </w>
+                        <space></space>
+                        <w xml:id="w-21" n="25" lemma="sum1" pos="VER"
+                           msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">est
+                        </w>
+                        <space></space>
+                    </p>
+                </div>
+            </div>
+        </body>
+    </text>
+</TEI>

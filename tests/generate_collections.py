@@ -34,6 +34,10 @@ for ns in REQUIRED_NAMESPACES:
 def get_namespace(ns_key: str) -> str:
     return namespaces[ns_key]
 
+# === VALIDATE CONFIG ===
+if config["hierarchy"][0].get("if_missing") == "attach_to_parent":
+    raise ValueError("Le premier niveau de la hiérarchie ne peut pas avoir 'attach_to_parent'.")
+
 # === UTILS ===
 
 def strip_accents(text: str) -> str:
@@ -83,27 +87,22 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         "identifier": res["identifier"],
         "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
-
     ET.SubElement(res_el, "title").text = res.get("title", "Titre inconnu")
-
     for key in ["description", "creator", "work"]:
         if key in res:
             tag = "author" if key == "creator" else key
             ET.SubElement(res_el, tag).text = res[key]
-
     dc_el = ET.SubElement(res_el, "dublinCore")
     dc_el.set("xmlns", get_namespace("dc"))
     for dc in res.get("dublin_core", []):
         el = ET.SubElement(dc_el, dc.term)
         el.text = dc.value
-
     ext_el = ET.SubElement(res_el, "extensions")
     ext_el.set("xmlns", get_namespace("ex"))
     for ext in res.get("extensions", []):
         tag = ext.term.split("/")[-1] if ext.term != "serie" else "serie"
         el = ET.SubElement(ext_el, tag)
         el.text = ext.value
-
     return res_el
 
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None, is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
@@ -162,11 +161,20 @@ def main():
         title_label = current_config["title"]
         slug = current_config["slug"]
         level_key = key.split(":")[-1]
+        if_missing = current_config.get("if_missing", "create_unknown")
 
         groups = defaultdict(list)
         for item in items:
-            val = item.get(level_key, "unknown")
-            groups[clean_id_with_strip(val)].append(item)
+            value = item.get(level_key)
+            if not value:
+                if if_missing == "skip":
+                    continue
+                elif if_missing == "attach_to_parent":
+                    groups["__parent__"].append(item)
+                    continue
+                elif if_missing == "create_unknown":
+                    value = f"Unknown {title_label}"
+            groups[clean_id_with_strip(value)].append(item)
 
         members = []
         for group_id, group_items in groups.items():
@@ -182,21 +190,16 @@ def main():
                     base_name = clean_id_with_strip(raw_title)
                     filename = unique_filename(base_name, existing_names) + ".xml"
                     filepath = os.path.join(group_path, filename)
-
                     tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
                     rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
-
                     res_el = build_resource_element(res, rel_path_to_tei)
-                    tree = ET.ElementTree(res_el)
-                    tree.write(filepath, encoding="utf-8", xml_declaration=True)
-
+                    ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
                 members.append(build_collection_element(
                     identifier=group_identifier,
                     title=f"{title_label} : {group_name}",
                     is_reference=True,
                     filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
                 ))
-
             else:
                 sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
                 write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
@@ -210,7 +213,6 @@ def main():
 
     root_members = recursive_group(0, CATALOG_DIR, resources, "")
     write_index_file(CATALOG_DIR, "root", "Index général", None, root_members)
-
     state["config_hash"] = current_hash
     state["files"] = current_files
     save_state(state)

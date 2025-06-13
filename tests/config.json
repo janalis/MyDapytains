@@ -8,27 +8,32 @@
     {
       "title": "Corpus",
       "key": "ex:corpus",
-      "slug": "corpus"
+      "slug": "corpus",
+      "if_missing": "create_unknown"
     },
     {
-      "title": "ZGroupe d’auteurs",
+      "title": "Groupe d’auteurs",
       "key": "ex:authorgroup",
-      "slug": "authorgroup"
+      "slug": "authorgroup",
+      "if_missing": "attach_to_parent"
     },
     {
-      "title": "ZAuteur",
+      "title": "Auteur",
       "key": "dc:creator",
-      "slug": "author"
+      "slug": "author",
+      "if_missing": "skip"
     },
     {
-      "title": "ZGroupe d’œuvres",
+      "title": "Groupe d’œuvres",
       "key": "ex:workgroup",
-      "slug": "workgroup"
+      "slug": "workgroup",
+      "if_missing": "attach_to_parent"
     },
     {
-      "title": "ZŒuvre",
+      "title": "Œuvre",
       "key": "ex:work",
-      "slug": "work"
+      "slug": "work",
+      "if_missing": "skip"
     }
   ]
 }
