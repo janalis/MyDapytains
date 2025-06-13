@@ -34,6 +34,7 @@ for ns in REQUIRED_NAMESPACES:
 def get_namespace(ns_key: str) -> str:
     return namespaces[ns_key]
 
+# === VALIDATE CONFIG ===
 if config["hierarchy"][0].get("if_missing") == "attach_to_parent":
     raise ValueError("Le premier niveau de la hiérarchie ne peut pas avoir 'attach_to_parent'.")
 
@@ -46,10 +47,19 @@ def clean_id(text: str) -> str:
     return re.sub(r"[^\w\-]", "_", text.strip().lower())
 
 def clean_id_with_strip(text: str) -> str:
-    return clean_id(strip_accents(text))
+    return clean_id(strip_accents(text)) if text else "unknown"
 
 def ensure_dir(path: str):
     os.makedirs(path, exist_ok=True)
+
+def unique_filename(base_name: str, existing_names: set) -> str:
+    candidate = base_name
+    i = 2
+    while candidate in existing_names:
+        candidate = f"{base_name}_{i}"
+        i += 1
+    existing_names.add(candidate)
+    return candidate
 
 # === STATE MANAGEMENT ===
 
@@ -154,7 +164,7 @@ def main():
         if_missing = current_config.get("if_missing", "create_unknown")
 
         groups = defaultdict(list)
-        passthrough_items = []
+        attach_to_parent_items = []
 
         for item in items:
             value = item.get(level_key)
@@ -162,15 +172,13 @@ def main():
                 if if_missing == "skip":
                     continue
                 elif if_missing == "attach_to_parent":
-                    passthrough_items.append(item)
+                    attach_to_parent_items.append(item)
                     continue
                 elif if_missing == "create_unknown":
                     value = f"Unknown {slug}"
-            group_key = clean_id_with_strip(value)
-            groups[group_key].append(item)
+            groups[clean_id_with_strip(value)].append(item)
 
         members = []
-
         for group_id, group_items in groups.items():
             group_name = group_items[0].get(level_key, group_id)
             group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
@@ -178,18 +186,21 @@ def main():
 
             if level == len(config["hierarchy"]) - 1:
                 ensure_dir(group_path)
+                existing_names = set()
                 for res in group_items:
-                    orig_filename = os.path.basename(res["filepath"])
-                    target_path = os.path.join(group_path, orig_filename)
+                    raw_title = res.get("workTitle") or res.get("title") or "work"
+                    base_name = clean_id_with_strip(raw_title)
+                    filename = unique_filename(base_name, existing_names) + ".xml"
+                    filepath = os.path.join(group_path, filename)
                     tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
                     rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
                     res_el = build_resource_element(res, rel_path_to_tei)
-                    ET.ElementTree(res_el).write(target_path, encoding="utf-8", xml_declaration=True)
+                    ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
                 members.append(build_collection_element(
                     identifier=group_identifier,
                     title=f"{title_label} : {group_name}",
                     is_reference=True,
-                    filepath=os.path.relpath(target_path, start=parent_path).replace(os.sep, "/")
+                    filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
                 ))
             else:
                 sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
@@ -201,8 +212,9 @@ def main():
                     filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
                 ))
 
-        if passthrough_items:
-            members.extend(recursive_group(level + 1, parent_path, passthrough_items, parent_id))
+        # Ajout des éléments "attach_to_parent" à ce niveau si existant
+        if attach_to_parent_items:
+            members += recursive_group(level + 1, parent_path, attach_to_parent_items, parent_id)
 
         return members
 
