@@ -56,7 +56,7 @@
                 <!-- Métadonnées personnalisées sans <profileDesc> -->
                 <list type="metadata">
                     <item type="corpus">Textes monastiques</item>
-                    <item type="authorGroup">Moyen Âge latin</item>
+                    <item type="authorgroup">Moyen Âge latin</item>
                     <item type="creator" scheme="dcterms">Isaac de l'Étoile</item>
                     <item type="workgroup">Sermons</item>
                     <item type="work">Sermo I</item>

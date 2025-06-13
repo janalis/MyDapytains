@@ -10,7 +10,7 @@
       "title": "Corpus"
     },
     {
-      "key": "ex:authorGroup",
+      "key": "ex:authorgroup",
       "title": "ZGroupe d’auteurs"
     },
     {
@@ -18,7 +18,7 @@
       "title": "ZAuteur"
     },
     {
-      "key": "ex:workGroup",
+      "key": "ex:workgroup",
       "title": "ZGroupe d’œuvres"
     },
     {

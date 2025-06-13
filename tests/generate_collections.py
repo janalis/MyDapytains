@@ -24,19 +24,17 @@ STATE_PATH = os.path.join(BASE_DIR, config["build_state_file"])
 with open(MAPPING_PATH, encoding="utf-8") as f:
     mapping_config = json.load(f)
 
-default_namespaces = mapping_config["default"].get("namespaces", {})
+namespaces = dict(mapping_config["default"].get("namespaces", {}))
 
-namespaces = dict(default_namespaces)
-
-REQUIRED_NAMESPACES = ["tei", "dc", "ex", "foaf"]
+REQUIRED_NAMESPACES = [ns.split(":")[0] for h in config["hierarchy"] for ns in [h["key"]]]
+for ns in REQUIRED_NAMESPACES:
+    if ns not in namespaces:
+        raise RuntimeError(f"Namespace '{ns}' must be defined in the config file namespaces.")
 
 def get_namespace(ns_key: str) -> str:
-    if ns_key not in namespaces:
-        raise RuntimeError(f"Namespace '{ns_key}' must be defined in the config file namespaces.")
     return namespaces[ns_key]
 
-for ns in REQUIRED_NAMESPACES:
-    get_namespace(ns)
+HIERARCHY_DIRS = ["corpus", "authorgroup", "author", "workgroup", "work"]
 
 # === UTILS ===
 
@@ -157,101 +155,61 @@ def main():
                 res["filepath"] = rel_path
                 resources.append(res)
 
-    corpora = defaultdict(list)
-    for res in resources:
-        corpora[clean_id_with_strip(res.get("corpus", "unknown"))].append(res)
+    def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
+        if level >= len(config["hierarchy"]):
+            return []
 
-    root_members = []
-    for corpus_key, corpus_items in corpora.items():
-        corpus_name = corpus_items[0].get("corpus", corpus_key)
-        corpus_path = os.path.join(CATALOG_DIR, "corpus", corpus_key)
-        corpus_identifier = f"{corpus_key}"
+        key = config["hierarchy"][level]["key"]
+        title_label = config["hierarchy"][level]["title"]
+        level_key = key.split(":")[-1]
+        subdir = HIERARCHY_DIRS[level] if level < len(HIERARCHY_DIRS) else f"level{level}"
 
-        ags = defaultdict(list)
-        for r in corpus_items:
-            ags[clean_id_with_strip(r.get("authorgroup", "unknown"))].append(r)
+        groups = defaultdict(list)
+        for item in items:
+            val = item.get(level_key, "unknown")
+            groups[clean_id_with_strip(val)].append(item)
 
-        ag_members = []
-        for ag_key, ag_items in ags.items():
-            ag_name = ag_items[0].get("authorgroup", ag_key)
-            ag_path = os.path.join(corpus_path, "authorgroup", ag_key)
-            ag_identifier = f"{corpus_key}_{ag_key}"
+        members = []
+        for group_id, group_items in groups.items():
+            group_name = group_items[0].get(level_key, group_id)
+            group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
 
-            authors = defaultdict(list)
-            for r in ag_items:
-                authors[clean_id_with_strip(r.get("creator", "unknown"))].append(r)
+            if level == len(config["hierarchy"]) - 1:
+                group_path = os.path.join(parent_path, subdir)
+                ensure_dir(group_path)
+                existing_names = set()
+                for i, res in enumerate(group_items, 1):
+                    raw_title = res.get("workTitle") or res.get("title") or f"work_{i}"
+                    base_name = clean_id_with_strip(raw_title)
+                    filename = unique_filename(base_name, existing_names) + ".xml"
+                    filepath = os.path.join(group_path, filename)
 
-            au_members = []
-            for au_key, au_items in authors.items():
-                author_name = au_items[0].get("creator", au_key)
-                au_path = os.path.join(ag_path, "author", au_key)
-                au_identifier = f"{corpus_key}_{ag_key}_{au_key}"
+                    tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
+                    rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
 
-                wgs = defaultdict(list)
-                for r in au_items:
-                    wgs[clean_id_with_strip(r.get("workgroup", "unknown"))].append(r)
+                    res_el = build_resource_element(res, rel_path_to_tei)
+                    tree = ET.ElementTree(res_el)
+                    tree.write(filepath, encoding="utf-8", xml_declaration=True)
 
-                wg_members = []
-                for wg_key, wg_items in wgs.items():
-                    wg_name = wg_items[0].get("workgroup", wg_key)
-                    wg_path = os.path.join(au_path, "workgroup", wg_key)
-                    work_path = os.path.join(wg_path, "work")
-                    ensure_dir(work_path)
-
-                    wg_identifier = f"{corpus_key}_{ag_key}_{au_key}_{wg_key}"
-                    existing_names = set()
-                    resource_refs = []
-
-                    for i, res in enumerate(wg_items, 1):
-                        raw_title = res.get("workTitle") or res.get("title") or f"sermon_{i}"
-                        base_name = clean_id_with_strip(raw_title)
-                        filename = unique_filename(base_name, existing_names) + ".xml"
-                        filepath = os.path.join(work_path, filename)
-
-                        tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
-                        rel_path_to_tei = os.path.relpath(tei_abs_path, start=work_path).replace(os.sep, "/")
-
-                        res_el = build_resource_element(res, rel_path_to_tei)
-                        tree = ET.ElementTree(res_el)
-                        tree.write(filepath, encoding="utf-8", xml_declaration=True)
-
-                        resource_refs.append(ET.Element("resource", {
-                            "filepath": os.path.join("work", filename).replace(os.sep, "/")
-                        }))
-
-                    write_index_file(wg_path, wg_identifier, f"Regroupement d'œuvres : {wg_name}", None, resource_refs)
-
-                    wg_members.append(build_collection_element(
-                        identifier=wg_identifier,
-                        title=f"Regroupement d'œuvres : {wg_name}",
+                    members.append(build_collection_element(
+                        identifier=f"{group_identifier}_{base_name}",
+                        title=f"{title_label} : {raw_title}",
                         is_reference=True,
-                        filepath=os.path.relpath(os.path.join(wg_path, "index.xml"), start=au_path).replace(os.sep, "/")
+                        filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
                     ))
-
-                write_index_file(au_path, au_identifier, f"Auteur : {author_name}", None, wg_members)
-                au_members.append(build_collection_element(
-                    identifier=au_identifier,
-                    title=f"Auteur : {author_name}",
+            else:
+                group_path = os.path.join(parent_path, subdir, group_id)
+                sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
+                write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
+                members.append(build_collection_element(
+                    identifier=group_identifier,
+                    title=f"{title_label} : {group_name}",
                     is_reference=True,
-                    filepath=os.path.relpath(os.path.join(au_path, "index.xml"), start=ag_path).replace(os.sep, "/")
+                    filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
                 ))
+        return members
 
-            write_index_file(ag_path, ag_identifier, f"Groupe d'auteurs : {ag_name}", None, au_members)
-            ag_members.append(build_collection_element(
-                identifier=ag_identifier,
-                title=f"Groupe d'auteurs : {ag_name}",
-                is_reference=True,
-                filepath=os.path.relpath(os.path.join(ag_path, "index.xml"), start=corpus_path).replace(os.sep, "/")
-            ))
-
-        write_index_file(corpus_path, corpus_identifier, f"Corpus : {corpus_name}", None, ag_members)
-        root_members.append(build_collection_element(
-            identifier=corpus_identifier,
-            title=f"Corpus : {corpus_name}",
-            is_reference=True,
-            filepath=os.path.relpath(os.path.join(corpus_path, "index.xml"), start=CATALOG_DIR).replace(os.sep, "/")
-        ))
-
+    root_members = recursive_group(0, CATALOG_DIR, resources, "")
     write_index_file(CATALOG_DIR, "root", "Index général", None, root_members)
 
     state["config_hash"] = current_hash
