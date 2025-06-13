@@ -1,41 +1,29 @@
 {
-  "display_order": [
-    "title",
-    "author",
-    "work",
-    "date",
-    "description",
-    "publisher",
-    "publisherPlace",
-    "serie"
-  ],
-  "exclude_fields": [
-    "publisherPlace",
-    "serie"
-  ],
+  "tei_directory": "tei",
+  "output_directory": "catalog",
+  "xpath_config_file": "metadata_mapping.json",
+  "build_state_file": "build_state.json",
+
   "hierarchy": [
     {
       "key": "ex:corpus",
-      "title": "Corpus",
-      "if_missing": "create_unknown"
+      "title": "Corpus"
     },
     {
       "key": "ex:authorGroup",
-      "title": "Groupe d’auteurs",
-      "if_missing": "attach_to_parent"
+      "title": "ZGroupe d’auteurs"
     },
     {
       "key": "dc:creator",
-      "title": "Auteur",
-      "if_missing": "skip"
+      "title": "ZAuteur"
     },
     {
       "key": "ex:workGroup",
-      "title": "Groupe d’œuvres"
+      "title": "ZGroupe d’œuvres"
     },
     {
       "key": "ex:work",
-      "title": "Œuvre"
+      "title": "ZŒuvre"
     }
   ]
 }
