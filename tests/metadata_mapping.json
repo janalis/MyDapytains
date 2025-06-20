@@ -3,8 +3,7 @@
     "namespaces": {
       "tei": "http://www.tei-c.org/ns/1.0",
       "dc": "http://purl.org/dc/terms/",
-      "ex": "http://example.com",
-      "foaf": "http://xmlns.com/foaf/0.1/"
+      "ex": "http://example.com"
     },
     "properties": {
       "dc:title": ".//tei:titleStmt/tei:title[@type='main']",
@@ -14,19 +13,13 @@
         ".//tei:sourceDesc//tei:date",
         ".//tei:editionStmt//tei:date"
       ],
-      "dc:publisher": ".//tei:sourceDesc//tei:publisher",
-      "ex:corpus": "//tei:keywords[@n='corpus']/tei:term",
-      "ex:authorGroup": "//tei:keywords[@n='authorGroup']/tei:term",
-      "ex:workGroup": "//tei:keywords[@n='workGroup']/tei:term",
-      "ex:work": ".//tei:titleStmt/tei:title[@type='main']"
-    }
-  },
-  "overrides": {
-    "WORK_TEI.xml": {
-      "ex:workTitle": ".//tei:msDesc/tei:msContents/tei:title"
+      "dc:publisher": ".//tei:sourceDesc//tei:publisher"
     },
-    "^WORK_ISAAC.*\\.xml$": {
-      "dc:author": ".//tei:sourceDesc/tei:bibl/tei:author"
+    "multi_lang_extensions": {
+      "ex:corpus": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='corpus']",
+      "ex:authorgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='authorgroup']",
+      "ex:workgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='workgroup']",
+      "ex:work": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='work']"
     }
   }
 }

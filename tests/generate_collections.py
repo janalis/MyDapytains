@@ -8,8 +8,6 @@ from collections import defaultdict
 from typing import List, Dict, Any, Optional
 from extract_metadata import extract_metadata
 
-# === CONFIG & MAPPING LOAD ===
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
 
@@ -34,11 +32,8 @@ for ns in REQUIRED_NAMESPACES:
 def get_namespace(ns_key: str) -> str:
     return namespaces[ns_key]
 
-# === VALIDATE CONFIG ===
 if config["hierarchy"][0].get("if_missing") == "attach_to_parent":
     raise ValueError("Le premier niveau de la hiérarchie ne peut pas avoir 'attach_to_parent'.")
-
-# === UTILS ===
 
 def strip_accents(text: str) -> str:
     return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
@@ -61,8 +56,6 @@ def unique_filename(base_name: str, existing_names: set) -> str:
     existing_names.add(candidate)
     return candidate
 
-# === STATE MANAGEMENT ===
-
 def compute_config_hash(*paths: List[str]) -> str:
     hasher = hashlib.sha256()
     for path in paths:
@@ -80,29 +73,40 @@ def save_state(data: Dict[str, Any]):
     with open(STATE_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-# === XML BUILDING ===
-
 def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
     res_el = ET.Element("resource", {
         "identifier": res["identifier"],
         "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
-    ET.SubElement(res_el, "title").text = res.get("title", "Titre inconnu")
-    for key in ["description", "creator", "work"]:
+    for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
+        title_el = ET.SubElement(res_el, "title")
+        title_el.text = val
+        title_el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
+
+    for key, tag in [("description", "description"), ("creator", "author"), ("work", "work")]:
         if key in res:
-            tag = "author" if key == "creator" else key
-            ET.SubElement(res_el, tag).text = res[key]
+            for lang, val in res[key].items():
+                el = ET.SubElement(res_el, tag)
+                el.text = val
+                el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
+
     dc_el = ET.SubElement(res_el, "dublinCore")
     dc_el.set("xmlns", get_namespace("dc"))
     for dc in res.get("dublin_core", []):
         el = ET.SubElement(dc_el, dc.term)
         el.text = dc.value
+        if dc.language:
+            el.set("{http://www.w3.org/XML/1998/namespace}lang", dc.language)
+
     ext_el = ET.SubElement(res_el, "extensions")
     ext_el.set("xmlns", get_namespace("ex"))
     for ext in res.get("extensions", []):
         tag = ext.term.split("/")[-1] if ext.term != "serie" else "serie"
         el = ET.SubElement(ext_el, tag)
         el.text = ext.value
+        if ext.language:
+            el.set("{http://www.w3.org/XML/1998/namespace}lang", ext.language)
+
     return res_el
 
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None, is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
@@ -125,8 +129,6 @@ def write_index_file(path: str, identifier: str, title: str, description: Option
         members_el.append(m)
     tree = ET.ElementTree(col_el)
     tree.write(os.path.join(path, "index.xml"), encoding="utf-8", xml_declaration=True)
-
-# === MAIN ===
 
 def main():
     ensure_dir(CATALOG_DIR)
@@ -176,11 +178,14 @@ def main():
                     continue
                 elif if_missing == "create_unknown":
                     value = f"Unknown {slug}"
-            groups[clean_id_with_strip(value)].append(item)
+            group_id = clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
+            groups[group_id].append(item)
 
         members = []
         for group_id, group_items in groups.items():
-            group_name = group_items[0].get(level_key, group_id)
+            first = group_items[0]
+            name_data = first.get(level_key)
+            group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
             group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
             group_path = os.path.join(parent_path, slug, group_id) if level < len(config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
 
@@ -188,7 +193,7 @@ def main():
                 ensure_dir(group_path)
                 existing_names = set()
                 for res in group_items:
-                    raw_title = res.get("workTitle") or res.get("title") or "work"
+                    raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
                     filename = unique_filename(base_name, existing_names) + ".xml"
                     filepath = os.path.join(group_path, filename)
@@ -212,7 +217,6 @@ def main():
                     filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
                 ))
 
-        # Ajout des éléments "attach_to_parent" à ce niveau si existant
         if attach_to_parent_items:
             members += recursive_group(level + 1, parent_path, attach_to_parent_items, parent_id)
 

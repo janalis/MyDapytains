@@ -12,25 +12,25 @@
       "if_missing": "create_unknown"
     },
     {
-      "title": "Groupe d’auteurs",
+      "title": "Author Group",
       "key": "ex:authorgroup",
       "slug": "authorgroup",
       "if_missing": "attach_to_parent"
     },
     {
-      "title": "Auteur",
+      "title": "Author",
       "key": "dc:creator",
       "slug": "author",
       "if_missing": "skip"
     },
     {
-      "title": "Groupe d’œuvres",
+      "title": "Work Group",
       "key": "ex:workgroup",
       "slug": "workgroup",
       "if_missing": "attach_to_parent"
     },
     {
-      "title": "Œuvre",
+      "title": "Work",
       "key": "ex:work",
       "slug": "work",
       "if_missing": "skip"

@@ -3,76 +3,132 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main">Sermo III</title>
-                <author>Jean Cassien</author>
+                <title type="main" xml:lang="fr">Epistula I</title>
+                <title type="main" xml:lang="en">Epistula I</title>
+
+                <author xml:lang="fr">Jérôme de Stridon</author>
+                <author xml:lang="en">Jerome of Stridon</author>
+
+                <respStmt>
+                    <resp xml:lang="fr">Encodage TEI</resp>
+                    <resp xml:lang="en">TEI Encoding</resp>
+                    <persName xml:id="EHG"/>
+                </respStmt>
+
+                <respStmt xml:id="resp_NB">
+                    <resp xml:lang="fr">Encodage des noms par</resp>
+                    <resp xml:lang="en">Name encoding by</resp>
+                    <persName xml:id="name-1"/>
+                </respStmt>
+
+                <respStmt xml:id="resp_LM">
+                    <resp xml:lang="fr">Vérification de l'encodage des noms propres</resp>
+                    <resp xml:lang="en">Verification of proper name encoding</resp>
+                    <persName xml:id="name-2"/>
+                </respStmt>
             </titleStmt>
+
             <editionStmt>
                 <edition>
-                    <date>1980</date>
+                    <date>1967</date>
                 </edition>
             </editionStmt>
+
             <publicationStmt>
-                <authority>Éditions Monastiques</authority>
+                <authority xml:lang="fr">Éditions du Cerf</authority>
+                <authority xml:lang="en">Éditions du Cerf</authority>
+
+                <pubPlace xml:lang="fr">Paris</pubPlace>
+                <pubPlace xml:lang="en">Paris</pubPlace>
             </publicationStmt>
+
             <sourceDesc>
                 <bibl>
-                    <author>Jean Cassien</author>
-                    <title type="main">Sermons, tome III</title>
-                    <pubPlace>Lyon</pubPlace>
-                    <publisher>Éditions Monastiques</publisher>
-                    <date>1980</date>
+                    <author xml:lang="fr">Jérôme de Stridon</author>
+                    <author xml:lang="en">Jerome of Stridon</author>
+
+                    <title type="main" xml:lang="fr">Sermons, tome I</title>
+                    <title type="main" xml:lang="en">Sermons, Volume I</title>
+
+                    <title type="subtitle" xml:lang="fr">Sermons 1–17</title>
+                    <title type="subtitle" xml:lang="en">Sermons 1–17</title>
+
+                    <respStmt>
+                        <resp xml:lang="fr">Texte et introduction critiques</resp>
+                        <resp xml:lang="en">Critical text and introduction</resp>
+                        <persName xml:id="persName-2"/>
+                    </respStmt>
+
+                    <respStmt>
+                        <resp xml:lang="fr">Introduction, traduction et notes</resp>
+                        <resp xml:lang="en">Introduction, translation and notes</resp>
+                        <persName xml:id="persName-3"/>
+                    </respStmt>
+
+                    <pubPlace xml:lang="fr">Paris</pubPlace>
+                    <pubPlace xml:lang="en">Paris</pubPlace>
+
+                    <publisher xml:lang="fr">Éditions du Cerf</publisher>
+                    <publisher xml:lang="en">Éditions du Cerf</publisher>
+
+                    <date>1967</date>
+                    <biblScope from="84" to="98" unit="page"/>
+
+                    <series>
+                        <title xml:lang="fr">Sources Chrétiennes</title>
+                        <title xml:lang="en">Sources Chrétiennes</title>
+                        <biblScope unit="volume">130</biblScope>
+                    </series>
+
+                    <series>
+                        <title xml:lang="fr">Série des Textes Monastiques d'Occident</title>
+                        <title xml:lang="en">Série des Textes Monastiques d'Occident</title>
+                        <biblScope unit="volume">20</biblScope>
+                    </series>
                 </bibl>
-                <list type="metadata">
-                    <item type="corpus">Textes monastiques</item>
-                    <item type="authorgroup">Moyen Âge latin</item>
-                    <item type="creator" scheme="dcterms">Jean Cassien</item>
-                    <!-- pas de workgroup -->
-                    <item type="work">Sermo III</item>
-                </list>
             </sourceDesc>
         </fileDesc>
+
+        <profileDesc>
+            <textClass>
+                <keywords xml:lang="fr">
+                    <list>
+                        <item ana="corpus">Textes Patristiques</item>
+                        <item ana="authorgroup">Italie (IIIe-VIIe s.)</item>
+                        <item ana="workgroup">Epistulae</item>
+                        <item ana="work">Epistula I</item>
+                    </list>
+                </keywords>
+                <keywords xml:lang="en" type="metadata">
+                    <list>
+                        <item ana="corpus">Patristic Texts</item>
+                        <item ana="authorgroup">Italy (3rd-7th century)</item>
+                        <item ana="workgroup">Epistulae</item>
+                        <item ana="work">Epistula I</item>
+                    </list>
+                </keywords>
+            </textClass>
+        </profileDesc>
 
         <encodingDesc>
             <refsDecl n="default">
                 <citeStructure unit="sermon" match="//body/div[@type='sermon']" use="@xml:id">
                     <citeData use="@n" property="number"/>
-
                     <citeData property="contains"
                               use="sort(distinct-values(for $item in //persName|//placeName return if ($item = '') then continue else normalize-space($item)))"/>
-
                     <citeStructure unit="paragraph" match="div[@type='paragraph']" use="@xml:id" delim=".">
                         <citeData use="@n" property="number"/>
-
-                        <!--<citeStructure unit="token" match="(//*:w|//*:pc)" use="@xml:id" delim=".">
-                            <citeData use="@lemma" property="lemma"/>
-                            <citeData use="@pos" property="pos"/>
-                            <citeData use="@msd" property="msd"/>
-                            <citeData use="child::text()" property="text"/>
-                        </citeStructure>-->
-
-                        <!--<citeStructure unit="punctuation" match="/pc" use="@xml:id" delim="#">
-                            <citeData use="child::text()" property="text"/>
-                        </citeStructure>-->
-
-                        <!--<citeStructure unit="word" match="p//w" use="@xml:id" delim="."> => voir .//w
-                            <citeData use="@lemma" property="lemma"/>
-                            <citeData use="@pos" property="pos"/>
-                            <citeData use="@msd" property="msd"/>
-                            <citeData use="child::text()" property="text"/>
-                        </citeStructure>-->
-
                         <citeStructure match=".//seg[@type='biblicalQuotation']" use="@xml:id" unit="biblicalQuotation" delim=".">
-                    <citeData property="BiblIndexLink"
-                              use=" for $item in tokenize(@corresp,' ') return concat('https://www.biblindex.org/fr/quotations/',$item)"/>
-                    <citeData property="biblicalRef" use=".//seg[@type='biblicalRef']"/>
-                </citeStructure>
-
-
+                            <citeData property="BiblIndexLink"
+                                      use="for $item in tokenize(@corresp,' ') return concat('https://www.biblindex.org/fr/quotations/',$item)"/>
+                            <citeData property="biblicalRef" use=".//seg[@type='biblicalRef']"/>
+                        </citeStructure>
                     </citeStructure>
                 </citeStructure>
             </refsDecl>
         </encodingDesc>
     </teiHeader>
+
     <text
             xml:id="text">
         <body>
