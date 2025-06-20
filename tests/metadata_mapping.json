@@ -1,5 +1,6 @@
 {
   "default": {
+
     "namespaces": {
       "tei": "http://www.tei-c.org/ns/1.0",
       "dc": "http://purl.org/dc/terms/",
@@ -7,7 +8,7 @@
     },
     "properties": {
       "dc:title": ".//tei:titleStmt/tei:title[@type='main']",
-      "dc:creator": ".//tei:titleStmt/tei:author",
+      "dc:author": ".//tei:titleStmt/tei:author",
       "dc:description": ".//tei:sourceDesc//tei:title[@type='subtitle']",
       "dc:date": [
         ".//tei:sourceDesc//tei:date",
@@ -16,10 +17,10 @@
       "dc:publisher": ".//tei:sourceDesc//tei:publisher"
     },
     "multi_lang_extensions": {
-      "ex:corpus": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='corpus']",
-      "ex:authorgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='authorgroup']",
-      "ex:workgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='workgroup']",
-      "ex:work": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang='{lang}']/tei:list/tei:item[@ana='work']"
+      "ex:corpus": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='corpus']",
+      "ex:authorgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='authorgroup']",
+      "ex:workgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='workgroup']",
+      "ex:work": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='work']"
     }
   }
 }

@@ -78,11 +78,14 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         "identifier": res["identifier"],
         "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
+
+    # Titres sans namespace
     for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
         title_el = ET.SubElement(res_el, "title")
         title_el.text = val
         title_el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
+    # Description, author, work sans namespace
     for key, tag in [("description", "description"), ("creator", "author"), ("work", "work")]:
         if key in res:
             for lang, val in res[key].items():
@@ -90,24 +93,27 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
                 el.text = val
                 el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
+    # DublinCore avec namespace sur chaque sous-balise
     dc_el = ET.SubElement(res_el, "dublinCore")
-    dc_el.set("xmlns", get_namespace("dc"))
+    dc_ns = get_namespace("dc")
     for dc in res.get("dublin_core", []):
-        el = ET.SubElement(dc_el, dc.term)
+        el = ET.SubElement(dc_el, f"{{{dc_ns}}}{dc.term}")
         el.text = dc.value
         if dc.language:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", dc.language)
 
+    # Extensions avec namespace sur chaque sous-balise
     ext_el = ET.SubElement(res_el, "extensions")
-    ext_el.set("xmlns", get_namespace("ex"))
+    ex_ns = get_namespace("ex")
     for ext in res.get("extensions", []):
         tag = ext.term.split("/")[-1] if ext.term != "serie" else "serie"
-        el = ET.SubElement(ext_el, tag)
+        el = ET.SubElement(ext_el, f"{{{ex_ns}}}{tag}")
         el.text = ext.value
         if ext.language:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", ext.language)
 
     return res_el
+
 
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None, is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
     if is_reference and filepath:
