@@ -80,18 +80,23 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
 
+    # Titre
     for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
         title_el = ET.SubElement(res_el, "title")
         title_el.text = val
-        title_el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
+        if lang:
+            title_el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
+    # Autres champs : description, creator, work
     for key, tag in [("description", "description"), ("creator", "author"), ("work", "work")]:
         if key in res:
             for lang, val in res[key].items():
                 el = ET.SubElement(res_el, tag)
                 el.text = val
-                el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
+                if lang:
+                    el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
+    # Dublin Core
     dc_el = ET.SubElement(res_el, "dublinCore")
     dc_ns = get_namespace("dc")
     for dc in res.get("dublin_core", []):
@@ -100,6 +105,7 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         if dc.language:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", dc.language)
 
+    # Extensions
     ext_el = ET.SubElement(res_el, "extensions")
     ex_ns = get_namespace("ex")
     for ext in res.get("extensions", []):

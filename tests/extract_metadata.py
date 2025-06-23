@@ -1,7 +1,7 @@
 import os
 import json
 import re
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from lxml import etree
 from dapitains.metadata.classes import DublinCore, Extension
 
@@ -13,10 +13,10 @@ MAPPING_PATH = os.path.join(BASE_DIR, "metadata_mapping.json")
 with open(MAPPING_PATH, encoding="utf-8") as f:
     mapping_config = json.load(f)
 
-def get_multilang_values(tree: etree._ElementTree, xpath_exprs: Any, namespaces: Dict[str, str], lang: str = None) -> Dict[str, str]:
+def get_multilang_values(tree: etree._ElementTree, xpath_exprs: Any, namespaces: Dict[str, str], lang: Optional[str] = None) -> Dict[Optional[str], str]:
     if isinstance(xpath_exprs, str):
         xpath_exprs = [xpath_exprs]
-    values_by_lang = {}
+    values_by_lang: Dict[Optional[str], str] = {}
     for expr in xpath_exprs:
         if "$lang" in expr:
             if not lang:
@@ -29,7 +29,8 @@ def get_multilang_values(tree: etree._ElementTree, xpath_exprs: Any, namespaces:
             results = tree.xpath(expr, namespaces=namespaces)
             for el in results:
                 if isinstance(el, etree._Element):
-                    lang_attr = el.get("{http://www.w3.org/XML/1998/namespace}lang", "und")
+                    # Récupérer lang s'il existe, sinon None (pas "und")
+                    lang_attr = el.get("{http://www.w3.org/XML/1998/namespace}lang")
                     if el.text:
                         values_by_lang[lang_attr] = el.text.strip()
     return values_by_lang
@@ -63,9 +64,8 @@ def extract_metadata(filepath: str) -> Dict[str, Any]:
     }
 
     for term, xpath_expr in properties.items():
-        # Si $lang est utilisé, itérer sur chaque langue
+        combined_lang_values: Dict[Optional[str], str] = {}
         if "$lang" in xpath_expr:
-            combined_lang_values = {}
             for lang in langs:
                 lang_values = get_multilang_values(tree, xpath_expr, namespaces, lang=lang)
                 combined_lang_values.update(lang_values)
@@ -77,6 +77,7 @@ def extract_metadata(filepath: str) -> Dict[str, Any]:
 
         short_term = term.split(":", 1)[1] if ":" in term else term
         metadata[short_term] = combined_lang_values
+
         target = "dublin_core" if term.startswith("dc:") else "extensions"
         for lang, value in combined_lang_values.items():
             if target == "dublin_core":
@@ -87,7 +88,7 @@ def extract_metadata(filepath: str) -> Dict[str, Any]:
     # Gérer les multi_lang_extensions, en supposant qu'elles utilisent maintenant $lang
     multi_lang_ext = mapping_config.get("default", {}).get("multi_lang_extensions", {})
     for term, xpath_expr in multi_lang_ext.items():
-        values_by_lang = {}
+        values_by_lang: Dict[Optional[str], str] = {}
         for lang in langs:
             result = get_multilang_values(tree, xpath_expr, namespaces, lang=lang)
             values_by_lang.update(result)
@@ -99,12 +100,28 @@ def extract_metadata(filepath: str) -> Dict[str, Any]:
 
     return metadata
 
+# Fonction utilitaire pour générer la structure JSON souhaitée
+def format_multilang_dict(d: Dict[Optional[str], str]) -> list:
+    result = []
+    for lang, val in d.items():
+        if not lang:  # Langue absente ou None
+            result.append(val)
+        else:
+            result.append({"lang": lang, "value": val})
+    return result
+
+
 if __name__ == "__main__":
     import pprint
 
     test_file = os.path.join(
         BASE_DIR, r"C:\Users\augus\Desktop\Stage\stage\MyDapytains\tests\tei\WORK_IS-ST_Sermo01.xml"
-        
     )
 
-    pprint.pprint(extract_metadata(test_file), width=120, sort_dicts=False)
+    metadata = extract_metadata(test_file)
+    pprint.pprint(metadata, width=120, sort_dicts=False)
+
+    # Exemple de sortie formatée pour abstract s'il existe
+    if "abstract" in metadata:
+        print("Abstract JSON format:")
+        print(format_multilang_dict(metadata["abstract"]))

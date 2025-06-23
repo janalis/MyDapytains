@@ -3,7 +3,7 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main" xml:lang="fr">Sermo I</title>
+                <title type="main">Sermo I</title>
                 <title type="main" xml:lang="en">Sermon I</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
@@ -35,7 +35,7 @@
             </editionStmt>
 
             <publicationStmt>
-                <authority xml:lang="fr">Éditions du Cerf</authority>
+                <authority>Éditions du Cerf</authority>
                 <authority xml:lang="en">Éditions du Cerf</authority>
 
                 <pubPlace xml:lang="fr">Paris</pubPlace>
@@ -69,7 +69,7 @@
                     <pubPlace xml:lang="fr">Paris</pubPlace>
                     <pubPlace xml:lang="en">Paris</pubPlace>
 
-                    <publisher xml:lang="fr">Éditions du Cerf</publisher>
+                    <publisher>Éditions du Cerf</publisher>
                     <publisher xml:lang="en">Éditions du Cerf</publisher>
 
                     <date>1967</date>
