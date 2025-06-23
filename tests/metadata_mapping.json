@@ -4,7 +4,8 @@
     "namespaces": {
       "tei": "http://www.tei-c.org/ns/1.0",
       "dc": "http://purl.org/dc/terms/",
-      "ex": "http://example.com"
+      "ex": "http://example.com",
+      "xml": "http://www.w3.org/XML/1998/namespace"
     },
     "properties": {
       "dc:title": ".//tei:titleStmt/tei:title[@type='main']",

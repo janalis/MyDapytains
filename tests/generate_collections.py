@@ -24,6 +24,10 @@ with open(MAPPING_PATH, encoding="utf-8") as f:
 
 namespaces = dict(mapping_config["default"].get("namespaces", {}))
 
+# Enregistrer les préfixes pour éviter les ns0, ns1 dans le XML final
+for prefix, uri in namespaces.items():
+    ET.register_namespace(prefix, uri)
+
 REQUIRED_NAMESPACES = [ns.split(":")[0] for h in config["hierarchy"] for ns in [h["key"]]]
 for ns in REQUIRED_NAMESPACES:
     if ns not in namespaces:
@@ -31,9 +35,6 @@ for ns in REQUIRED_NAMESPACES:
 
 def get_namespace(ns_key: str) -> str:
     return namespaces[ns_key]
-
-if config["hierarchy"][0].get("if_missing") == "attach_to_parent":
-    raise ValueError("Le premier niveau de la hiérarchie ne peut pas avoir 'attach_to_parent'.")
 
 def strip_accents(text: str) -> str:
     return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
@@ -79,13 +80,11 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
 
-    # Titres sans namespace
     for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
         title_el = ET.SubElement(res_el, "title")
         title_el.text = val
         title_el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
-    # Description, author, work sans namespace
     for key, tag in [("description", "description"), ("creator", "author"), ("work", "work")]:
         if key in res:
             for lang, val in res[key].items():
@@ -93,7 +92,6 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
                 el.text = val
                 el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
-    # DublinCore avec namespace sur chaque sous-balise
     dc_el = ET.SubElement(res_el, "dublinCore")
     dc_ns = get_namespace("dc")
     for dc in res.get("dublin_core", []):
@@ -102,7 +100,6 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         if dc.language:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", dc.language)
 
-    # Extensions avec namespace sur chaque sous-balise
     ext_el = ET.SubElement(res_el, "extensions")
     ex_ns = get_namespace("ex")
     for ext in res.get("extensions", []):
@@ -113,7 +110,6 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", ext.language)
 
     return res_el
-
 
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None, is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
     if is_reference and filepath:
