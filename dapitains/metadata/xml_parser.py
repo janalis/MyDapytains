@@ -41,7 +41,7 @@ def _parse_metadata(xml: ET.Element) -> Tuple[Dict[str, Any], List[str]]:
 
     # Treat Extension
     extensions = []
-    for node in xml.xpath("./extension/*"):
+    for node in xml.xpath("./extensions/*"):
         tag = _re_tag.sub("", node.tag)
         language = node.attrib.get("{http://www.w3.org/XML/1998/namespace}lang")
         text = node.text
