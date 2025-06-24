@@ -94,7 +94,6 @@
                 <keywords xml:lang="fr">
                     <list>
                         <item ana="corpus">Bibles</item>
-                        <item ana="author">Héritage</item>
                         <item ana="workgroup">Vulgate</item>
                         <item ana="work">Genèse</item>
                     </list>
@@ -102,7 +101,6 @@
                 <keywords xml:lang="en" type="metadata">
                     <list>
                         <item ana="corpus">Bibles</item>
-                        <item ana="author">Legacy</item>
                         <item ana="workgroup">Vulgate</item>
                         <item ana="work">Genesis</item>
                     </list>

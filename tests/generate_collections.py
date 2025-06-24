@@ -24,7 +24,6 @@ with open(MAPPING_PATH, encoding="utf-8") as f:
 
 namespaces = dict(mapping_config["default"].get("namespaces", {}))
 
-# Enregistrer les préfixes pour éviter les ns0, ns1 dans le XML final
 for prefix, uri in namespaces.items():
     ET.register_namespace(prefix, uri)
 
@@ -80,14 +79,12 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
 
-    # Titre
     for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
         title_el = ET.SubElement(res_el, "title")
         title_el.text = val
         if lang:
             title_el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
-    # Autres champs : description, creator, work
     for key, tag in [("description", "description"), ("creator", "author"), ("work", "work")]:
         if key in res:
             for lang, val in res[key].items():
@@ -96,7 +93,6 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
                 if lang:
                     el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
 
-    # Dublin Core
     dc_el = ET.SubElement(res_el, "dublinCore")
     dc_ns = get_namespace("dc")
     for dc in res.get("dublin_core", []):
@@ -105,7 +101,6 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         if dc.language:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", dc.language)
 
-    # Extensions
     ext_el = ET.SubElement(res_el, "extensions")
     ex_ns = get_namespace("ex")
     for ext in res.get("extensions", []):
@@ -159,6 +154,18 @@ def main():
 
             if process_all or rel_path not in previous_files or previous_files[rel_path]["mtime"] != mtime:
                 res = extract_metadata(path)
+
+                # ⛔ Vérifie que toutes les clés avec "if_missing: skip" sont bien présentes
+                skip_file = False
+                for level_conf in config["hierarchy"]:
+                    if level_conf.get("if_missing") == "skip":
+                        key = level_conf["key"].split(":")[-1]
+                        if not res.get(key):
+                            skip_file = True
+                            break
+                if skip_file:
+                    continue
+
                 res["filepath"] = rel_path
                 resources.append(res)
 
@@ -217,13 +224,14 @@ def main():
                 ))
             else:
                 sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
-                write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
-                members.append(build_collection_element(
-                    identifier=group_identifier,
-                    title=f"{title_label} : {group_name}",
-                    is_reference=True,
-                    filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
-                ))
+                if sub_members:
+                    write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
+                    members.append(build_collection_element(
+                        identifier=group_identifier,
+                        title=f"{title_label} : {group_name}",
+                        is_reference=True,
+                        filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
+                    ))
 
         if attach_to_parent_items:
             members += recursive_group(level + 1, parent_path, attach_to_parent_items, parent_id)

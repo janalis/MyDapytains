@@ -3,8 +3,8 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main" xml:lang="fr">Sermon I</title>
-                <title type="main" xml:lang="en">Sermon I</title>
+                <title type="main" xml:lang="fr">Epistula I</title>
+                <title type="main" xml:lang="en">Epistula I</title>
 
                 <author xml:lang="fr">Jérôme de Stridon</author>
                 <author xml:lang="en">Jerome of Stridon</author>
@@ -95,7 +95,6 @@
                     <list>
                         <item ana="corpus">Textes Patristiques</item>
                         <item ana="authorgroup">Italie (IIIe-VIIe s.)</item>
-                        <item ana="author">Jérôme de Stridon</item>
                         <item ana="workgroup">Epistulae</item>
                         <item ana="work">Epistula I</item>
                     </list>
@@ -104,7 +103,6 @@
                     <list>
                         <item ana="corpus">Patristic Texts</item>
                         <item ana="authorgroup">Italy (3rd-7th century)</item>
-                        <item ana="author">Jerome of Stridon</item>
                         <item ana="workgroup">Epistulae</item>
                         <item ana="work">Epistula I</item>
                     </list>
