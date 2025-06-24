@@ -8,31 +8,31 @@
     {
       "title": "Corpus",
       "key": "ex:corpus",
-      "slug": "corpus",
+      "slug": "corpora",
       "if_missing": "create_unknown"
     },
     {
       "title": "Groupe d'auteurs",
       "key": "ex:authorgroup",
-      "slug": "authorgroup",
+      "slug": "authorgroups",
       "if_missing": "attach_to_parent"
     },
     {
       "title": "Auteur",
       "key": "dc:author",
-      "slug": "author",
+      "slug": "authors",
       "if_missing": "skip"
     },
     {
       "title": "Regroupement d'œuvres",
       "key": "ex:workgroup",
-      "slug": "workgroup",
+      "slug": "workgroups",
       "if_missing": "attach_to_parent"
     },
     {
       "title": "Œuvre",
       "key": "ex:work",
-      "slug": "work",
+      "slug": "works",
       "if_missing": "skip"
     }
   ]

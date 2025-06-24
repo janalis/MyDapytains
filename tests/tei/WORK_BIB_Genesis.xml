@@ -94,17 +94,17 @@
                 <keywords xml:lang="fr">
                     <list>
                         <item ana="corpus">Bibles</item>
-                        <item ana="authorgroup">Test authorgroup</item>
+                        <item ana="author">Héritage</item>
                         <item ana="workgroup">Vulgate</item>
                         <item ana="work">Genèse</item>
                     </list>
                 </keywords>
                 <keywords xml:lang="en" type="metadata">
                     <list>
-                        <item ana="corpus">Bibles  EN</item>
-                        <item ana="authogroup">Test authorgrooupp EN</item>
-                        <item ana="workgroup">Vulgate EN</item>
-                        <item ana="work">Genesis  EN</item>
+                        <item ana="corpus">Bibles</item>
+                        <item ana="author">Legacy</item>
+                        <item ana="workgroup">Vulgate</item>
+                        <item ana="work">Genesis</item>
                     </list>
                 </keywords>
             </textClass>

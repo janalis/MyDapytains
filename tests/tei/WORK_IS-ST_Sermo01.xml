@@ -3,7 +3,7 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main">Sermo I</title>
+                <title type="main" xml:lang="fr">Sermon I</title>
                 <title type="main" xml:lang="en">Sermon I</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
@@ -46,7 +46,6 @@
                 <bibl>
                     <author xml:lang="fr">Isaac de l'Étoile</author>
                     <author xml:lang="en">Isaac of Stella</author>
-                    <author xml:lang="la">Isaac en latin</author>
 
                     <title type="main" xml:lang="fr">Sermons, tome I</title>
                     <title type="main" xml:lang="en">Sermons, Volume I</title>
@@ -69,7 +68,7 @@
                     <pubPlace xml:lang="fr">Paris</pubPlace>
                     <pubPlace xml:lang="en">Paris</pubPlace>
 
-                    <publisher>Éditions du Cerf</publisher>
+                    <publisher xml:lang="fr">Éditions du Cerf</publisher>
                     <publisher xml:lang="en">Éditions du Cerf</publisher>
 
                     <date>1967</date>
@@ -96,6 +95,7 @@
                     <list>
                         <item ana="corpus">Textes Patristiques</item>
                         <item ana="authorgroup">Moyen Âge occidental (XIe-XIVe s.)</item>
+                        <item ana="author">Isaac de l'Étoile</item>
                         <item ana="workgroup">Sermones</item>
                         <item ana="work">Sermo I</item>
                     </list>
@@ -104,6 +104,7 @@
                     <list>
                         <item ana="corpus">Patristic Texts</item>
                         <item ana="authorgroup">Western Middle Ages (11th-14th century)</item>
+                        <item ana="author">Isaac of Stella</item>
                         <item ana="workgroup">Sermones</item>
                         <item ana="work">Sermo I</item>
                     </list>
