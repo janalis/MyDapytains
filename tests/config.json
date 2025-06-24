@@ -6,31 +6,31 @@
 
   "hierarchy": [
     {
-      "title": "Corpus",
+      "title": "Corpora",
       "key": "ex:corpus",
       "slug": "corpora",
       "if_missing": "create_unknown"
     },
     {
-      "title": "Groupe d'auteurs",
+      "title": "Author Groups",
       "key": "ex:authorgroup",
       "slug": "authorgroups",
       "if_missing": "attach_to_parent"
     },
     {
-      "title": "Auteur",
+      "title": "Authors",
       "key": "dc:author",
       "slug": "authors",
       "if_missing": "skip"
     },
     {
-      "title": "Regroupement d'œuvres",
+      "title": "Workgroups",
       "key": "ex:workgroup",
       "slug": "workgroups",
       "if_missing": "attach_to_parent"
     },
     {
-      "title": "Œuvre",
+      "title": "Works",
       "key": "ex:work",
       "slug": "works",
       "if_missing": "skip"

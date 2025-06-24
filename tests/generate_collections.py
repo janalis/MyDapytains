@@ -8,6 +8,14 @@ from collections import defaultdict
 from typing import List, Dict, Any, Optional
 from extract_metadata import extract_metadata
 
+def log(message: str):
+    print(f"[INFO] {message}")
+
+def log_section(title: str):
+    print("\n" + "=" * 50)
+    print(f"{title}")
+    print("=" * 50)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
 
@@ -23,7 +31,6 @@ with open(MAPPING_PATH, encoding="utf-8") as f:
     mapping_config = json.load(f)
 
 namespaces = dict(mapping_config["default"].get("namespaces", {}))
-
 for prefix, uri in namespaces.items():
     ET.register_namespace(prefix, uri)
 
@@ -78,7 +85,6 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         "identifier": res["identifier"],
         "filepath": os.path.normpath(relpath).replace(os.sep, "/")
     })
-
     for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
         title_el = ET.SubElement(res_el, "title")
         title_el.text = val
@@ -131,43 +137,82 @@ def write_index_file(path: str, identifier: str, title: str, description: Option
     for m in member_elements:
         members_el.append(m)
     tree = ET.ElementTree(col_el)
-    tree.write(os.path.join(path, "index.xml"), encoding="utf-8", xml_declaration=True)
+    index_path = os.path.join(path, "index.xml")
+    tree.write(index_path, encoding="utf-8", xml_declaration=True)
+    log(f"[GÉNÉRATION] Collection : {index_path}")
 
 def main():
     ensure_dir(CATALOG_DIR)
-
     current_hash = compute_config_hash(CONFIG_PATH, MAPPING_PATH)
     state = load_state()
     previous_hash = state.get("config_hash")
     previous_files = state.get("files", {})
+    current_files = {}
 
     process_all = current_hash != previous_hash
-    current_files = {}
-    resources = []
+    added, modified, deleted = [], [], []
 
-    for fn in sorted(os.listdir(TEI_DIR)):
+    log_section("Vérification de l'état de la configuration et des fichiers")
+    if process_all:
+        log("La configuration a changé : régénération complète requise.")
+
+    for fn in os.listdir(TEI_DIR):
         if fn.startswith("WORK_") and fn.endswith(".xml"):
             path = os.path.join(TEI_DIR, fn)
-            mtime = os.path.getmtime(path)
             rel_path = os.path.relpath(path, BASE_DIR).replace(os.sep, "/")
+            mtime = os.path.getmtime(path)
             current_files[rel_path] = {"mtime": mtime}
+            if rel_path not in previous_files:
+                added.append(rel_path)
+            elif previous_files[rel_path]["mtime"] != mtime:
+                modified.append(rel_path)
 
-            if process_all or rel_path not in previous_files or previous_files[rel_path]["mtime"] != mtime:
-                res = extract_metadata(path)
+    deleted = [path for path in previous_files if path not in current_files]
 
-                # ⛔ Vérifie que toutes les clés avec "if_missing: skip" sont bien présentes
-                skip_file = False
-                for level_conf in config["hierarchy"]:
-                    if level_conf.get("if_missing") == "skip":
-                        key = level_conf["key"].split(":")[-1]
-                        if not res.get(key):
-                            skip_file = True
-                            break
-                if skip_file:
-                    continue
+    if added:
+        log(f"{len(added)} fichier(s) ajouté(s) :")
+        for f in added:
+            log(f"  + {f}")
+    if modified:
+        log(f"{len(modified)} fichier(s) modifié(s) :")
+        for f in modified:
+            log(f"  * {f}")
+    if deleted:
+        log(f"{len(deleted)} fichier(s) supprimé(s) :")
+        for f in deleted:
+            log(f"  - {f}")
 
-                res["filepath"] = rel_path
-                resources.append(res)
+    log_section("Suppression des fichiers obsolètes")
+    for deleted_path in deleted:
+        output_path = os.path.join(CATALOG_DIR, os.path.splitext(os.path.basename(deleted_path))[0])
+        if os.path.exists(output_path):
+            try:
+                import shutil
+                shutil.rmtree(output_path)
+                log(f"Dossier supprimé : {output_path}")
+            except Exception as e:
+                log(f"Erreur lors de la suppression de {output_path} : {e}")
+
+    to_process = set(current_files.keys()) if process_all else set(added + modified)
+
+    log_section("Traitement des fichiers ajoutés ou modifiés")
+    resources = []
+    for rel_path in sorted(to_process):
+        path = os.path.join(BASE_DIR, rel_path)
+        res = extract_metadata(path)
+        skip = False
+        for level_conf in config["hierarchy"]:
+            if level_conf.get("if_missing") == "skip":
+                key = level_conf["key"].split(":")[-1]
+                if not res.get(key):
+                    log(f"[IGNORÉ] {rel_path} ignoré (clé manquante : {key})")
+                    skip = True
+                    break
+        if skip:
+            continue
+        log(f"[TRAITEMENT] Extraction des métadonnées : {rel_path}")
+        res["filepath"] = rel_path
+        resources.append(res)
 
     def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
         if level >= len(config["hierarchy"]):
@@ -216,6 +261,7 @@ def main():
                     rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
                     res_el = build_resource_element(res, rel_path_to_tei)
                     ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
+                    log(f"[GÉNÉRATION] Ressource : {filepath}")
                 members.append(build_collection_element(
                     identifier=group_identifier,
                     title=f"{title_label} : {group_name}",
@@ -240,9 +286,12 @@ def main():
 
     root_members = recursive_group(0, CATALOG_DIR, resources, "")
     write_index_file(CATALOG_DIR, "root", "Index général", None, root_members)
+
     state["config_hash"] = current_hash
     state["files"] = current_files
     save_state(state)
+    log_section("Génération terminée")
+    log(f"État sauvegardé dans {STATE_PATH}")
 
 if __name__ == "__main__":
     main()
