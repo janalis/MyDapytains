@@ -4,8 +4,9 @@ import hashlib
 import re
 import unicodedata
 import xml.etree.ElementTree as ET
+import shutil
 from collections import defaultdict
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 from extract_metadata import extract_metadata
 
 def log(message: str):
@@ -63,6 +64,50 @@ def unique_filename(base_name: str, existing_names: set) -> str:
     existing_names.add(candidate)
     return candidate
 
+def make_json_serializable(obj: Any) -> Any:
+    if isinstance(obj, list):
+        return [make_json_serializable(e) for e in obj]
+    elif isinstance(obj, dict):
+        return {k: make_json_serializable(v) for k, v in obj.items()}
+    elif hasattr(obj, "__dict__"):
+        return make_json_serializable(obj.__dict__)
+    else:
+        return obj
+
+def metadata_hash(metadata: Dict[str, Any]) -> str:
+    def clean(obj):
+        if isinstance(obj, list):
+            # Trier les listes de dictionnaires ou objets
+            return sorted([clean(o) for o in obj], key=lambda x: json.dumps(x, sort_keys=True))
+        elif isinstance(obj, dict):
+            return {k: clean(v) for k, v in sorted(obj.items())}
+        elif hasattr(obj, '__dict__'):
+            return clean(vars(obj))  # objet type DublinCore ou Extension
+        else:
+            return obj
+
+    stable_metadata = {
+        k: clean(v)
+        for k, v in metadata.items()
+        if k not in ("filepath",)  # ne pas inclure les chemins absolus
+    }
+
+    # Convertir en JSON trié et stable
+    return hashlib.sha256(
+        json.dumps(stable_metadata, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+
+def extract_hierarchy(metadata: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, str]:
+    h = {}
+    for level in config["hierarchy"]:
+        key = level["key"].split(":")[-1]
+        val = metadata.get(key)
+        if isinstance(val, dict):
+            h[key] = clean_id_with_strip(val.get("en", ""))
+        elif val:
+            h[key] = clean_id_with_strip(val)
+    return h
+
 def compute_config_hash(*paths: List[str]) -> str:
     hasher = hashlib.sha256()
     for path in paths:
@@ -74,72 +119,174 @@ def load_state() -> Dict[str, Any]:
     if os.path.exists(STATE_PATH):
         with open(STATE_PATH, encoding="utf-8") as f:
             return json.load(f)
-    return {}
+    return {"config_hash": None, "files": {}}
 
-def save_state(data: Dict[str, Any]):
+def save_state(state: Dict[str, Any]):
+    state_to_save = {
+        "config_hash": state.get("config_hash"),
+        "files": state.get("files", {})
+    }
     with open(STATE_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+        json.dump(state_to_save, f, indent=2, ensure_ascii=False)
+
+def delete_all_generated_content():
+    if os.path.isdir(CATALOG_DIR):
+        shutil.rmtree(CATALOG_DIR)
+        log(f"[SUPPRESSION COMPLÈTE] Contenu de {CATALOG_DIR} supprimé")
+    ensure_dir(CATALOG_DIR)
+
+def delete_generated_files(hierarchy: Dict[str, str]):
+    parts = [CATALOG_DIR]
+    for lvl in config["hierarchy"]:
+        key = lvl["key"].split(":")[-1]
+        slug = lvl["slug"]
+        if key not in hierarchy:
+            break
+        parts.extend([slug, hierarchy[key]])
+    out = os.path.join(*parts)
+    if os.path.isdir(out):
+        shutil.rmtree(out)
+        log(f"[SUPPRESSION] {out} supprimé")
+        clean_empty_directories(os.path.dirname(out))
+
+def clean_empty_directories(path: str):
+    while os.path.isdir(path) and not os.listdir(path) and path != CATALOG_DIR:
+        os.rmdir(path)
+        log(f"[NETTOYAGE] Dossier vide supprimé : {path}")
+        path = os.path.dirname(path)
+
+def detect_changed_level(old: Dict[str, str], new: Dict[str, str]) -> int:
+    for i, lvl in enumerate(config["hierarchy"]):
+        key = lvl["key"].split(":")[-1]
+        if old.get(key) != new.get(key):
+            return i
+    return len(config["hierarchy"]) - 1
 
 def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
     res_el = ET.Element("resource", {
         "identifier": res["identifier"],
-        "filepath": os.path.normpath(relpath).replace(os.sep, "/")
+        "filepath": relpath.replace(os.sep, "/")
     })
-    for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
-        title_el = ET.SubElement(res_el, "title")
-        title_el.text = val
+    for lang, val in res.get("title", {"und":"Titre inconnu"}).items():
+        t = ET.SubElement(res_el, "title")
+        t.text = val
         if lang:
-            title_el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
-
-    for key, tag in [("description", "description"), ("creator", "author"), ("work", "work")]:
+            t.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
+    for key,tag in [("description","description"),("creator","author"),("work","work")]:
         if key in res:
             for lang, val in res[key].items():
                 el = ET.SubElement(res_el, tag)
                 el.text = val
                 if lang:
                     el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
-
-    dc_el = ET.SubElement(res_el, "dublinCore")
-    dc_ns = get_namespace("dc")
+    dc_el = ET.SubElement(res_el, "dublinCore"); dc_ns = get_namespace("dc")
     for dc in res.get("dublin_core", []):
         el = ET.SubElement(dc_el, f"{{{dc_ns}}}{dc.term}")
         el.text = dc.value
         if dc.language:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", dc.language)
-
-    ext_el = ET.SubElement(res_el, "extensions")
-    ex_ns = get_namespace("ex")
+    ext_el = ET.SubElement(res_el, "extensions"); ex_ns = get_namespace("ex")
     for ext in res.get("extensions", []):
         tag = ext.term.split("/")[-1] if ext.term != "serie" else "serie"
         el = ET.SubElement(ext_el, f"{{{ex_ns}}}{tag}")
         el.text = ext.value
         if ext.language:
             el.set("{http://www.w3.org/XML/1998/namespace}lang", ext.language)
-
     return res_el
 
-def build_collection_element(identifier: str, title: str, description: Optional[str] = None, is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
+def build_collection_element(identifier: str, title: str, description: Optional[str]=None,
+                             is_reference: bool=False, filepath: Optional[str]=None) -> ET.Element:
     if is_reference and filepath:
         return ET.Element("collection", {"filepath": filepath.replace(os.sep, "/")})
     col_el = ET.Element("collection", {"identifier": identifier})
     ET.SubElement(col_el, "title").text = title
     if description:
         dc_el = ET.SubElement(col_el, "dublinCore")
-        desc_el = ET.SubElement(dc_el, "description")
-        desc_el.set("xmlns", get_namespace("dc"))
+        desc_el = ET.SubElement(dc_el, "description",
+                                {"xmlns": get_namespace("dc")})
         desc_el.text = description
     return col_el
 
-def write_index_file(path: str, identifier: str, title: str, description: Optional[str], member_elements: List[ET.Element]):
+def write_index_file(path: str, identifier: str, title: str,
+                     description: Optional[str], members: List[ET.Element]):
     ensure_dir(path)
-    col_el = build_collection_element(identifier, title, description)
-    members_el = ET.SubElement(col_el, "members")
-    for m in member_elements:
-        members_el.append(m)
-    tree = ET.ElementTree(col_el)
-    index_path = os.path.join(path, "index.xml")
-    tree.write(index_path, encoding="utf-8", xml_declaration=True)
-    log(f"[GÉNÉRATION] Collection : {index_path}")
+    col = build_collection_element(identifier, title, description)
+    mems = ET.SubElement(col, "members")
+    for m in members:
+        mems.append(m)
+    tree = ET.ElementTree(col)
+    tree.write(os.path.join(path, "index.xml"), encoding="utf-8", xml_declaration=True)
+    log(f"[GÉNÉRATION] Collection : {os.path.join(path, 'index.xml')}")
+
+def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
+    if level >= len(config["hierarchy"]):
+        return []
+
+    current_config = config["hierarchy"][level]
+    key = current_config["key"]
+    title_label = current_config["title"]
+    slug = current_config["slug"]
+    level_key = key.split(":")[-1]
+    if_missing = current_config.get("if_missing", "create_unknown")
+
+    groups = defaultdict(list)
+    attach_to_parent_items = []
+
+    for item in items:
+        value = item.get(level_key)
+        if not value:
+            if if_missing == "skip":
+                continue
+            elif if_missing == "attach_to_parent":
+                attach_to_parent_items.append(item)
+                continue
+            elif if_missing == "create_unknown":
+                value = f"Unknown {slug}"
+        group_id = clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
+        groups[group_id].append(item)
+
+    members = []
+    for group_id, group_items in groups.items():
+        first = group_items[0]
+        name_data = first.get(level_key)
+        group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
+        group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
+        group_path = os.path.join(parent_path, slug, group_id) if level < len(config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
+
+        if level == len(config["hierarchy"]) - 1:
+            ensure_dir(group_path)
+            existing_names = set()
+            for res in group_items:
+                raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
+                base_name = clean_id_with_strip(raw_title)
+                filename = unique_filename(base_name, existing_names) + ".xml"
+                filepath = os.path.join(group_path, filename)
+                tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
+                rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
+                res_el = build_resource_element(res, rel_path_to_tei)
+                ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
+                log(f"[GÉNÉRATION] Ressource : {filepath}")
+            members.append(build_collection_element(
+                identifier=group_identifier,
+                title=f"{title_label} : {group_name}",
+                is_reference=True,
+                filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
+            ))
+        else:
+            sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
+            if sub_members:
+                write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
+                members.append(build_collection_element(
+                    identifier=group_identifier,
+                    title=f"{title_label} : {group_name}",
+                    is_reference=True,
+                    filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
+                ))
+
+    if attach_to_parent_items:
+        members += recursive_group(level + 1, parent_path, attach_to_parent_items, parent_id)
+
+    return members
 
 def main():
     ensure_dir(CATALOG_DIR)
@@ -155,140 +302,65 @@ def main():
     log_section("Vérification de l'état de la configuration et des fichiers")
     if process_all:
         log("La configuration a changé : régénération complète requise.")
+        delete_all_generated_content()
+        previous_files = {}  # Supprimer tout l’état précédent
 
     for fn in os.listdir(TEI_DIR):
-        if fn.startswith("WORK_") and fn.endswith(".xml"):
-            path = os.path.join(TEI_DIR, fn)
-            rel_path = os.path.relpath(path, BASE_DIR).replace(os.sep, "/")
-            mtime = os.path.getmtime(path)
-            current_files[rel_path] = {"mtime": mtime}
-            if rel_path not in previous_files:
-                added.append(rel_path)
-            elif previous_files[rel_path]["mtime"] != mtime:
-                modified.append(rel_path)
-
-    deleted = [path for path in previous_files if path not in current_files]
-
-    if added:
-        log(f"{len(added)} fichier(s) ajouté(s) :")
-        for f in added:
-            log(f"  + {f}")
-    if modified:
-        log(f"{len(modified)} fichier(s) modifié(s) :")
-        for f in modified:
-            log(f"  * {f}")
-    if deleted:
-        log(f"{len(deleted)} fichier(s) supprimé(s) :")
-        for f in deleted:
-            log(f"  - {f}")
-
-    log_section("Suppression des fichiers obsolètes")
-    for deleted_path in deleted:
-        output_path = os.path.join(CATALOG_DIR, os.path.splitext(os.path.basename(deleted_path))[0])
-        if os.path.exists(output_path):
-            try:
-                import shutil
-                shutil.rmtree(output_path)
-                log(f"Dossier supprimé : {output_path}")
-            except Exception as e:
-                log(f"Erreur lors de la suppression de {output_path} : {e}")
-
-    to_process = set(current_files.keys()) if process_all else set(added + modified)
-
-    log_section("Traitement des fichiers ajoutés ou modifiés")
-    resources = []
-    for rel_path in sorted(to_process):
-        path = os.path.join(BASE_DIR, rel_path)
-        res = extract_metadata(path)
-        skip = False
-        for level_conf in config["hierarchy"]:
-            if level_conf.get("if_missing") == "skip":
-                key = level_conf["key"].split(":")[-1]
-                if not res.get(key):
-                    log(f"[IGNORÉ] {rel_path} ignoré (clé manquante : {key})")
-                    skip = True
-                    break
-        if skip:
+        if not (fn.startswith("WORK_") and fn.endswith(".xml")):
             continue
-        log(f"[TRAITEMENT] Extraction des métadonnées : {rel_path}")
-        res["filepath"] = rel_path
-        resources.append(res)
+        abs_path = os.path.abspath(os.path.join(TEI_DIR, fn))
+        rel = os.path.relpath(abs_path, BASE_DIR).replace(os.sep, "/")
+        mtime = os.path.getmtime(abs_path)
+        current_files[rel] = {"mtime": mtime}
+        prev_entry = previous_files.get(rel)
+        res = extract_metadata(abs_path)
+        hsh = metadata_hash(res)
+        if not prev_entry or process_all:
+            added.append((rel, res, hsh))
+        elif prev_entry["mtime"] != mtime or prev_entry.get("metadata_hash") != hsh:
+            modified.append((rel, res, hsh))
+        else:
+            log(f"[IGNORÉ] {rel} inchangé")
 
-    def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
-        if level >= len(config["hierarchy"]):
-            return []
+    deleted = [] if process_all else [p for p in previous_files if p not in current_files]
 
-        current_config = config["hierarchy"][level]
-        key = current_config["key"]
-        title_label = current_config["title"]
-        slug = current_config["slug"]
-        level_key = key.split(":")[-1]
-        if_missing = current_config.get("if_missing", "create_unknown")
+    log_section("Suppression des fichiers supprimés")
+    for rel in deleted:
+        delete_generated_files(previous_files[rel]["hierarchy"])
 
-        groups = defaultdict(list)
-        attach_to_parent_items = []
+    resources = []
+    log_section("Traitement des fichiers modifiés/ajoutés")
+    for rel, res_meta, hsh in added + modified:
+        log(f"[TRAITEMENT] {rel}")
+        res_meta["filepath"] = rel
+        resources.append(res_meta)
 
-        for item in items:
-            value = item.get(level_key)
-            if not value:
-                if if_missing == "skip":
-                    continue
-                elif if_missing == "attach_to_parent":
-                    attach_to_parent_items.append(item)
-                    continue
-                elif if_missing == "create_unknown":
-                    value = f"Unknown {slug}"
-            group_id = clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
-            groups[group_id].append(item)
+    if resources:
+        root_members = recursive_group(0, CATALOG_DIR, resources, "")
+        if root_members:
+            write_index_file(CATALOG_DIR, "root", "Index général", None, root_members)
+        else:
+            log("[INFO] Pas de collections à écrire (aucun membre généré).")
+    else:
+        log("[INFO] Aucune ressource modifiée ou ajoutée, aucun index généré.")
 
-        members = []
-        for group_id, group_items in groups.items():
-            first = group_items[0]
-            name_data = first.get(level_key)
-            group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
-            group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
-            group_path = os.path.join(parent_path, slug, group_id) if level < len(config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
+    new_state_files = {}
+    for rel, res_meta, hsh in added + modified:
+        h = extract_hierarchy(res_meta, config)
+        new_state_files[rel] = {
+            "mtime": current_files[rel]["mtime"],
+            "metadata_hash": hsh,
+            "hierarchy": h,
+        }
 
-            if level == len(config["hierarchy"]) - 1:
-                ensure_dir(group_path)
-                existing_names = set()
-                for res in group_items:
-                    raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
-                    base_name = clean_id_with_strip(raw_title)
-                    filename = unique_filename(base_name, existing_names) + ".xml"
-                    filepath = os.path.join(group_path, filename)
-                    tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
-                    rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
-                    res_el = build_resource_element(res, rel_path_to_tei)
-                    ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
-                    log(f"[GÉNÉRATION] Ressource : {filepath}")
-                members.append(build_collection_element(
-                    identifier=group_identifier,
-                    title=f"{title_label} : {group_name}",
-                    is_reference=True,
-                    filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
-                ))
-            else:
-                sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
-                if sub_members:
-                    write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
-                    members.append(build_collection_element(
-                        identifier=group_identifier,
-                        title=f"{title_label} : {group_name}",
-                        is_reference=True,
-                        filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
-                    ))
+    for rel in deleted:
+        previous_files.pop(rel, None)
 
-        if attach_to_parent_items:
-            members += recursive_group(level + 1, parent_path, attach_to_parent_items, parent_id)
+    state = {
+        "config_hash": current_hash,
+        "files": {**previous_files, **new_state_files}
+    }
 
-        return members
-
-    root_members = recursive_group(0, CATALOG_DIR, resources, "")
-    write_index_file(CATALOG_DIR, "root", "Index général", None, root_members)
-
-    state["config_hash"] = current_hash
-    state["files"] = current_files
     save_state(state)
     log_section("Génération terminée")
     log(f"État sauvegardé dans {STATE_PATH}")

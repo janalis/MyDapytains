@@ -3,8 +3,8 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main" xml:lang="fr">Sermon I</title>
-                <title type="main" xml:lang="en">Sermon I</title>
+                <title type="main" xml:lang="fr">Sermon II</title>
+                <title type="main" xml:lang="en">Sermon II</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
                 <author xml:lang="en">Isaac of Stella</author>
@@ -47,8 +47,8 @@
                     <author xml:lang="fr">Isaac de l'Étoile</author>
                     <author xml:lang="en">Isaac of Stella</author>
 
-                    <title type="main" xml:lang="fr">Sermons, tome I</title>
-                    <title type="main" xml:lang="en">Sermons, Volume I</title>
+                    <title type="main" xml:lang="fr">Sermons, tome II</title>
+                    <title type="main" xml:lang="en">Sermons, Volume II</title>
 
                     <title type="subtitle" xml:lang="fr">Sermons 1–17</title>
                     <title type="subtitle" xml:lang="en">Sermons 1–17</title>
@@ -96,7 +96,7 @@
                         <item ana="corpus">Textes Patristiques</item>
                         <item ana="authorgroup">Moyen Âge occidental (XIe-XIVe s.)</item>
                         <item ana="workgroup">Sermones</item>
-                        <item ana="work">Sermo I</item>
+                        <item ana="work">Sermo II</item>
                     </list>
                 </keywords>
                 <keywords xml:lang="en">
@@ -104,7 +104,7 @@
                         <item ana="corpus">Patristic Texts</item>
                         <item ana="authorgroup">Western Middle Ages (11th-14th century)</item>
                         <item ana="workgroup">Sermones</item>
-                        <item ana="work">Sermo I2</item>
+                        <item ana="work">Sermo II</item>
                     </list>
                 </keywords>
             </textClass>
