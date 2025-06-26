@@ -143,11 +143,26 @@ def delete_generated_files(hierarchy: Dict[str, str]):
         if key not in hierarchy:
             break
         parts.extend([slug, hierarchy[key]])
+
     out = os.path.join(*parts)
+
+    # Si c'est un dossier de collection (niveau intermédiaire)
     if os.path.isdir(out):
         shutil.rmtree(out)
         log(f"[SUPPRESSION] {out} supprimé")
         clean_empty_directories(os.path.dirname(out))
+    else:
+        # Sinon, on vérifie si c'est un fichier XML de ressource (niveau final)
+        parent_dir = os.path.join(*parts[:-1])
+        slug = config["hierarchy"][-1]["slug"]
+        target_dir = os.path.join(parent_dir, slug)
+        if os.path.isdir(target_dir):
+            for file in os.listdir(target_dir):
+                if file.endswith(".xml"):
+                    os.remove(os.path.join(target_dir, file))
+                    log(f"[SUPPRESSION] Fichier supprimé : {os.path.join(target_dir, file)}")
+            clean_empty_directories(target_dir)
+
 
 def clean_empty_directories(path: str):
     while os.path.isdir(path) and not os.listdir(path) and path != CATALOG_DIR:
@@ -303,26 +318,39 @@ def main():
     if process_all:
         log("La configuration a changé : régénération complète requise.")
         delete_all_generated_content()
-        previous_files = {}  # Supprimer tout l’état précédent
+        previous_files = {}  # Supprimer tout l'état précédent
 
     for fn in os.listdir(TEI_DIR):
         if not (fn.startswith("WORK_") and fn.endswith(".xml")):
             continue
         abs_path = os.path.abspath(os.path.join(TEI_DIR, fn))
-        rel = os.path.relpath(abs_path, BASE_DIR).replace(os.sep, "/")
+        rel = os.path.relpath(abs_path, BASE_DIR)
+        rel = os.path.normpath(rel).replace(os.sep, "/")
         mtime = os.path.getmtime(abs_path)
         current_files[rel] = {"mtime": mtime}
-        prev_entry = previous_files.get(rel)
+
         res = extract_metadata(abs_path)
         hsh = metadata_hash(res)
+        hierarchy = extract_hierarchy(res, config)
+        current_files[rel].update({
+            "metadata_hash": hsh,
+            "hierarchy": hierarchy,
+            "work_title": res.get("workTitle") or res.get("title", {}).get("en", "")
+        })
+
+        prev_entry = previous_files.get(rel)
         if not prev_entry or process_all:
             added.append((rel, res, hsh))
-        elif prev_entry["mtime"] != mtime or prev_entry.get("metadata_hash") != hsh:
+            log(f"[AJOUTÉ] {rel} (nouveau ou tout régénéré)")
+        elif prev_entry["mtime"] != mtime or prev_entry.get("metadata_hash") != hsh or prev_entry.get("hierarchy") != hierarchy:
             modified.append((rel, res, hsh))
+            log(f"[MODIFIÉ] {rel} (changement détecté)")
         else:
             log(f"[IGNORÉ] {rel} inchangé")
 
     deleted = [] if process_all else [p for p in previous_files if p not in current_files]
+    if deleted:
+        log(f"[SUPPRIMÉ] {deleted}")
 
     log_section("Suppression des fichiers supprimés")
     for rel in deleted:
@@ -335,35 +363,20 @@ def main():
         res_meta["filepath"] = rel
         resources.append(res_meta)
 
-    if resources:
-        root_members = recursive_group(0, CATALOG_DIR, resources, "")
-        if root_members:
-            write_index_file(CATALOG_DIR, "root", "Index général", None, root_members)
-        else:
-            log("[INFO] Pas de collections à écrire (aucun membre généré).")
-    else:
-        log("[INFO] Aucune ressource modifiée ou ajoutée, aucun index généré.")
+    if added or modified or deleted or process_all:
+        log_section("Régénération de l'arborescence")
+        members = recursive_group(0, CATALOG_DIR, resources, "")
+        if members:
+            write_index_file(CATALOG_DIR, "root", "Catalogue principal", None, members)
 
-    new_state_files = {}
-    for rel, res_meta, hsh in added + modified:
-        h = extract_hierarchy(res_meta, config)
-        new_state_files[rel] = {
-            "mtime": current_files[rel]["mtime"],
-            "metadata_hash": hsh,
-            "hierarchy": h,
+        state = {
+            "config_hash": current_hash,
+            "files": current_files
         }
-
-    for rel in deleted:
-        previous_files.pop(rel, None)
-
-    state = {
-        "config_hash": current_hash,
-        "files": {**previous_files, **new_state_files}
-    }
-
-    save_state(state)
-    log_section("Génération terminée")
-    log(f"État sauvegardé dans {STATE_PATH}")
+        save_state(state)
+        log("[MISE À JOUR] build_state.json mis à jour")
+    else:
+        log("[AUCUN CHANGEMENT] build_state.json conservé inchangé")
 
 if __name__ == "__main__":
     main()
