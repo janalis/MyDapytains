@@ -15,6 +15,7 @@
         ".//tei:sourceDesc//tei:date",
         ".//tei:editionStmt//tei:date"
       ],
+      "dc:pubPlace": ".//tei:sourceDesc//tei:pubPlace",
       "dc:publisher": ".//tei:sourceDesc//tei:publisher"
     },
     "multi_lang_extensions": {

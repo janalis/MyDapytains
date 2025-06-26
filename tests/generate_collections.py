@@ -74,29 +74,6 @@ def make_json_serializable(obj: Any) -> Any:
     else:
         return obj
 
-def metadata_hash(metadata: Dict[str, Any]) -> str:
-    def clean(obj):
-        if isinstance(obj, list):
-            # Trier les listes de dictionnaires ou objets
-            return sorted([clean(o) for o in obj], key=lambda x: json.dumps(x, sort_keys=True))
-        elif isinstance(obj, dict):
-            return {k: clean(v) for k, v in sorted(obj.items())}
-        elif hasattr(obj, '__dict__'):
-            return clean(vars(obj))  # objet type DublinCore ou Extension
-        else:
-            return obj
-
-    stable_metadata = {
-        k: clean(v)
-        for k, v in metadata.items()
-        if k not in ("filepath",)  # ne pas inclure les chemins absolus
-    }
-
-    # Convertir en JSON trié et stable
-    return hashlib.sha256(
-        json.dumps(stable_metadata, sort_keys=True, ensure_ascii=False).encode("utf-8")
-    ).hexdigest()
-
 def extract_hierarchy(metadata: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, str]:
     h = {}
     for level in config["hierarchy"]:
@@ -362,22 +339,21 @@ def main():
         current_files[rel] = {"mtime": mtime}
 
         res = extract_metadata(abs_path)
-        hsh = metadata_hash(res)
         hierarchy = extract_hierarchy(res, config)
-        current_files[rel].update({
-            "metadata_hash": hsh,
-            "hierarchy": hierarchy,
-        })
+        current_files[rel].update({"hierarchy": hierarchy})
 
         prev_entry = previous_files.get(rel)
         if not prev_entry or process_all:
-            added.append((rel, res, hsh))
+            added.append((rel, res))
             log(f"[AJOUTÉ] {rel} (nouveau ou tout régénéré)")
-        elif prev_entry["mtime"] != mtime or prev_entry.get("metadata_hash") != hsh or prev_entry.get("hierarchy") != hierarchy:
-            modified.append((rel, res, hsh))
-            log(f"[MODIFIÉ] {rel} (changement détecté)")
+        elif prev_entry["hierarchy"] != hierarchy:
+            modified.append((rel, res))
+            log(f"[HIERARCHIE MODIFIÉE] {rel} (hiérarchie changée)")
+        elif prev_entry["mtime"] != mtime:
+            modified.append((rel, res))
+            log(f"[MODIFIÉ] {rel} (contenu modifié, hiérarchie identique)")
         else:
-            current_files[rel]["output_filepath"] = prev_entry.get("output_filepath")  # MOD
+            current_files[rel]["output_filepath"] = prev_entry.get("output_filepath")
             log(f"[IGNORÉ] {rel} inchangé")
 
     deleted = [] if process_all else [p for p in previous_files if p not in current_files]
@@ -390,21 +366,39 @@ def main():
         if output_path:
             delete_generated_files_by_path(output_path)
 
-    resources = []
+    log_section("Mise à jour des fichiers de ressources sans changement hiérarchique")
+    for rel, res in modified:
+        prev_entry = previous_files.get(rel)
+        if prev_entry and prev_entry["hierarchy"] == extract_hierarchy(res, config):
+            output_path = prev_entry.get("output_filepath")
+            if output_path:
+                abs_output_path = os.path.join(BASE_DIR, output_path)
+                parent_dir = os.path.dirname(abs_output_path)
+                ensure_dir(parent_dir)
+
+                tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, rel))
+                rel_path_to_tei = os.path.relpath(tei_abs_path, start=parent_dir).replace(os.sep, "/")
+
+                res["filepath"] = rel
+                res_el = build_resource_element(res, rel_path_to_tei)
+                ET.ElementTree(res_el).write(abs_output_path, encoding="utf-8", xml_declaration=True)
+                log(f"[MISE À JOUR] Ressource mise à jour sans modification de hiérarchie : {abs_output_path}")
+                current_files[rel]["output_filepath"] = output_path
+
     log_section("Chargement des ressources pour régénération")
-    for rel, file_info in current_files.items():
-        log(f"[CHARGEMENT] {rel}")
-        abs_path = os.path.join(BASE_DIR, rel)
-        res = extract_metadata(abs_path)
-        res["filepath"] = rel
-        resources.append(res)
+    resources_for_recursive_group = []
+    for rel, res in added + modified:
+        prev_entry = previous_files.get(rel, {})
+        if prev_entry.get("hierarchy") != extract_hierarchy(res, config):
+            res["filepath"] = rel
+            resources_for_recursive_group.append(res)
 
-    output_paths_by_rel = {}  # MOD
+    output_paths_by_rel = {}
 
-    def track_output_filepath(filepath: str, rel: str):  # MOD
+    def track_output_filepath(filepath: str, rel: str):
         output_paths_by_rel[rel] = filepath.replace(os.sep, "/")
 
-    if added or modified or deleted or process_all:
+    if resources_for_recursive_group or deleted or process_all:
         log_section("Régénération de l'arborescence")
 
         def recursive_group_tracked(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
@@ -455,7 +449,7 @@ def main():
                         res_el = build_resource_element(res, rel_path_to_tei)
                         ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
                         log(f"[GÉNÉRATION] Ressource : {filepath}")
-                        track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])  # MOD
+                        track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
                     members.append(build_collection_element(
                         identifier=group_identifier,
                         title=f"{title_label} : {group_name}",
@@ -478,13 +472,13 @@ def main():
 
             return members
 
-        members = recursive_group_tracked(0, CATALOG_DIR, resources, "")
+        members = recursive_group_tracked(0, CATALOG_DIR, resources_for_recursive_group, "")
         if members:
             write_index_file(CATALOG_DIR, "root", "Catalogue principal", None, members)
 
         for rel in current_files:
             if rel in output_paths_by_rel:
-                current_files[rel]["output_filepath"] = output_paths_by_rel[rel]  # MOD
+                current_files[rel]["output_filepath"] = output_paths_by_rel[rel]
 
         state = {
             "config_hash": current_hash,
