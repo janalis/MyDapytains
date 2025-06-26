@@ -391,11 +391,13 @@ def main():
             delete_generated_files_by_path(output_path)
 
     resources = []
-    log_section("Traitement des fichiers modifiés/ajoutés")
-    for rel, res_meta, hsh in added + modified:
-        log(f"[TRAITEMENT] {rel}")
-        res_meta["filepath"] = rel
-        resources.append(res_meta)
+    log_section("Chargement des ressources pour régénération")
+    for rel, file_info in current_files.items():
+        log(f"[CHARGEMENT] {rel}")
+        abs_path = os.path.join(BASE_DIR, rel)
+        res = extract_metadata(abs_path)
+        res["filepath"] = rel
+        resources.append(res)
 
     output_paths_by_rel = {}  # MOD
 
