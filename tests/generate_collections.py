@@ -148,11 +148,14 @@ def clean_empty_directories(path: str):
         path = os.path.dirname(path)
 
 def detect_changed_level(old: Dict[str, str], new: Dict[str, str]) -> int:
-    for i, lvl in enumerate(config["hierarchy"]):
-        key = lvl["key"].split(":")[-1]
+    """
+    Compare deux hiérarchies et retourne le niveau où le changement est détecté.
+    """
+    for i, level in enumerate(config["hierarchy"]):
+        key = level["key"].split(":")[-1]
         if old.get(key) != new.get(key):
-            return i
-    return len(config["hierarchy"]) - 1
+            return i  # Retourne le premier niveau modifié
+    return len(config["hierarchy"]) - 1  # Aucun changement détecté, retourne le dernier niveau
 
 def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
     res_el = ET.Element("resource", {
@@ -183,7 +186,7 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         el = ET.SubElement(ext_el, f"{{{ex_ns}}}{tag}")
         el.text = ext.value
         if ext.language:
-            el.set("{http://www.w3.org/XML/1998/namespace}lang", ext.language)
+            el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
     return res_el
 
 def build_collection_element(identifier: str, title: str, description: Optional[str]=None,
@@ -267,13 +270,17 @@ def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], p
         else:
             sub_members = recursive_group(level + 1, group_path, group_items, group_identifier)
             if sub_members:
-                write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
-                members.append(build_collection_element(
-                    identifier=group_identifier,
-                    title=f"{title_label} : {group_name}",
-                    is_reference=True,
-                    filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
-                ))
+                if is_parent_changed(group_path, sub_members):
+                    # Écrire un nouvel index si les membres ont changé
+                    write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
+                    members.append(build_collection_element(
+                        identifier=group_identifier,
+                        title=f"{title_label} : {group_name}",
+                        is_reference=True,
+                        filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
+                    ))
+                else:
+                    log(f"[IGNORÉ] Pas de changement dans la collection : {group_path}")
 
     if attach_to_parent_items:
         members += recursive_group(level + 1, parent_path, attach_to_parent_items, parent_id)
@@ -311,7 +318,131 @@ def delete_generated_files_by_path(output_path: str):  # MOD
         log(f"[SUPPRESSION] Fichier supprimé : {abs_path}")
     dir_path = os.path.dirname(abs_path)
     clean_empty_directories_and_indexes(dir_path)
+    
+def selective_recursive_group(level: int, start_level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
+    """
+    Génère un groupe hiérarchique à partir d'un niveau spécifique au lieu de la racine.
+    """
+    if level < start_level:
+        return []  # Ignorer les niveaux en dessous du point de départ
 
+    if level >= len(config["hierarchy"]):
+        return []
+
+    current_config = config["hierarchy"][level]
+    key = current_config["key"]
+    title_label = current_config["title"]
+    slug = current_config["slug"]
+    level_key = key.split(":")[-1]
+    if_missing = current_config.get("if_missing", "create_unknown")
+
+    groups = defaultdict(list)
+    attach_to_parent_items = []
+
+    for item in items:
+        value = item.get(level_key)
+        if not value:
+            if if_missing == "skip":
+                continue
+            elif if_missing == "attach_to_parent":
+                attach_to_parent_items.append(item)
+                continue
+            elif if_missing == "create_unknown":
+                value = f"Unknown {slug}"
+        group_id = clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
+        groups[group_id].append(item)
+
+    members = []
+    for group_id, group_items in groups.items():
+        first = group_items[0]
+        name_data = first.get(level_key)
+        group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
+        group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
+        group_path = os.path.join(parent_path, slug, group_id) if level < len(config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
+
+        if level == len(config["hierarchy"]) - 1:
+            ensure_dir(group_path)
+            existing_names = set()
+            for res in group_items:
+                raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
+                base_name = clean_id_with_strip(raw_title)
+                filename = unique_filename(base_name, existing_names) + ".xml"
+                filepath = os.path.join(group_path, filename)
+                tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
+                rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
+                res_el = build_resource_element(res, rel_path_to_tei)
+                ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
+                log(f"[GÉNÉRATION] Ressource : {filepath}")
+            members.append(build_collection_element(
+                identifier=group_identifier,
+                title=f"{title_label} : {group_name}",
+                is_reference=True,
+                filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
+            ))
+        else:
+            sub_members = selective_recursive_group(level + 1, start_level, group_path, group_items, group_identifier)
+            if sub_members:
+                if is_parent_changed(group_path, sub_members):
+                    # Écrire un nouvel index si les membres ont changé
+                    write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
+                    members.append(build_collection_element(
+                        identifier=group_identifier,
+                        title=f"{title_label} : {group_name}",
+                        is_reference=True,
+                        filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(
+                            os.sep, "/")
+                    ))
+                else:
+                    log(f"[IGNORÉ] Pas de changement dans la collection : {group_path}")
+
+    if attach_to_parent_items:
+        members += selective_recursive_group(level + 1, start_level, parent_path, attach_to_parent_items, parent_id)
+
+    return members
+
+def is_parent_changed(parent_path: str, current_members: List[ET.Element]) -> bool:
+    """
+    Détermine si une collection parentale a changé en comparant ses membres.
+    """
+    index_file = os.path.join(parent_path, "index.xml")
+    if not os.path.exists(index_file):
+        return True  # Pas de fichier existant, donc changement
+
+    # Charger l'arborescence XML existante
+    old_tree = ET.parse(index_file)
+    old_members = [member.attrib.get("filepath") for member in old_tree.findall(".//members/collection")]
+    old_members += [member.attrib.get("filepath") for member in old_tree.findall(".//members/resource")]
+
+    # Comparer les anciens et nouveaux membres
+    new_members = [m.attrib.get("filepath") for m in current_members]
+    return set(old_members) != set(new_members)
+
+def regenerate_from_level(changed_level: int, resources: List[Dict[str, Any]]):
+    """
+    Régénération sélective à partir d'un niveau de hiérarchie spécifique.
+    """
+    log_section(f"Régénération ciblée à partir du niveau {changed_level}")
+
+    members = selective_recursive_group(changed_level, changed_level, CATALOG_DIR, resources, "")
+    parent_path = CATALOG_DIR
+
+    # Remonter progressivement la hiérarchie en mise à jour conditionnelle des parents
+    for level in range(changed_level - 1, -1, -1):
+        current_config = config["hierarchy"][level]
+        slug = current_config["slug"]
+        parent_path = os.path.join(parent_path, slug)
+
+        if is_parent_changed(parent_path, members):
+            log(f"[MISE À JOUR] Collection parent à régénérer : {parent_path}")
+            write_index_file(parent_path, slug, current_config["title"], None, members)
+        else:
+            log(f"[IGNORÉ] Pas de changement : {parent_path}")
+
+        # Créer une nouvelle liste de membres pour le niveau au-dessus
+        members = [
+            {"filepath": os.path.relpath(os.path.join(parent_path, "index.xml"), BASE_DIR)}
+        ]
+        
 def main():
     ensure_dir(CATALOG_DIR)
     current_hash = compute_config_hash(CONFIG_PATH, MAPPING_PATH)
@@ -417,7 +548,26 @@ def main():
         output_paths_by_rel[rel] = filepath.replace(os.sep, "/")
 
     if resources_for_recursive_group or deleted or process_all:
-        log_section("Régénération de l'arborescence")
+        log_section("Régénération sélective de l'arborescence")
+        for rel, res in modified:
+            prev_entry = previous_files.get(rel)
+            if prev_entry:
+                old_hierarchy = prev_entry.get("hierarchy", {})
+                new_hierarchy = extract_hierarchy(res, config)
+                changed_level = detect_changed_level(old_hierarchy, new_hierarchy)
+
+                log(f"[MODIFICATION] Niveaux impactés pour {rel} : {changed_level}")
+
+                if changed_level == 0:
+                    # Niveau racine modifié, régénération complète requise
+                    log(f"[MODIFICATION] Régénération complète requise à partir de la racine pour {rel}")
+                    delete_all_generated_content()
+                else:
+                    # Suppression des descendants affectés et régénération partielle
+                    delete_generated_files(old_hierarchy)
+                    log(f"[MODIFICATION] Régénération à partir du niveau {changed_level} pour {rel}")
+                    # Ajouter le fichier aux ressources pour régénération
+                    resources_for_recursive_group.append(res)
 
         def recursive_group_tracked(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
             if level >= len(config["hierarchy"]):
@@ -477,13 +627,17 @@ def main():
                 else:
                     sub_members = recursive_group_tracked(level + 1, group_path, group_items, group_identifier)
                     if sub_members:
-                        write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
-                        members.append(build_collection_element(
-                            identifier=group_identifier,
-                            title=f"{title_label} : {group_name}",
-                            is_reference=True,
-                            filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
-                        ))
+                        if is_parent_changed(group_path, sub_members):
+                            # Écrire un nouvel index si les membres ont changé
+                            write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
+                            members.append(build_collection_element(
+                                identifier=group_identifier,
+                                title=f"{title_label} : {group_name}",
+                                is_reference=True,
+                                filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
+                            ))
+                        else:
+                            log(f"[IGNORÉ] Pas de changement dans la collection : {group_path}")
 
             if attach_to_parent_items:
                 members += recursive_group_tracked(level + 1, parent_path, attach_to_parent_items, parent_id)

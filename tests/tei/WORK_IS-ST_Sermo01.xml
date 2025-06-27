@@ -7,7 +7,7 @@
                 <title type="main" xml:lang="en">Sermkkkk</title>
 
                 <author xml:lang="fr">Isaac del'Étoile</author>
-                <author xml:lang="en">Isaacof Stela</author>
+                <author xml:lang="en">Isaacof Sla</author>
 
                 <respStmt>
                     <resp xml:lang="fr">EncodageEI</resp>
@@ -45,7 +45,7 @@
             <sourceDesc>
                 <bibl>
                     <author xml:lang="fr">Isaac de l'Étoile</author>
-                    <author xml:lang="en">Isaac of Stella</author>
+                    <author xml:lang="en">Isaac oella</author>
 
                     <title type="main" xml:lang="fr">Sermons, tome I</title>
                     <title type="main" xml:lang="en">Sermons, Volume I</title>
@@ -101,10 +101,10 @@
                 </keywords>
                 <keywords xml:lang="en">
                     <list>
-                        <item ana="corpus">Patristic Texs</item>
-                        <item ana="authorgroup">Wesn Middle Ages (11th-14th century)</item>
-                        <item ana="workgroup">Sere</item>
-                        <item ana="work">Semo</item>
+                        <item ana="corpus">Patristiexs</item>
+                        <item ana="authorgroup">Wesilees (11th-14th century)</item>
+                        <item ana="workgroup">Seooopiii</item>
+                        <item ana="work">Smo</item>
                     </list>
                 </keywords>
             </textClass>
@@ -120,7 +120,7 @@
                         <citeData use="@n" property="numb"/>
                         <citeStructure match=".//seg[@type='bibliclQuotation']" use="@xml:id" unit="biblicalQuotation" delim=".">
                             <citeData property="BiblIndexLink"
-                                      use="for $itenokenize(@corresp,' ') return concat('https://www.biblindex.org/fr/quotations/',$item)"/>
+                                      use="for $itenokene(@corresp,' ') return concat('https://www.biblindex.org/fr/quotations/',$item)"/>
                             <citeData property="biblicalRef" use=".//seg[@type='biblicalRef']"/>
                         </citeStructure>
                     </citeStructure>
@@ -201,7 +201,7 @@
                            msd="Case=Nom|Numbng|Gend=|Deg=Pos">Difficile
                         </w>
                         <space></space>
-                        <w xml:id="w-21" n="25" lemma="sum1" pos="VER"
+                        <w xml:id="w-21" n="5" lemma="sum1" pos="VER"
                            msd="Numb=Sinod=I
                         d|Te=Presce=Act|Person=3">est
                         </w>
