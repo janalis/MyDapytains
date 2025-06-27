@@ -367,6 +367,10 @@ def main():
             delete_generated_files_by_path(output_path)
 
     log_section("Mise à jour des fichiers de ressources sans changement hiérarchique")
+
+    # Initialisation de la variable pour éviter les problèmes d'accès sans définition
+    resource_hierarchy_unchanged = False
+
     for rel, res in modified:
         prev_entry = previous_files.get(rel)
         if prev_entry and prev_entry["hierarchy"] == extract_hierarchy(res, config):
@@ -383,7 +387,21 @@ def main():
                 res_el = build_resource_element(res, rel_path_to_tei)
                 ET.ElementTree(res_el).write(abs_output_path, encoding="utf-8", xml_declaration=True)
                 log(f"[MISE À JOUR] Ressource mise à jour sans modification de hiérarchie : {abs_output_path}")
-                current_files[rel]["output_filepath"] = output_path
+
+            # Mettre à jour l'état current_files pour inclure mtime et le chemin de sortie
+            current_files[rel]["mtime"] = os.path.getmtime(tei_abs_path)  # Actualisation du mtime
+            current_files[rel]["output_filepath"] = output_path
+
+            resource_hierarchy_unchanged = True
+
+    # Sauvegarder l'état si des ressources ont été mises à jour
+    if resource_hierarchy_unchanged:
+        state = {
+            "config_hash": current_hash,
+            "files": current_files
+        }
+        save_state(state)
+        log("[MISE À JOUR] build_state.json mis à jour après ressources sans changement de hiérarchie.")
 
     log_section("Chargement des ressources pour régénération")
     resources_for_recursive_group = []
@@ -486,8 +504,6 @@ def main():
         }
         save_state(state)
         log("[MISE À JOUR] build_state.json mis à jour")
-    else:
-        log("[AUCUN CHANGEMENT] build_state.json conservé inchangé")
 
 if __name__ == "__main__":
     main()

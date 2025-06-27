@@ -3,8 +3,8 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main" xml:lang="fr">Sermn I</title>
-                <title type="main" xml:lang="en">Sermon I</title>
+                <title type="main" xml:lang="fr">Ser</title>
+                <title type="main" xml:lang="en">Sermkkkk</title>
 
                 <author xml:lang="fr">Isaac del'Étoile</author>
                 <author xml:lang="en">Isaacof Stela</author>
@@ -16,13 +16,13 @@
                 </respStmt>
 
                 <respStmt xml:id="resp_NB">
-                    <resp xml:lang="fr">Encdage des noms par</resp>
+                    <resp xml:lang="fr">Encdage d noms par</resp>
                     <resp xml:lang="en">Name encoding by</resp>
                     <persName xml:id="name-1"/>
                 </respStmt>
 
                 <respStmt xml:id="resp_LM">
-                    <resp xml:lang="fr">Vérificatin de l'encodage des noms propres</resp>
+                    <resp xml:lang="fr">Vérificatin de'encodage des noms propres</resp>
                     <resp xml:lang="en">Verification of proper name encoding</resp>
                     <persName xml:id="name-2"/>
                 </respStmt>
@@ -82,7 +82,7 @@
 
                     <series>
                         <title xml:lang="fr">Série desxtMonastiques d'Occident</title>
-                        <title xml:lang="en">Série dTextes Monastiques d'Occident</title>
+                        <title xml:lang="en">Série dxtes Monastques d'Occident</title>
                         <biblScope unit="volume">20</biblScope>
                     </series>
                 </bibl>
@@ -93,8 +93,8 @@
             <textClass>
                 <keywords xml:lang="fr">
                     <list>
-                        <item ana="corpus">Textes Patristiques</item>
-                        <item ana="authorgroup">Moyen Âeoccidental (XIe-XIVe s.)</item>
+                        <item ana="corpus">TextePatristiques</item>
+                        <item ana="authorgroup">Moyen Âecidental (XIe-XIVe s.)</item>
                         <item ana="workgroup">Sermones</item>
                         <item ana="work">Sermo I</item>
                     </list>
@@ -102,9 +102,9 @@
                 <keywords xml:lang="en">
                     <list>
                         <item ana="corpus">Patristic Texs</item>
-                        <item ana="authorgroup">Wensn Middle Ages (11th-14th century)</item>
-                        <item ana="workgroup">Serms</item>
-                        <item ana="work">Sermo I</item>
+                        <item ana="authorgroup">Wesn Middle Ages (11th-14th century)</item>
+                        <item ana="workgroup">Sere</item>
+                        <item ana="work">Semo</item>
                     </list>
                 </keywords>
             </textClass>
@@ -118,9 +118,9 @@
                               use="sort(distinct-values(for $item in //persName|//placeName return if ($item = '') then continue else normalize-space($item)))"/>
                     <citeStructure unit="paragraph" match="div[@type='paragraph']" use="@xml:id" delim=".">
                         <citeData use="@n" property="numb"/>
-                        <citeStructure match=".//seg[@type='biblicalQuotation']" use="@xml:id" unit="biblicalQuotation" delim=".">
+                        <citeStructure match=".//seg[@type='bibliclQuotation']" use="@xml:id" unit="biblicalQuotation" delim=".">
                             <citeData property="BiblIndexLink"
-                                      use="for $item inokenize(@corresp,' ') return concat('https://www.biblindex.org/fr/quotations/',$item)"/>
+                                      use="for $itenokenize(@corresp,' ') return concat('https://www.biblindex.org/fr/quotations/',$item)"/>
                             <citeData property="biblicalRef" use=".//seg[@type='biblicalRef']"/>
                         </citeStructure>
                     </citeStructure>
@@ -148,61 +148,61 @@
                             </persName>
                             <space></space>
                             <w xml:id="w-4" n="4" lemma="ascendo" pos="VER"
-                               msd="Numb=Sing|Mood=Ind|Tense=Pres|Voice=Act|Person=3">ascendit
+                               msd="Numb=Sing|Mood=Ind|Tee=Pres|Voice=Act|Person=3">ascendit
                             </w>
                             <space></space>
                             <w xml:id="w-5" n="5" lemma="in" pos="PRE" msd="MORPH=empty">in</w>
                             <space></space>
-                            <w xml:id="w-6" n="6" lemma="mons" pos="NOMcom" msd="Case=Acc|Numb=Sing">montem</w>
+                            <w xml:id="w-6" n="6" lemma="mons" pos="NOMcom" msd="Case=Acc|umb=Sing">montem</w>
                             <pc xml:id="pc-1" n="7">.</pc>
                             <note n="1" type="biblicalNote" xml:id="ftn1">
-                                <seg type="biblicalRef">Mt 5, 1</seg>
+                                <seg type="biblicRef">Mt 5, 1</seg>
                             </note>
                         </seg>
                         <w xml:id="w-9" n="10" lemma="nos" pos="PROper" msd="Case=Acc|Numb=Plur">nos</w>
                         <space></space>
                         <w xml:id="w-10" n="11" lemma="contingo1" pos="VER"
-                           msd="Numb=Sing|Mood=Sub|Tense=Pres|Voice=Act|Person=3">contingat
+                           msd="Numb=Singoub|Voice=Act|Person=3">contingat
                         </w>
                         <space></space>
                         <w xml:id="w-11" n="12" lemma="quandoque1" pos="ADV" msd="MORPH=empty">quandoque</w>
                         <space></space>
                         <w xml:id="w-12" n="13" lemma="tura" pos="NOMcom" msd="Case=Acc|Numb=Plur">turbas</w>
                         <space></space>
-                        <w xml:id="w-13" n="14" lemma="uideo" pos="VER" msd="Mood=Inf|Tense=Pres|Voice=Act">videre</w>
+                        <w xml:id="w-13" n="14" lemma="uideo" pos="VE" msd="Mood=Inf|Tense=Pres|Voice=Act">videre</w>
                         <pc xml:id="pc-2" n="15">,</pc>
                         <space></space>
                         <w xml:id="w-14" n="16" lemma="et2" pos="CONcoo" msd="MORPH=empty">et</w>
                         <space></space>
                         <w xml:id="w-15" n="17" lemma="dimitto" pos="VER"
-                           msd="Case=Abl|Numb=Plur|Gend=Com|Mood=Par|Tense=Perf|Voice=Pass">dimissis
+                           msd="Case=Abl|Numbom|Mood=Par|Tense=Perf|Voice=Pass">dimissis
                         </w>
                         <pc xml:id="pc-3" n="18">,</pc>
                         <space></space>
-                        <seg xml:id="bib-2" corresp="1608696" type="biblicalQuotation">
+                        <seg xml:id="bib-2" corresp="16696" type="biblicalQuotation">
                             <w xml:id="w-16" n="19" lemma="ascensio" pos="NOMcom" msd="Case=Acc|Numb=Plur">ascen<lb
                                     n="3" break="no"/>siones
                             </w>
                             <space></space>
                             <w xml:id="w-17" n="20" lemma="in" pos="PE" msd="MORPH=empty">in</w>
                             <space></space>
-                            <w xml:id="w-18" n="21" lemma="cor" pos="NOMcom" msd="Case=Abl|Numb=Sing">corde</w>
+                            <w xml:id="w-18" n="21" lemma="cr" pos="NOMcom" msd="Case=Abl|Numb=Sing">corde</w>
                             <space></space>
-                            <w xml:id="w-19" n="22" lemma="dispono" pos="VER" msd="Mod=Inf|Tense=Pres|Voice=Act">
+                            <w xml:id="w-19" n="22" lemma="disno" pos="VER" msd="MoInf|Tense=Pres|Voice=Act">
                                 disponere
                             </w>
                             <note n="2" type="biblicalNote" xml:id="ftn2">
-                                <seg type="biblicalRef">Ps 83, 6</seg>
+                                <seg type="bicaef">Ps 83, 6</seg>
                             </note>
                         </seg>
                         <pc xml:id="pc-4" n="23">.</pc>
                         <space></space>
                         <w xml:id="w-20" n="25" lemma="difficilis" pos="ADJqua"
-                           msd="Case=Nom|Numb=Sing|Gend=Neut|Deg=Pos">Difficile
+                           msd="Case=Nom|Numbng|Gend=|Deg=Pos">Difficile
                         </w>
                         <space></space>
                         <w xml:id="w-21" n="25" lemma="sum1" pos="VER"
-                           msd="Numb=Sing|Mood=I
+                           msd="Numb=Sinod=I
                         d|Te=Presce=Act|Person=3">est
                         </w>
                         <space></space>
