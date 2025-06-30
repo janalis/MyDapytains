@@ -295,20 +295,31 @@ def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], p
 
 def clean_empty_directories_and_indexes(path: str):
     """
-    Supprime récursivement les dossiers vides et les fichiers index.xml inutiles.
+    Supprime récursivement les dossiers vides et les fichiers index.xml inutiles,
+    en remontant jusqu’à la racine du catalogue.
     """
     while path != CATALOG_DIR and os.path.isdir(path):
         contents = os.listdir(path)
         non_index_files = [f for f in contents if f != "index.xml"]
+
+        log(f"[NETTOYAGE] Vérification du dossier : {path}")
+        log(f"[NETTOYAGE] Contenu trouvé : {contents}")
+        log(f"[NETTOYAGE] Fichiers ignorés : {non_index_files}")
+
         if not non_index_files:
             index_path = os.path.join(path, "index.xml")
             if os.path.isfile(index_path):
                 os.remove(index_path)
                 log(f"[NETTOYAGE] index.xml supprimé : {index_path}")
-            os.rmdir(path)
-            log(f"[NETTOYAGE] Dossier vide supprimé : {path}")
+            try:
+                os.rmdir(path)
+                log(f"[NETTOYAGE] Dossier vide supprimé : {path}")
+            except OSError as e:
+                log(f"[NETTOYAGE] ÉCHEC suppression de {path} : {e}")
+                break
             path = os.path.dirname(path)
         else:
+            log(f"[NETTOYAGE] Dossier NON supprimé (fichiers restants) : {path}")
             break
 
 def delete_generated_files_by_path(output_path: str):  # MOD
@@ -466,6 +477,39 @@ def delete_files_for_changed_level(level: int, hierarchy: Dict[str, Any], old_hi
         delete_generated_files(old_hierarchy)  # Supprimer uniquement les fichiers du sous-niveau affecté
         log(f"[SUPPRESSION] Fichiers supprimés au niveau {level} pour {group_path}")
 
+def remove_dir_recursive_verbose(path):
+    if not os.path.exists(path):
+        log(f"[SUPPRESSION] Le dossier {path} n'existe pas, aucune suppression nécessaire")
+        return
+    # Lister les fichiers et dossiers avant suppression
+    for root, dirs, files in os.walk(path, topdown=False):
+        for name in files:
+            file_path = os.path.join(root, name)
+            try:
+                os.remove(file_path)
+                log(f"[SUPPRESSION] Fichier supprimé : {file_path}")
+            except Exception as e:
+                log(f"[ERREUR] Impossible de supprimer le fichier {file_path} : {e}")
+        for name in dirs:
+            dir_path = os.path.join(root, name)
+            try:
+                os.rmdir(dir_path)
+                log(f"[SUPPRESSION] Dossier supprimé : {dir_path}")
+            except Exception as e:
+                log(f"[ERREUR] Impossible de supprimer le dossier {dir_path} : {e}")
+    # Enfin, supprimer le dossier racine
+    try:
+        os.rmdir(path)
+        log(f"[SUPPRESSION] Dossier racine supprimé : {path}")
+    except Exception as e:
+        log(f"[ERREUR] Impossible de supprimer le dossier racine {path} : {e}")
+
+def delete_folder_and_contents(path):
+    if os.path.exists(path):
+        shutil.rmtree(path)
+        print(f"Dossier supprimé : {path}")
+    else:
+        print(f"Le dossier {path} n'existe pas, suppression ignorée.")
 
 def main():
     ensure_dir(CATALOG_DIR)
@@ -581,18 +625,48 @@ def main():
                 changed_level = detect_changed_level(old_hierarchy, new_hierarchy)
 
                 log(f"[MODIFICATION] Niveaux impactés pour {rel} : {changed_level}")
-
-                if changed_level >= 0:  # Vérifie si un niveau valide a été modifié
+                log(f"[DEBUG] changed_level = {changed_level} pour {rel}")
+                if changed_level >= 0:
                     if changed_level == 0:
-                        # Niveau racine modifié, régénération complète requise
-                        log(f"[MODIFICATION] Régénération complète requise à partir de la racine pour {rel}")
+                        log(f"[MODIFICATION] Régénération complète pour {rel}")
                         delete_all_generated_content()
                     else:
-                        # Suppression des descendants affectés et régénération partielle
-                        delete_generated_files(old_hierarchy)
-                        log(f"[SUPPRESSION] Ancien fichier supprimé dans le groupe : {old_hierarchy}")
+                        log(f"[MODIFICATION] Suppression partielle et nettoyage pour {rel}")
+
+                        # Construction du chemin complet de l'ancien dossier à supprimer
+                        old_path_parts = []
+                        for i, level_def in enumerate(config["hierarchy"]):
+                            if i > changed_level:
+                                break
+                            key = level_def["key"].split(":")[-1]
+                            value = old_hierarchy.get(key)
+                            if not value:
+                                break
+                            clean_value = clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
+                            old_path_parts.append(level_def["slug"])
+                            old_path_parts.append(clean_value)
+
+                        old_full_path = os.path.join(CATALOG_DIR, *old_path_parts)
+                        log(f"[DEBUG] Chemin complet à supprimer (niveau {changed_level}) : {old_full_path}")
+
+                        if os.path.exists(old_full_path):
+                            try:
+                                shutil.rmtree(old_full_path)
+                                log(f"[SUPPRESSION] Dossier supprimé récursivement : {old_full_path}")
+                            except Exception as e:
+                                log(f"[ERREUR] Impossible de supprimer {old_full_path} : {e}")
+                        else:
+                            log(f"[SUPPRESSION] Le dossier {old_full_path} n'existe pas, aucune suppression nécessaire.")
+
+                        # Nettoyage récursif après suppression, à partir du parent
+                        parent_path = os.path.dirname(old_full_path)
+                        log(f"[NETTOYAGE] Nettoyage à partir du dossier parent : {parent_path}")
+                        if os.path.exists(parent_path):
+                            clean_empty_directories_and_indexes(parent_path)
+                        else:
+                            log(f"[NETTOYAGE] Le chemin {parent_path} n'existe PAS, nettoyage ignoré")
+
                         log(f"[MODIFICATION] Régénération à partir du niveau {changed_level} pour {rel}")
-                        # Ajouter le fichier aux ressources pour régénération
                         resources_for_recursive_group[rel] = res
 
         def recursive_group_tracked(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[

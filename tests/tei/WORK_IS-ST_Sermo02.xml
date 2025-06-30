@@ -4,7 +4,7 @@
         <fileDesc>
             <titleStmt>
                 <title type="main" xml:lang="fr">Sermon II</title>
-                <title type="main" xml:lang="en">nom travail</title>
+                <title type="main" xml:lang="en">nom cgncgn</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
                 <author xml:lang="en">nom auteur</author>
@@ -93,18 +93,18 @@
             <textClass>
                 <keywords xml:lang="fr">
                     <list>
-                        <item ana="corpus">TextesPatristiques</item>
-                        <item ana="authorgroup">Moyen Âge occidental (XIe-XIVe s.)</item>
-                        <item ana="workgroup">Srmones</item>
-                        <item ana="work">SermoI</item>
+                        <item ana="corpus">TextePatristiques</item>
+                        <item ana="authorgroup">Moy Âecdental (XIe-XIVe s.)</item>
+                        <item ana="workgroup">Sermoes</item>
+                        <item ana="work">Sermo I</item>
                     </list>
                 </keywords>
                 <keywords xml:lang="en">
                     <list>
-                        <item ana="corpus">nom corpus1</item>
-                        <item ana="authorgroup">nom groupe auteurs1</item>
-                        <item ana="workgroup">nom grope travail2</item>
-                        <item ana="work">nom travail</item>
+                        <item ana="corpus">Patristiexs</item>
+                        <item ana="authorgroup">Wesilees (11th-14th century)</item>
+                        <item ana="workgroup">wwwwwwwww</item>
+                        <item ana="work">thdthkkçopoomom</item>
                     </list>
                 </keywords>
             </textClass>
