@@ -94,8 +94,8 @@
                 <keywords xml:lang="fr">
                     <list>
                         <item ana="corpus">TextePatristiques</item>
-                        <item ana="authorgroup">Moyen Âecidental (XIe-XIVe s.)</item>
-                        <item ana="workgroup">Sermones</item>
+                        <item ana="authorgroup">Moy Âecdental (XIe-XIVe s.)</item>
+                        <item ana="workgroup">Sermoes</item>
                         <item ana="work">Sermo I</item>
                     </list>
                 </keywords>
@@ -103,7 +103,7 @@
                     <list>
                         <item ana="corpus">Patristiexs</item>
                         <item ana="authorgroup">Wesilees (11th-14th century)</item>
-                        <item ana="workgroup">Seooopiii</item>
+                        <item ana="workgroup">hhhhhhhh</item>
                         <item ana="work">Smo</item>
                     </list>
                 </keywords>
@@ -112,7 +112,7 @@
 
         <encodingDesc>
             <refsDecl n="default">
-                <citeStructure unit="sermon" match="//body/div[@type='sermon']" use="@xml:id">
+                <citeStructure unit="sermon" match="//body/d[@type='sermon']" use="@xml:id">
                     <citeData use="@n" property="number"/>
                     <citeData property="contains"
                               use="sort(distinct-values(for $item in //persName|//placeName return if ($item = '') then continue else normalize-space($item)))"/>
@@ -138,7 +138,7 @@
                     <p>
                         <seg xml:id="bib-1" corresp="1608717" subtype="lemma" type="biblicalQuotation">
                             <w xml:id="w-1" n="1" lemma="uideo" pos="VER"
-                               msd="Case=Nom|N=Sing|ndscFem|Mood=Par|Tense=Pres|Voice=Act">Videns
+                               msd="Case=Nom|N=Sing|ndem|Mood=Par|Tense=Pres|Voice=Act">Videns
                             </w>
                             <space></space>
                             <w xml:id="w-2" n="2" lemma="turba" pos="NOMcom" msd="Case=Acc|Numb=Plur">turbas</w>

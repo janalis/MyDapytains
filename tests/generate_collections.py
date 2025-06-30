@@ -154,6 +154,7 @@ def detect_changed_level(old: Dict[str, str], new: Dict[str, str]) -> int:
     for i, level in enumerate(config["hierarchy"]):
         key = level["key"].split(":")[-1]
         if old.get(key) != new.get(key):
+            log(f"[DEBUG] Niveau modifié à {i}: Ancien {old.get(key)} vs Nouveau {new.get(key)}")
             return i  # Retourne le premier niveau modifié
     return len(config["hierarchy"]) - 1  # Aucun changement détecté, retourne le dernier niveau
 
@@ -258,6 +259,8 @@ def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], p
                 filepath = os.path.join(group_path, filename)
                 tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
                 rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
+
+                # Générer l'élément XML
                 res_el = build_resource_element(res, rel_path_to_tei)
                 ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
                 log(f"[GÉNÉRATION] Ressource : {filepath}")
@@ -443,6 +446,27 @@ def regenerate_from_level(changed_level: int, resources: List[Dict[str, Any]]):
             {"filepath": os.path.relpath(os.path.join(parent_path, "index.xml"), BASE_DIR)}
         ]
         
+def detect_global_impact(changed_level: int, modified_files: List[Dict[str, Any]]) -> bool:
+    """
+    Détermine si la modification nécessite une régénération globale.
+    """
+    # Si le niveau touché est la racine ou un niveau critique, retourne True
+    if changed_level == 0:
+        return True
+
+    # Vérifiez les dépendances ou impacts croisés
+    for file in modified_files:
+        if detect_changed_level(file["old_hierarchy"], file["new_hierarchy"]) == 0:
+            return True
+
+    return False
+
+def delete_files_for_changed_level(level: int, hierarchy: Dict[str, Any], old_hierarchy: Dict[str, Any], group_path: str):
+    if is_parent_changed(group_path, hierarchy):
+        delete_generated_files(old_hierarchy)  # Supprimer uniquement les fichiers du sous-niveau affecté
+        log(f"[SUPPRESSION] Fichiers supprimés au niveau {level} pour {group_path}")
+
+
 def main():
     ensure_dir(CATALOG_DIR)
     current_hash = compute_config_hash(CONFIG_PATH, MAPPING_PATH)
@@ -535,12 +559,12 @@ def main():
         log("[MISE À JOUR] build_state.json mis à jour après ressources sans changement de hiérarchie.")
 
     log_section("Chargement des ressources pour régénération")
-    resources_for_recursive_group = []
+    resources_for_recursive_group = {}
     for rel, res in added + modified:
         prev_entry = previous_files.get(rel, {})
         if prev_entry.get("hierarchy") != extract_hierarchy(res, config):
             res["filepath"] = rel
-            resources_for_recursive_group.append(res)
+            resources_for_recursive_group[rel] = res
 
     output_paths_by_rel = {}
 
@@ -558,18 +582,21 @@ def main():
 
                 log(f"[MODIFICATION] Niveaux impactés pour {rel} : {changed_level}")
 
-                if changed_level == 0:
-                    # Niveau racine modifié, régénération complète requise
-                    log(f"[MODIFICATION] Régénération complète requise à partir de la racine pour {rel}")
-                    delete_all_generated_content()
-                else:
-                    # Suppression des descendants affectés et régénération partielle
-                    delete_generated_files(old_hierarchy)
-                    log(f"[MODIFICATION] Régénération à partir du niveau {changed_level} pour {rel}")
-                    # Ajouter le fichier aux ressources pour régénération
-                    resources_for_recursive_group.append(res)
+                if changed_level >= 0:  # Vérifie si un niveau valide a été modifié
+                    if changed_level == 0:
+                        # Niveau racine modifié, régénération complète requise
+                        log(f"[MODIFICATION] Régénération complète requise à partir de la racine pour {rel}")
+                        delete_all_generated_content()
+                    else:
+                        # Suppression des descendants affectés et régénération partielle
+                        delete_generated_files(old_hierarchy)
+                        log(f"[SUPPRESSION] Ancien fichier supprimé dans le groupe : {old_hierarchy}")
+                        log(f"[MODIFICATION] Régénération à partir du niveau {changed_level} pour {rel}")
+                        # Ajouter le fichier aux ressources pour régénération
+                        resources_for_recursive_group[rel] = res
 
-        def recursive_group_tracked(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[ET.Element]:
+        def recursive_group_tracked(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[
+            ET.Element]:
             if level >= len(config["hierarchy"]):
                 return []
 
@@ -602,21 +629,31 @@ def main():
                 name_data = first.get(level_key)
                 group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
                 group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
-                group_path = os.path.join(parent_path, slug, group_id) if level < len(config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
+                group_path = os.path.join(parent_path, slug, group_id) if level < len(
+                    config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
 
                 if level == len(config["hierarchy"]) - 1:
                     ensure_dir(group_path)
-                    existing_names = set()
+                    # existing_names = set()
+                    existing_names = set(os.path.splitext(f)[0] for f in os.listdir(group_path) if f.endswith(".xml"))
+
                     for res in group_items:
                         raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                         base_name = clean_id_with_strip(raw_title)
                         filename = unique_filename(base_name, existing_names) + ".xml"
                         filepath = os.path.join(group_path, filename)
+
+                        # ❗ Si un fichier du même nom existe déjà, le supprimer pour éviter les doublons (_2, _3, etc.)
+                        if os.path.exists(filepath):
+                            os.remove(filepath)
+                            log(f"[NETTOYAGE] Ancien fichier supprimé : {filepath}")
+
                         tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
                         rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
                         res_el = build_resource_element(res, rel_path_to_tei)
                         ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
                         log(f"[GÉNÉRATION] Ressource : {filepath}")
+
                         track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
                     members.append(build_collection_element(
                         identifier=group_identifier,
@@ -629,12 +666,14 @@ def main():
                     if sub_members:
                         if is_parent_changed(group_path, sub_members):
                             # Écrire un nouvel index si les membres ont changé
-                            write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None, sub_members)
+                            write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
+                                             sub_members)
                             members.append(build_collection_element(
                                 identifier=group_identifier,
                                 title=f"{title_label} : {group_name}",
                                 is_reference=True,
-                                filepath=os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(os.sep, "/")
+                                filepath=os.path.relpath(os.path.join(group_path, "index.xml"),
+                                                         start=parent_path).replace(os.sep, "/")
                             ))
                         else:
                             log(f"[IGNORÉ] Pas de changement dans la collection : {group_path}")
@@ -644,7 +683,8 @@ def main():
 
             return members
 
-        members = recursive_group_tracked(0, CATALOG_DIR, resources_for_recursive_group, "")
+        members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "")
+
         if members:
             write_index_file(CATALOG_DIR, "root", "Catalogue principal", None, members)
 
@@ -657,7 +697,7 @@ def main():
             "files": current_files
         }
         save_state(state)
-        log("[MISE À JOUR] build_state.json mis à jour")
+        log("[MISE À JOUR] build_state.json a été mis à jour")
 
 if __name__ == "__main__":
     main()
