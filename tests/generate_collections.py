@@ -650,13 +650,17 @@ def main():
                         log(f"[DEBUG] Chemin complet à supprimer (niveau {changed_level}) : {old_full_path}")
 
                         if os.path.exists(old_full_path):
-                            try:
-                                shutil.rmtree(old_full_path)
-                                log(f"[SUPPRESSION] Dossier supprimé récursivement : {old_full_path}")
-                            except Exception as e:
-                                log(f"[ERREUR] Impossible de supprimer {old_full_path} : {e}")
-                        else:
-                            log(f"[SUPPRESSION] Le dossier {old_full_path} n'existe pas, aucune suppression nécessaire.")
+                            # Lister les fichiers XML dans ce dossier (ou tous fichiers, selon besoin)
+                            files_in_dir = [f for f in os.listdir(old_full_path) if f.endswith(".xml")]
+                            # S'il n'y a qu'un seul fichier (celui modifié), on supprime le dossier
+                            if len(files_in_dir) == 1:
+                                try:
+                                    shutil.rmtree(old_full_path)
+                                    log(f"[SUPPRESSION] Dossier supprimé récursivement : {old_full_path}")
+                                except Exception as e:
+                                    log(f"[ERREUR] Impossible de supprimer {old_full_path} : {e}")
+                            else:
+                                log(f"[SUPPRESSION] Plusieurs fichiers présents dans {old_full_path}, suppression du dossier ignorée.")
 
                         # Nettoyage récursif après suppression, à partir du parent
                         parent_path = os.path.dirname(old_full_path)
@@ -708,16 +712,19 @@ def main():
 
                 if level == len(config["hierarchy"]) - 1:
                     ensure_dir(group_path)
-                    # existing_names = set()
                     existing_names = set(os.path.splitext(f)[0] for f in os.listdir(group_path) if f.endswith(".xml"))
 
+                    # Créer un dictionnaire des fichiers existants non modifiés
+                    existing_files_map = {os.path.splitext(f)[0]: os.path.join(group_path, f) for f in
+                                          os.listdir(group_path) if f.endswith(".xml")}
+
+                    # Génération/régénération des fichiers modifiés
                     for res in group_items:
                         raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                         base_name = clean_id_with_strip(raw_title)
                         filename = unique_filename(base_name, existing_names) + ".xml"
                         filepath = os.path.join(group_path, filename)
 
-                        # ❗ Si un fichier du même nom existe déjà, le supprimer pour éviter les doublons (_2, _3, etc.)
                         if os.path.exists(filepath):
                             os.remove(filepath)
                             log(f"[NETTOYAGE] Ancien fichier supprimé : {filepath}")
@@ -729,17 +736,36 @@ def main():
                         log(f"[GÉNÉRATION] Ressource : {filepath}")
 
                         track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
-                    members.append(build_collection_element(
-                        identifier=group_identifier,
-                        title=f"{title_label} : {group_name}",
-                        is_reference=True,
-                        filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
-                    ))
+
+                        # Retirer ce fichier des existants pour ne pas le réinsérer dans l'index plus tard
+                        existing_files_map.pop(os.path.splitext(filename)[0], None)
+
+                    # Ajouter dans l'index les fichiers existants non modifiés (sans les régénérer)
+                    for existing_file, existing_path in existing_files_map.items():
+                        members.append(build_collection_element(
+                            identifier=existing_file,
+                            title=existing_file,  # Tu peux améliorer en récupérant un titre lisible si possible
+                            is_reference=True,
+                            filepath=os.path.relpath(existing_path, start=parent_path).replace(os.sep, "/")
+                        ))
+
+                    # Ajouter aussi les fichiers fraîchement générés dans l'index
+                    for res in group_items:
+                        raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
+                        base_name = clean_id_with_strip(raw_title)
+                        filename = unique_filename(base_name, existing_names)  # Même nom utilisé plus haut
+                        filepath = os.path.join(group_path, filename + ".xml")
+                        members.append(build_collection_element(
+                            identifier=clean_id_with_strip(filename),
+                            title=raw_title,
+                            is_reference=True,
+                            filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
+                        ))
+
                 else:
                     sub_members = recursive_group_tracked(level + 1, group_path, group_items, group_identifier)
                     if sub_members:
                         if is_parent_changed(group_path, sub_members):
-                            # Écrire un nouvel index si les membres ont changé
                             write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
                                              sub_members)
                             members.append(build_collection_element(
