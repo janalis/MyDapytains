@@ -4,7 +4,7 @@
         <fileDesc>
             <titleStmt>
                 <title type="main" xml:lang="fr">Sermon II</title>
-                <title type="main" xml:lang="en">nom cgncgn</title>
+                <title type="main" xml:lang="en">sermo2</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
                 <author xml:lang="en">nom auteur</author>
@@ -103,7 +103,7 @@
                     <list>
                         <item ana="corpus">777777</item>
                         <item ana="authorgroup">Wesilees (11th-14th century)</item>
-                        <item ana="workgroup">bbb</item>
+                        <item ana="workgroup">aaa</item>
                         <item ana="work">ththd</item>
                     </list>
                 </keywords>

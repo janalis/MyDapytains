@@ -521,14 +521,6 @@ def detect_global_impact(changed_level: int, modified_files: List[Dict[str, Any]
 
     return False
 
-
-def delete_files_for_changed_level(level: int, hierarchy: Dict[str, Any], old_hierarchy: Dict[str, Any],
-                                   group_path: str):
-    if is_parent_changed(group_path, hierarchy):
-        delete_generated_files(old_hierarchy)  # Supprimer uniquement les fichiers du sous-niveau affecté
-        log(f"[SUPPRESSION] Fichiers supprimés au niveau {level} pour {group_path}")
-
-
 def remove_dir_recursive_verbose(path):
     if not os.path.exists(path):
         log(f"[SUPPRESSION] Le dossier {path} n'existe pas, aucune suppression nécessaire")
@@ -565,34 +557,145 @@ def delete_folder_and_contents(path):
         print(f"Le dossier {path} n'existe pas, suppression ignorée.")
 
 
-def delete_file_and_cleanup_upwards(filepath: str, root_dir: str):
-    """
-    Supprime un fichier ou dossier, puis remonte en nettoyant les dossiers vides
-    jusqu'à root_dir (non inclus).
-    """
-    import os
+def delete_file_and_cleanup_upwards(path, base_dir):
+    """Supprimer un fichier ou un dossier, puis nettoyer les répertoires parents vides jusqu'à base_dir."""
 
-    if os.path.isfile(filepath):
-        delete_file_and_cleanup_upwards(filepath, CATALOG_DIR)
-        log(f"[SUPPRESSION] Fichier supprimé : {filepath}")
-    elif os.path.isdir(filepath):
-        shutil.rmtree(filepath)
-        log(f"[SUPPRESSION] Dossier supprimé récursivement : {filepath}")
-    else:
-        log(f"[SUPPRESSION] Fichier ou dossier introuvable : {filepath}")
-        return
+    def handle_remove_readonly(func, path, exc_info):
+        try:
+            os.chmod(path, stat.S_IWRITE)  # Enlever lecture seule
+            func(path)
+        except Exception as e:
+            log(f"[ERREUR] Impossible de forcer la suppression de {path} : {e}")
 
-    # Nettoyage des dossiers vides en remontant
-    current_dir = os.path.dirname(filepath)
-    while current_dir != root_dir and os.path.isdir(current_dir):
-        if not os.listdir(current_dir):  # dossier vide
-            try:
-                os.rmdir(current_dir)
-                log(f"[NETTOYAGE] Dossier vide supprimé : {current_dir}")
-            except OSError as e:
-                log(f"[NETTOYAGE] Échec suppression dossier {current_dir} : {e}")
-                break
-            current_dir = os.path.dirname(current_dir)
+    try:
+        if os.path.isfile(path):
+            os.remove(path)
+            log(f"[SUPPRESSION] Fichier supprimé : {path}")
+        elif os.path.isdir(path):
+            shutil.rmtree(path, onerror=handle_remove_readonly)
+            log(f"[SUPPRESSION] Dossier supprimé récursivement : {path}")
         else:
-            log(f"[NETTOYAGE] Dossier non vide, stop nettoyage : {current_dir}")
-            break
+            log(f"[INFO] Rien à supprimer : {path} n'existe pas ou n'est pas un fichier/dossier.")
+
+        # Nettoyage des répertoires vides vers le haut
+        parent_dir = os.path.dirname(path)
+        while os.path.abspath(parent_dir) != os.path.abspath(base_dir):
+            try:
+                if not os.listdir(parent_dir):
+                    os.rmdir(parent_dir)
+                    log(f"[NETTOYAGE] Répertoire vidé : {parent_dir}")
+                else:
+                    break  # Stop dès qu'un dossier n'est pas vide
+            except Exception as e:
+                log(f"[ERREUR] Impossible de nettoyer {parent_dir} : {e}")
+                break
+            parent_dir = os.path.dirname(parent_dir)
+
+    except Exception as e:
+        log(f"[ERREUR] Impossible de supprimer {path} : {e}")
+
+# Fonction pour nettoyer et supprimer un répertoire
+# Fonction pour nettoyer et supprimer récursivement les répertoires vides et fichiers
+def clean_and_remove_directory(directory):
+    """Supprime récursivement un répertoire et son contenu sans hardcoder les chemins."""
+    print(f"[INFO] Tentative de nettoyage et suppression du répertoire : {directory}")
+
+    if os.path.exists(directory):
+        for root, dirs, files in os.walk(directory, topdown=False):
+            print(f"[INFO] Parcours du répertoire {root}... Contenu : {files}")
+
+            # Suppression des fichiers XML autres que index.xml
+            for file in files:
+                if file.endswith(".xml") and file != "index.xml":
+                    file_path = os.path.join(root, file)
+                    try:
+                        os.remove(file_path)
+                        print(f"[SUPPRESSION] Fichier supprimé : {file_path}")
+                    except Exception as e:
+                        print(f"[ERREUR] Impossible de supprimer {file_path}: {e}")
+
+            # Suppression des sous-dossiers vides (ex. works)
+            for dir in dirs:
+                dir_path = os.path.join(root, dir)
+                try:
+                    os.rmdir(dir_path)
+                    print(f"[SUPPRESSION] Dossier supprimé : {dir_path}")
+                except Exception as e:
+                    print(f"[ERREUR] Impossible de supprimer {dir_path}: {e}")
+
+        # Après avoir nettoyé tout, on tente de supprimer le dossier principal
+        try:
+            os.rmdir(directory)  # Ou shutil.rmtree(directory) pour forcer la suppression
+            print(f"[SUPPRESSION] Dossier supprimé : {directory}")
+        except Exception as e:
+            print(f"[ERREUR] Impossible de supprimer le dossier {directory}: {e}")
+    else:
+        print(f"[INFO] Le répertoire {directory} n'existe pas.")
+
+
+
+def find_xml_files_in_subfolder(directory):
+    """Trouve tous les fichiers XML dans le dossier, y compris les sous-dossiers."""
+    xml_files = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".xml") and file != "index.xml":  # Ignorer index.xml
+                xml_files.append(os.path.join(root, file))
+    return xml_files
+
+# Fonction générique pour supprimer les fichiers au niveau d'un sous-dossier
+def delete_files_for_changed_level(level: int, hierarchy: Dict[str, Any], old_hierarchy: Dict[str, Any],
+                                   group_path: str):
+    """Supprime les fichiers d'un niveau affecté dans la hiérarchie sans hardcoder les chemins."""
+    if is_parent_changed(group_path, hierarchy):
+        delete_generated_files(old_hierarchy)  # Supprimer uniquement les fichiers du sous-niveau affecté
+        log(f"[SUPPRESSION] Fichiers supprimés au niveau {level} pour {group_path}")
+
+def delete_generated_files_by_group(group_path):
+    """Supprime les fichiers générés pour un groupe donné de manière dynamique."""
+    if os.path.exists(group_path):
+        print(f"[SUPPRESSION] Nettoyage du groupe : {group_path}")
+        delete_files_for_changed_level(0, {}, {}, group_path)
+        clean_and_remove_directory(group_path)
+    else:
+        print(f"[INFO] Le groupe {group_path} n'existe pas, aucune suppression nécessaire.")
+
+def find_xml_files_and_structure(base_dir):
+    xml_files_by_dir = {}
+
+    # Parcours récursif de tous les fichiers et dossiers dans le répertoire de base
+    for root, dirs, files in os.walk(base_dir):
+        # Liste des fichiers XML mais sans inclure "index.xml"
+        xml_files = [file for file in files if file.endswith(".xml") and file != "index.xml"]
+
+        # Si des fichiers XML (autres que index.xml) sont trouvés dans ce répertoire, on les ajoute au dictionnaire
+        if xml_files:
+            # On stocke le chemin du répertoire comme clé et la liste des fichiers XML comme valeur
+            xml_files_by_dir[root] = xml_files
+
+    return xml_files_by_dir
+
+
+def delete_directory(path):
+    """Supprimer le répertoire et tout son contenu."""
+    if os.path.exists(path):
+        try:
+            shutil.rmtree(path)
+            log(f"[SUPPRESSION] Dossier supprimé : {path}")
+        except Exception as e:
+            log(f"[ERREUR] Impossible de supprimer {path} : {e}")
+    else:
+        log(f"[INFO] Le répertoire {path} n'existe pas, suppression ignorée.")
+
+
+def count_non_index_xml_in_works(group_path: str) -> int:
+    """
+    Compte les fichiers XML (hors index.xml) dans le sous-dossier 'works' d'un group_path donné.
+    """
+    works_path = os.path.join(group_path, "works")
+    if not os.path.exists(works_path):
+        return 0
+
+    xml_files = [f for f in os.listdir(works_path)
+                 if f.endswith(".xml") and f.lower() != "index.xml"]
+    return len(xml_files)
