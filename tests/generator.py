@@ -2,6 +2,7 @@ from core import *
 
 def main():
     ensure_dir(CATALOG_DIR)
+    log(f"[DEBUG] Répertoire {CATALOG_DIR} vérifié/créé.")
     current_hash = compute_config_hash(CONFIG_PATH, MAPPING_PATH)
     state = load_state()
     previous_hash = state.get("config_hash")
@@ -17,6 +18,11 @@ def main():
         delete_all_generated_content()
         previous_files = {}
 
+    log(f"[DEBUG] TEI_DIR = {TEI_DIR}")
+    log(f"[DEBUG] BASE_DIR = {BASE_DIR}")
+    files = os.listdir(TEI_DIR)
+    log(f"[DEBUG] Fichiers dans {TEI_DIR}: {files}")
+
     for fn in os.listdir(TEI_DIR):
         if not (fn.startswith("WORK_") and fn.endswith(".xml")):
             continue
@@ -26,7 +32,12 @@ def main():
         mtime = os.path.getmtime(abs_path)
         current_files[rel] = {"mtime": mtime}
 
+        log(f"[DEBUG] previous_files = {previous_files}")
+        log(f"[DEBUG] current_files = {current_files}")
+
         res = extract_metadata(abs_path)
+        if not res:
+            log(f"[ERREUR] Échec de l'extraction des métadonnées pour {abs_path}")
         hierarchy = extract_hierarchy(res, config)
         current_files[rel].update({"hierarchy": hierarchy})
 
@@ -272,7 +283,7 @@ def main():
                         rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
                         res_el = build_resource_element(res, rel_path_to_tei)
                         ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
-                        log(f"[GÉNÉRATION] Ressource : {filepath}")
+                        log(f"[DEBUG] Fichier généré : {filepath}")
 
                         track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
 

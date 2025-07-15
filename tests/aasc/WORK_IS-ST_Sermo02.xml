@@ -7,7 +7,7 @@
                 <title type="main" xml:lang="en">sermo2</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
-                <author xml:lang="en">nom auteur</author>
+                <author xml:lang="en">test_nom_auteur4</author>
 
                 <respStmt>
                     <resp xml:lang="fr">Encodage TEI</resp>
@@ -93,7 +93,7 @@
             <textClass>
                 <keywords xml:lang="fr">
                     <list>
-                        <item ana="corpus">TextePatristiques</item>
+                        <item ana="corpus">test_corpus</item>
                         <item ana="authorgroup">Moy Âecdental (XIe-XIVe s.)</item>
                         <item ana="workgroup">Sermoes</item>
                         <item ana="work">Sermo I</item>
@@ -101,10 +101,10 @@
                 </keywords>
                 <keywords xml:lang="en">
                     <list>
-                        <item ana="corpus">777777</item>
-                        <item ana="authorgroup">test1</item>
-                        <item ana="workgroup">aaa</item>
-                        <item ana="work">ththd</item>
+                        <item ana="corpus">test_corpus2</item>
+                        <item ana="authorgroup">test_authorgroup5</item>
+                        <item ana="workgroup">16</item>
+                        <item ana="work">test_work2</item>
                     </list>
                 </keywords>
             </textClass>

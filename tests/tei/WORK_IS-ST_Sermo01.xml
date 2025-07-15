@@ -7,7 +7,7 @@
                 <title type="main" xml:lang="en">sermo1</title>
 
                 <author xml:lang="fr">Isaac del'Étoile</author>
-                <author xml:lang="en">test_nom_auteur2</author>
+                <author xml:lang="en">test_nom_auteur3</author>
 
                 <respStmt>
                     <resp xml:lang="fr">EncodageEI</resp>
@@ -101,10 +101,10 @@
                 </keywords>
                 <keywords xml:lang="en">
                     <list>
-                        <item ana="corpus">test_corpus</item>
-                        <item ana="authorgroup">test_authorgroup2</item>
-                        <item ana="workgroup">test_workgroup2</item>
-                        <item ana="work">test_work</item>
+                        <item ana="corpus">test_corpus4</item>
+                        <item ana="authorgroup">test_authorgroup6</item>
+                        <item ana="workgroup">18</item>
+                        <item ana="work">test_work2</item>
                     </list>
                 </keywords>
             </textClass>

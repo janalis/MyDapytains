@@ -19,7 +19,7 @@ def find_xml_files_and_structure(base_dir):
 
 def main():
     # Ton répertoire de base, avec chemin absolu sous Windows
-    base_dir = r"C:\Users\augus\Desktop\Stage\stage\MyDapytains\tests\catalog\corpora\777777\authorgroups\wesilees__11th-14th_century_\authors\nom_auteur\workgroups"  # Utilisation du "r" pour un chemin brut
+    base_dir = r"C:\Users\augus\Desktop\Stage\stage\MyDapytains\tests\catalog\corpora\test_corpus\authorgroups"  # Utilisation du "r" pour un chemin brut
 
     # Trouver tous les fichiers XML et organiser la structure
     xml_files_by_dir = find_xml_files_and_structure(base_dir)
