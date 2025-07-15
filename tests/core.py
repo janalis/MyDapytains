@@ -675,7 +675,6 @@ def find_xml_files_and_structure(base_dir):
 
     return xml_files_by_dir
 
-
 def delete_directory(path):
     """Supprimer le répertoire et tout son contenu."""
     if os.path.exists(path):
@@ -686,7 +685,6 @@ def delete_directory(path):
             log(f"[ERREUR] Impossible de supprimer {path} : {e}")
     else:
         log(f"[INFO] Le répertoire {path} n'existe pas, suppression ignorée.")
-
 
 def count_non_index_xml_in_works(group_path: str) -> int:
     """
@@ -699,3 +697,4 @@ def count_non_index_xml_in_works(group_path: str) -> int:
     xml_files = [f for f in os.listdir(works_path)
                  if f.endswith(".xml") and f.lower() != "index.xml"]
     return len(xml_files)
+
