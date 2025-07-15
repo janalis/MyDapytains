@@ -332,22 +332,42 @@ def recursive_group(level: int, parent_path: str, items: List[Dict[str, Any]], p
     return members
 
 
-def clean_empty_directories_and_indexes(path: str):
+import os
+import shutil
+
+import os
+import shutil
+
+
+def clean_empty_directories_and_indexes(path: str, modified_level: int):
     """
     Supprime récursivement les dossiers vides et les fichiers index.xml inutiles,
-    en remontant jusqu’à la racine du catalogue.
-    Ajout de logs détaillés pour tracer la détection des fichiers restants.
-    Force la suppression des répertoires non vides si nécessaire.
+    mais ne supprime pas de dossiers au-dessus du niveau modifié.
+
+    :param path: Le chemin du dossier à nettoyer.
+    :param modified_level: Le niveau à partir duquel la suppression doit s'arrêter.
     """
+    print("APPEL A LA FONCTION CLEAN EMPTY DIRECTORIES AND INDEXES !!!!")
+
     while path != CATALOG_DIR and os.path.isdir(path):
+        # Calcul du niveau actuel par rapport à la racine du catalogue (niveau 0)
+        current_level = len(os.path.relpath(path, CATALOG_DIR).split(os.sep))
+
+        # Si le niveau actuel est supérieur au niveau modifié, on arrête la suppression
+        if current_level > modified_level:
+            log(f"[NETTOYAGE] Arrêt de la suppression, niveau {current_level} supérieur au niveau modifié {modified_level}.")
+            break
+
+        print(f"current_level: {current_level}, modified_level: {modified_level}")
+
         contents = os.listdir(path)
-        # On regarde uniquement les fichiers XML autres que index.xml
         non_index_xml_files = [f for f in contents if f.endswith(".xml") and f != "index.xml"]
 
         log(f"[NETTOYAGE] Vérification du dossier : {path}")
         log(f"[NETTOYAGE] Contenu complet : {contents}")
         log(f"[NETTOYAGE] Fichiers XML autres que index.xml détectés : {non_index_xml_files}")
 
+        # Si le dossier ne contient que des index.xml ou est vide, on peut le supprimer
         if not non_index_xml_files:
             index_path = os.path.join(path, "index.xml")
             if os.path.isfile(index_path):
@@ -356,17 +376,22 @@ def clean_empty_directories_and_indexes(path: str):
             else:
                 log(f"[NETTOYAGE] index.xml non trouvé, rien à supprimer ici.")
 
-            try:
-                # Utilisation de shutil.rmtree() pour forcer la suppression
-                shutil.rmtree(path)
-                log(f"[NETTOYAGE] Dossier supprimé (même non vide) : {path}")
-            except Exception as e:
-                log(f"[NETTOYAGE] ÉCHEC suppression du dossier {path} : {e}")
-                break
-            path = os.path.dirname(path)
+            # Vérification si le dossier est vide après suppression de l'index.xml
+            if not os.listdir(path):  # Si le dossier est vide
+                try:
+                    shutil.rmtree(path)
+                    log(f"[NETTOYAGE] Dossier supprimé : {path}")
+                except Exception as e:
+                    log(f"[NETTOYAGE] ÉCHEC suppression du dossier {path} : {e}")
+                    break
+            else:
+                log(f"[NETTOYAGE] Dossier non supprimé, reste des fichiers.")
         else:
             log(f"[NETTOYAGE] Dossier NON supprimé car fichiers XML restants : {non_index_xml_files}")
-            break
+            break  # Ne pas supprimer ce dossier, on s'arrête ici.
+
+        # Remonter d'un niveau dans l'arborescence
+        path = os.path.dirname(path)
 
 
 def delete_generated_files_by_path(output_path: str):  # MOD
@@ -691,22 +716,10 @@ def delete_directory(path):
         log(f"[INFO] Le répertoire {path} n'existe pas, suppression ignorée.")
 
 
-def count_non_index_xml_in_works(group_path: str) -> int:
-    """
-    Compte les fichiers XML (hors index.xml) dans le sous-dossier 'works' d'un group_path donné,
-    et dans tous ses sous-dossiers.
-    """
-    # Vérifie d'abord si le dossier 'works' existe
-    works_path = os.path.join(group_path, "works")
+def count_non_index_xml_in_works(works_path: str) -> int:
     if not os.path.exists(works_path):
         return 0
-
-    # Utilisation de os.walk pour parcourir tous les sous-dossiers
-    xml_count = 0
-    for root, dirs, files in os.walk(works_path):
-        for file in files:
-            if file.endswith(".xml") and file.lower() != "index.xml":
-                xml_count += 1
-
-    return xml_count
-
+    return sum(
+        1 for _, _, files in os.walk(works_path)
+        for file in files if file.endswith(".xml") and file.lower() != "index.xml"
+    )

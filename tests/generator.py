@@ -209,6 +209,24 @@ def main():
                                                 log(f"[ERREUR] Impossible de supprimer {path_to_delete} : {e}")
                                     log(f"[SUPPRESSION] Dossier conservé : {len(remaining_files)} fichiers XML dans 'works'")
 
+                                    collection_members = []
+                                    for remaining_file in remaining_files:
+                                        full_path = os.path.join(works_dir, remaining_file)
+                                        collection_members.append(build_collection_element(
+                                            identifier=os.path.splitext(remaining_file)[0],
+                                            title=os.path.splitext(remaining_file)[0],
+                                            # ou extraire un vrai titre si tu peux
+                                            is_reference=True,
+                                            filepath=os.path.relpath(full_path, start=old_full_path).replace(os.sep,"/")
+                                        ))
+
+                                    try:
+                                        write_index_file(old_full_path, "_".join(old_path_parts), "Collection nettoyée",
+                                                         None, collection_members)
+                                        log(f"[MISE À JOUR] index.xml mis à jour dans : {old_full_path}")
+                                    except Exception as e:
+                                        log(f"[ERREUR] Impossible de régénérer l'index.xml dans {old_full_path} : {e}")
+
                             else:
                                 log(f"[ERREUR] Le dossier works n'existe pas dans {old_full_path}")
 
@@ -216,7 +234,7 @@ def main():
                         parent_path = os.path.dirname(old_full_path)
                         log(f"[NETTOYAGE] Nettoyage à partir du dossier parent : {parent_path}")
                         if os.path.exists(parent_path):
-                            clean_empty_directories_and_indexes(parent_path)
+                            clean_empty_directories_and_indexes(parent_path, changed_level)
                         else:
                             log(f"[NETTOYAGE] Le chemin {parent_path} n'existe PAS, nettoyage ignoré")
 
