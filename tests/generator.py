@@ -275,10 +275,11 @@ def main():
             level_key = key.split(":")[-1]
             if_missing = current_config.get("if_missing", "create_unknown")
 
+            print(f"\n[DEBUG] === Niveau {level} ({slug}) dans {parent_path} ===")
+
             groups = defaultdict(list)
             attach_to_parent_items = []
 
-            # Group items by the current level key
             for item in items:
                 value = item.get(level_key)
                 if not value:
@@ -292,28 +293,42 @@ def main():
                 group_id = clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
                 groups[group_id].append(item)
 
+            group_dir = os.path.join(parent_path, slug)
+            existing_dirs = []
+            if os.path.isdir(group_dir):
+                existing_dirs = [entry for entry in os.listdir(group_dir) if
+                                 os.path.isdir(os.path.join(group_dir, entry))]
+                for d in existing_dirs:
+                    print(f"[DEBUG] 📁 Dossier existant au niveau '{slug}': {d}")
+
+            all_group_ids = set(groups.keys()).union(existing_dirs)
+            print(f"[DEBUG] Groupes à traiter ({len(all_group_ids)}) : {sorted(all_group_ids)}")
+
             members = []
-            for group_id, group_items in groups.items():
-                first = group_items[0]
-                name_data = first.get(level_key)
-                group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
+
+            for group_id in sorted(all_group_ids):
+                group_items = groups.get(group_id, [])
                 group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
-                group_path = os.path.join(parent_path, slug, group_id) if level < len(
-                    config["hierarchy"]) - 1 else os.path.join(parent_path, slug)
+                group_path = os.path.join(parent_path, slug, group_id)
+
+                if group_items:
+                    first = group_items[0]
+                    name_data = first.get(level_key)
+                    group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
+                else:
+                    group_name = group_id  # fallback
+
+                print(f"[INFO] → Groupe '{group_id}': {len(group_items)} item(s)")
 
                 if level == len(config["hierarchy"]) - 1:
                     ensure_dir(group_path)
-
-                    # --- Nettoyer les fichiers orphelins ---
                     expected_basenames = set()
 
-                    # 1. Ajouter les fichiers générés dans cette passe
                     for res in group_items:
                         raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                         base_name = clean_id_with_strip(raw_title)
                         expected_basenames.add(base_name)
 
-                    # 2. Ajouter les fichiers existants non modifiés à partir de current_files
                     for rel_path, info in current_files.items():
                         output_path = info.get("output_filepath")
                         if not output_path:
@@ -326,24 +341,17 @@ def main():
 
                     existing_files = [f for f in os.listdir(group_path) if
                                       f.endswith(".xml") and f.lower() != "index.xml"]
-
-                    log(f"[DEBUG] Fichiers attendus dans {group_path} : {expected_basenames}")
-                    log(f"[DEBUG] Fichiers trouvés dans {group_path} : {existing_files}")
-
-                    # Supprimer les fichiers orphelins
                     for file in existing_files:
                         base = os.path.splitext(file)[0]
                         if base not in expected_basenames:
                             try:
                                 os.remove(os.path.join(group_path, file))
-                                log(f"[NETTOYAGE] Fichier orphelin supprimé : {file} dans {group_path}")
+                                print(f"[DEBUG] 🗑️ Supprimé fichier obsolète : {file}")
                             except Exception as e:
-                                log(f"[ERREUR] Impossible de supprimer fichier orphelin {file} : {e}")
+                                print(f"[DEBUG] ⚠️ Erreur suppression fichier : {file} ({e})")
 
-                    # Recharger noms après nettoyage
                     existing_names = set(os.path.splitext(f)[0] for f in os.listdir(group_path) if
                                          f.endswith(".xml") and f.lower() != "index.xml")
-
                     filename_map = {}
                     for res in group_items:
                         raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
@@ -362,12 +370,11 @@ def main():
                         rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
                         res_el = build_resource_element(res, rel_path_to_tei)
                         ET.ElementTree(res_el).write(filepath, encoding="utf-8", xml_declaration=True)
-                        log(f"[DEBUG] Fichier généré : {filepath}")
 
                         track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
                         generated_files.append((filename_base, raw_title, filename))
+                        print(f"[DEBUG] ✅ Généré : {filename}")
 
-                    # Ajouter les fichiers non modifiés déjà présents
                     current_generated_basenames = set(filename_map.values())
                     existing_files_map = {
                         os.path.splitext(f)[0]: os.path.join(group_path, f)
@@ -384,7 +391,6 @@ def main():
                             filepath=os.path.relpath(existing_path, start=parent_path).replace(os.sep, "/")
                         ))
 
-                    # Ajouter aussi les fichiers générés
                     for filename_base, raw_title, filename in generated_files:
                         filepath = os.path.join(group_path, filename)
                         members.append(build_collection_element(
@@ -396,25 +402,39 @@ def main():
 
                 else:
                     sub_members = recursive_group_tracked(level + 1, group_path, group_items, group_identifier)
+                    index_filepath = os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(
+                        os.sep, "/")
+
                     if sub_members:
-                        if is_parent_changed(group_path, sub_members):
-                            write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
-                                             sub_members)
+                        print(f"[DEBUG] 🏗️ Écriture de index.xml pour '{group_id}' ({len(sub_members)} membres)")
+                        write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
+                                         sub_members)
+
+                        members.append(build_collection_element(
+                            identifier=group_identifier,
+                            title=f"{title_label} : {group_name}",
+                            is_reference=True,
+                            filepath=index_filepath
+                        ))
+                    else:
+                        if os.path.exists(os.path.join(group_path, "index.xml")):
+                            print(f"[DEBUG] ℹ️ Réutilisation de index existant pour '{group_id}'")
                             members.append(build_collection_element(
                                 identifier=group_identifier,
                                 title=f"{title_label} : {group_name}",
                                 is_reference=True,
-                                filepath=os.path.relpath(os.path.join(group_path, "index.xml"),
-                                                         start=parent_path).replace(os.sep, "/")
+                                filepath=index_filepath
                             ))
                         else:
-                            log(f"[IGNORÉ] Pas de changement dans la collection : {group_path}")
+                            print(f"[DEBUG] ⚠️ Ignoré : pas de sub_members ni index pour '{group_id}'")
 
             if attach_to_parent_items:
+                print(f"[DEBUG] 📎 {len(attach_to_parent_items)} élément(s) attachés au parent")
                 sub_items = recursive_group_tracked(level + 1, parent_path, attach_to_parent_items, parent_id)
                 if sub_items:
                     members += sub_items
 
+            print(f"[DEBUG] ⬆️ Fin du niveau {level} ({slug}) → {len(members)} membre(s) retournés\n")
             return members
 
         members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "")
