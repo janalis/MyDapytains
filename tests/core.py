@@ -304,7 +304,7 @@ def delete_generated_files_by_path(output_path: str):  # MOD
         os.remove(abs_path)
         log(f"[SUPPRESSION] Fichier supprimé : {abs_path}")
     dir_path = os.path.dirname(abs_path)
-    clean_empty_directories_and_indexes(dir_path)
+    clean_empty_directories_and_indexes(dir_path, 0)
 
 def is_parent_changed(parent_path: str, current_members: List[ET.Element]) -> bool:
     """

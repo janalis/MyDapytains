@@ -256,6 +256,7 @@ def main():
             groups = defaultdict(list)
             attach_to_parent_items = []
 
+            # Group items by the current level key
             for item in items:
                 value = item.get(level_key)
                 if not value:
@@ -280,22 +281,60 @@ def main():
 
                 if level == len(config["hierarchy"]) - 1:
                     ensure_dir(group_path)
-                    existing_names = set(os.path.splitext(f)[0] for f in os.listdir(group_path) if f.endswith(".xml"))
 
-                    # Créer un dictionnaire des fichiers existants non modifiés
-                    existing_files_map = {os.path.splitext(f)[0]: os.path.join(group_path, f) for f in
-                                          os.listdir(group_path) if f.endswith(".xml")}
+                    # --- Nettoyer les fichiers orphelins ---
+                    expected_basenames = set()
 
-                    # Génération/régénération des fichiers modifiés
+                    # 1. Ajouter les fichiers générés dans cette passe
                     for res in group_items:
                         raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                         base_name = clean_id_with_strip(raw_title)
-                        filename = unique_filename(base_name, existing_names) + ".xml"
-                        filepath = os.path.join(group_path, filename)
+                        expected_basenames.add(base_name)
 
-                        if os.path.exists(filepath):
-                            delete_file_and_cleanup_upwards(filepath, CATALOG_DIR)
-                            log(f"[NETTOYAGE] Ancien fichier supprimé : {filepath}")
+                    # 2. Ajouter les fichiers existants non modifiés à partir de current_files
+                    for rel_path, info in current_files.items():
+                        output_path = info.get("output_filepath")
+                        if not output_path:
+                            continue
+                        output_abs = os.path.abspath(os.path.join(BASE_DIR, output_path))
+                        output_dir = os.path.dirname(output_abs)
+                        if os.path.normpath(output_dir) == os.path.normpath(group_path):
+                            file_basename = os.path.splitext(os.path.basename(output_path))[0]
+                            expected_basenames.add(file_basename)
+
+                    existing_files = [f for f in os.listdir(group_path) if
+                                      f.endswith(".xml") and f.lower() != "index.xml"]
+
+                    log(f"[DEBUG] Fichiers attendus dans {group_path} : {expected_basenames}")
+                    log(f"[DEBUG] Fichiers trouvés dans {group_path} : {existing_files}")
+
+                    # Supprimer les fichiers orphelins
+                    for file in existing_files:
+                        base = os.path.splitext(file)[0]
+                        if base not in expected_basenames:
+                            try:
+                                os.remove(os.path.join(group_path, file))
+                                log(f"[NETTOYAGE] Fichier orphelin supprimé : {file} dans {group_path}")
+                            except Exception as e:
+                                log(f"[ERREUR] Impossible de supprimer fichier orphelin {file} : {e}")
+
+                    # Recharger noms après nettoyage
+                    existing_names = set(os.path.splitext(f)[0] for f in os.listdir(group_path) if
+                                         f.endswith(".xml") and f.lower() != "index.xml")
+
+                    filename_map = {}
+                    for res in group_items:
+                        raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
+                        base_name = clean_id_with_strip(raw_title)
+                        filename_base = unique_filename(base_name, existing_names)
+                        existing_names.add(filename_base)
+                        filename_map[id(res)] = filename_base
+
+                    generated_files = []
+                    for res in group_items:
+                        filename_base = filename_map[id(res)]
+                        filename = filename_base + ".xml"
+                        filepath = os.path.join(group_path, filename)
 
                         tei_abs_path = os.path.abspath(os.path.join(BASE_DIR, res["filepath"]))
                         rel_path_to_tei = os.path.relpath(tei_abs_path, start=group_path).replace(os.sep, "/")
@@ -304,27 +343,30 @@ def main():
                         log(f"[DEBUG] Fichier généré : {filepath}")
 
                         track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
+                        generated_files.append((filename_base, raw_title, filename))
 
-                        # Retirer ce fichier des existants pour ne pas le réinsérer dans l'index plus tard
-                        existing_files_map.pop(os.path.splitext(filename)[0], None)
+                    # Ajouter les fichiers non modifiés déjà présents
+                    current_generated_basenames = set(filename_map.values())
+                    existing_files_map = {
+                        os.path.splitext(f)[0]: os.path.join(group_path, f)
+                        for f in os.listdir(group_path)
+                        if f.endswith(".xml") and f.lower() != "index.xml" and os.path.splitext(f)[
+                            0] not in current_generated_basenames
+                    }
 
-                    # Ajouter dans l'index les fichiers existants non modifiés (sans les régénérer)
                     for existing_file, existing_path in existing_files_map.items():
                         members.append(build_collection_element(
                             identifier=existing_file,
-                            title=existing_file,  # Tu peux améliorer en récupérant un titre lisible si possible
+                            title=existing_file,
                             is_reference=True,
                             filepath=os.path.relpath(existing_path, start=parent_path).replace(os.sep, "/")
                         ))
 
-                    # Ajouter aussi les fichiers fraîchement générés dans l'index
-                    for res in group_items:
-                        raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
-                        base_name = clean_id_with_strip(raw_title)
-                        filename = unique_filename(base_name, existing_names)  # Même nom utilisé plus haut
-                        filepath = os.path.join(group_path, filename + ".xml")
+                    # Ajouter aussi les fichiers générés
+                    for filename_base, raw_title, filename in generated_files:
+                        filepath = os.path.join(group_path, filename)
                         members.append(build_collection_element(
-                            identifier=clean_id_with_strip(filename),
+                            identifier=filename_base,
                             title=raw_title,
                             is_reference=True,
                             filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
@@ -347,7 +389,9 @@ def main():
                             log(f"[IGNORÉ] Pas de changement dans la collection : {group_path}")
 
             if attach_to_parent_items:
-                members += recursive_group_tracked(level + 1, parent_path, attach_to_parent_items, parent_id)
+                sub_items = recursive_group_tracked(level + 1, parent_path, attach_to_parent_items, parent_id)
+                if sub_items:
+                    members += sub_items
 
             return members
 
