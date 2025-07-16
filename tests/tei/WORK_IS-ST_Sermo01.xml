@@ -3,26 +3,26 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main" xml:lang="fr">Ser</title>
+                <title type="main" xml:lang="fr">Sermon I</title>
                 <title type="main" xml:lang="en">sermo1</title>
 
-                <author xml:lang="fr">Isaac del'Étoile</author>
+                <author xml:lang="fr">Isaac de l'Étoile</author>
                 <author xml:lang="en">test_author</author>
 
                 <respStmt>
-                    <resp xml:lang="fr">EncodageEI</resp>
+                    <resp xml:lang="fr">Encodage TEI</resp>
                     <resp xml:lang="en">TEI Encoding</resp>
                     <persName xml:id="EHG"/>
                 </respStmt>
 
                 <respStmt xml:id="resp_NB">
-                    <resp xml:lang="fr">Encdage d noms par</resp>
+                    <resp xml:lang="fr">Encodage des noms par</resp>
                     <resp xml:lang="en">Name encoding by</resp>
                     <persName xml:id="name-1"/>
                 </respStmt>
 
                 <respStmt xml:id="resp_LM">
-                    <resp xml:lang="fr">Vérificatin de'encodage des noms propres</resp>
+                    <resp xml:lang="fr">Vérification de l'encodage des noms propres</resp>
                     <resp xml:lang="en">Verification of proper name encoding</resp>
                     <persName xml:id="name-2"/>
                 </respStmt>
@@ -30,28 +30,28 @@
 
             <editionStmt>
                 <edition>
-                    <date>196</date>
+                    <date>1967</date>
                 </edition>
             </editionStmt>
 
             <publicationStmt>
-                <authority>Éditiondu erf</authority>
-                <authority xml:lang="en">Éditons du Cerf</authority>
+                <authority>Éditions du Cerf</authority>
+                <authority xml:lang="en">Éditions du Cerf</authority>
 
-                <pubPlace xml:lang="fr">Pis</pubPlace>
-                <pubPlace xml:lang="en">Paris</pubPlace>
+                <pubPlace xml:lang="fr">Paris</pubPlace>
+                <pubPlace xml:lang="en">Pais</pubPlace>
             </publicationStmt>
 
             <sourceDesc>
                 <bibl>
-                    <author xml:lang="fr">Isaac de l'Étoile</author>
-                    <author xml:lang="en">Isaac oella</author>
+                    <author xml:lang="fr">Isaa de l'Étoile</author>
+                    <author xml:lang="en">Isaac of Stella</author>
 
-                    <title type="main" xml:lang="fr">Sermons, tome I</title>
-                    <title type="main" xml:lang="en">Sermons, Volume I</title>
+                    <title type="main" xml:lang="fr">Sermons, tome II</title>
+                    <title type="main" xml:lang="en">Sermons, Volume II</title>
 
-                    <title type="subtitle" xml:lang="fr">Sermon–17</title>
-                    <title type="subtitle" xml:lang="en">Sermons 1–17</title>
+                    <title type="subtitle" xml:lang="fr">Sons 1–17</title>
+                    <title type="subtitle" xml:lang="en">Serms 1–17</title>
 
                     <respStmt>
                         <resp xml:lang="fr">Texte et introduction critiques</resp>
@@ -60,29 +60,29 @@
                     </respStmt>
 
                     <respStmt>
-                        <resp xml:lang="fr">Introduction, traduction et notes</resp>
+                        <resp xml:lang="fr">Introduction,traduction et notes</resp>
                         <resp xml:lang="en">Introduction, translation and notes</resp>
                         <persName xml:id="persName-3"/>
                     </respStmt>
 
-                    <pubPlace xml:lang="fr">Pa;gh,fkllgris</pubPlace>
-                    <pubPlace xml:lang="en">Parityjdyjdtyj8984s</pubPlace>
+                    <pubPlace xml:lang="fr">Paris</pubPlace>
+                    <pubPlace xml:lang="en">Paris</pubPlace>
 
-                    <publisher xml:lang="fr">Éditionsdu Cerf</publisher>
-                    <publisher xml:lang="en">Éditionu Cerf</publisher>
+                    <publisher xml:lang="fr">Éditions du Cerf</publisher>
+                    <publisher xml:lang="en">Éditions du Cerf</publisher>
 
                     <date>1967</date>
                     <biblScope from="84" to="98" unit="page"/>
 
                     <series>
-                        <title xml:lang="fr">Sourcns</title>
-                        <title xml:lang="en">Sourcs Chrétiennes</title>
-                        <biblScope unit="volume">10</biblScope>
+                        <title xml:lang="fr">Sources Chrétiennes</title>
+                        <title xml:lang="en">Sources Chrétiennes</title>
+                        <biblScope unit="volume">130</biblScope>
                     </series>
 
                     <series>
-                        <title xml:lang="fr">Série desxtMonastiques d'Occident</title>
-                        <title xml:lang="en">Série dxtes Monastques d'Occident</title>
+                        <title xml:lang="fr">Série desTextes Monastiques d'Occident</title>
+                        <title xml:lang="en">Série des Textes Monastiques d'Occident</title>
                         <biblScope unit="volume">20</biblScope>
                     </series>
                 </bibl>

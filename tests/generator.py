@@ -18,11 +18,6 @@ def main():
         delete_all_generated_content()
         previous_files = {}
 
-    log(f"[DEBUG] TEI_DIR = {TEI_DIR}")
-    log(f"[DEBUG] BASE_DIR = {BASE_DIR}")
-    files = os.listdir(TEI_DIR)
-    log(f"[DEBUG] Fichiers dans {TEI_DIR}: {files}")
-
     for fn in os.listdir(TEI_DIR):
         if not (fn.startswith("WORK_") and fn.endswith(".xml")):
             continue
@@ -31,9 +26,6 @@ def main():
         rel = os.path.normpath(rel).replace(os.sep, "/")
         mtime = os.path.getmtime(abs_path)
         current_files[rel] = {"mtime": mtime}
-
-        log(f"[DEBUG] previous_files = {previous_files}")
-        log(f"[DEBUG] current_files = {current_files}")
 
         res = extract_metadata(abs_path)
         if not res:
@@ -275,7 +267,6 @@ def main():
             level_key = key.split(":")[-1]
             if_missing = current_config.get("if_missing", "create_unknown")
 
-            print(f"\n[DEBUG] === Niveau {level} ({slug}) dans {parent_path} ===")
 
             groups = defaultdict(list)
             attach_to_parent_items = []
@@ -298,18 +289,21 @@ def main():
             if os.path.isdir(group_dir):
                 existing_dirs = [entry for entry in os.listdir(group_dir) if
                                  os.path.isdir(os.path.join(group_dir, entry))]
-                for d in existing_dirs:
-                    print(f"[DEBUG] 📁 Dossier existant au niveau '{slug}': {d}")
 
             all_group_ids = set(groups.keys()).union(existing_dirs)
-            print(f"[DEBUG] Groupes à traiter ({len(all_group_ids)}) : {sorted(all_group_ids)}")
 
             members = []
 
             for group_id in sorted(all_group_ids):
                 group_items = groups.get(group_id, [])
                 group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
-                group_path = os.path.join(parent_path, slug, group_id)
+                group_path = (
+                    os.path.join(parent_path, slug)
+                    if level == len(config["hierarchy"]) - 1
+                    else os.path.join(parent_path, slug, group_id)
+                )
+
+                # permet de ne pas créer de dossier au niveau works car inutile
 
                 if group_items:
                     first = group_items[0]
@@ -317,8 +311,6 @@ def main():
                     group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
                 else:
                     group_name = group_id  # fallback
-
-                print(f"[INFO] → Groupe '{group_id}': {len(group_items)} item(s)")
 
                 if level == len(config["hierarchy"]) - 1:
                     ensure_dir(group_path)
@@ -373,7 +365,6 @@ def main():
 
                         track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
                         generated_files.append((filename_base, raw_title, filename))
-                        print(f"[DEBUG] ✅ Généré : {filename}")
 
                     current_generated_basenames = set(filename_map.values())
                     existing_files_map = {
@@ -406,7 +397,6 @@ def main():
                         os.sep, "/")
 
                     if sub_members:
-                        print(f"[DEBUG] 🏗️ Écriture de index.xml pour '{group_id}' ({len(sub_members)} membres)")
                         write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
                                          sub_members)
 
@@ -418,23 +408,18 @@ def main():
                         ))
                     else:
                         if os.path.exists(os.path.join(group_path, "index.xml")):
-                            print(f"[DEBUG] ℹ️ Réutilisation de index existant pour '{group_id}'")
                             members.append(build_collection_element(
                                 identifier=group_identifier,
                                 title=f"{title_label} : {group_name}",
                                 is_reference=True,
                                 filepath=index_filepath
                             ))
-                        else:
-                            print(f"[DEBUG] ⚠️ Ignoré : pas de sub_members ni index pour '{group_id}'")
 
             if attach_to_parent_items:
-                print(f"[DEBUG] 📎 {len(attach_to_parent_items)} élément(s) attachés au parent")
                 sub_items = recursive_group_tracked(level + 1, parent_path, attach_to_parent_items, parent_id)
                 if sub_items:
                     members += sub_items
 
-            print(f"[DEBUG] ⬆️ Fin du niveau {level} ({slug}) → {len(members)} membre(s) retournés\n")
             return members
 
         members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "")

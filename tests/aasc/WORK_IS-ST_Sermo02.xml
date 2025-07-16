@@ -103,7 +103,7 @@
                     <list>
                         <item ana="corpus">test_corpus</item>
                         <item ana="authorgroup">test_authorgroup</item>
-                        <item ana="workgroup">test_workgroup2</item>
+                        <item ana="workgroup">test_workgroup</item>
                         <item ana="work">test_work</item>
                     </list>
                 </keywords>

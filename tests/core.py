@@ -255,7 +255,7 @@ def clean_empty_directories_and_indexes(path: str, modified_level: int):
         current_level = len(os.path.relpath(path, CATALOG_DIR).split(os.sep))
 
         # Si le niveau actuel est supérieur au niveau modifié, on arrête la suppression
-        if current_level > modified_level:
+        if current_level <= modified_level:
             log(f"[NETTOYAGE] Arrêt de la suppression, niveau {current_level} supérieur au niveau modifié {modified_level}.")
             break
 
