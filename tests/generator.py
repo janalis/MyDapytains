@@ -222,8 +222,30 @@ def main():
                                     ))
 
                                 try:
-                                    write_index_file(old_full_path, "_".join(old_path_parts), "Collection nettoyée",
-                                                     None, collection_members)
+                                    # Reconstruire correctement le group_identifier à partir des valeurs hiérarchiques uniquement (sans slugs)
+                                    group_identifier_parts = []
+                                    for i in range(changed_level + 1):
+                                        level_conf = config["hierarchy"][i]
+                                        key = level_conf["key"].split(":")[-1]
+                                        value = old_hierarchy.get(key)
+                                        if not value:
+                                            continue
+                                        group_identifier_parts.append(
+                                            clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
+                                        )
+                                    group_identifier = "_".join(group_identifier_parts)
+
+                                    # Même logique pour le titre
+                                    level_def = config["hierarchy"][changed_level]
+                                    title_label = level_def["title"]
+                                    key = level_def["key"].split(":")[-1]
+                                    value = old_hierarchy.get(key)
+                                    group_name = value.get("en") if isinstance(value, dict) else value
+                                    title = f"{title_label} : {group_name}" if group_name else title_label
+
+                                    # Écriture du fichier index avec titre et identifiant corrigés
+                                    write_index_file(old_full_path, group_identifier, title, None, collection_members)
+
                                     log(f"[MISE À JOUR] index.xml mis à jour dans : {old_full_path}")
                                 except Exception as e:
                                     log(f"[ERREUR] Impossible de régénérer l'index.xml dans {old_full_path} : {e}")
