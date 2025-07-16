@@ -150,87 +150,87 @@ def main():
                         log(f"[DEBUG] Chemin complet à supprimer (niveau {changed_level}) : {old_full_path}")
 
                         if os.path.exists(old_full_path):
-                            works_dir = os.path.join(old_full_path, "works")
-                            if os.path.exists(works_dir):
-                                # Lister tous les fichiers xml sauf index.xml
-                                xml_files = [f for f in os.listdir(works_dir) if
-                                             f.endswith(".xml") and f.lower() != "index.xml"]
+                            # Récupère tous les fichiers .xml sauf index.xml, récursivement
+                            xml_files_fullpaths = [
+                                os.path.join(root, file)
+                                for root, _, files in os.walk(old_full_path)
+                                for file in files
+                                if file.endswith(".xml") and file.lower() != "index.xml"
+                            ]
 
-                                # Ici tu dois récupérer la liste des fichiers déplacés pour ce workgroup
-                                # Exemple : récupérer les noms de fichiers déplacés (sans extension)
-                                moved_files_basenames = set()
-                                for rel2, res2 in resources_for_recursive_group.items():
-                                    # Extraire la hiérarchie pour savoir si ce fichier appartient à ce workgroup ancien
-                                    prev_entry2 = previous_files.get(rel2)
-                                    if prev_entry2:
-                                        old_hierarchy2 = prev_entry2.get("hierarchy", {})
-                                        # Construire le chemin ancien comme pour old_full_path pour vérifier correspondance
-                                        old_path_parts2 = []
-                                        for i, level_def in enumerate(config["hierarchy"]):
-                                            if i > changed_level:
-                                                break
-                                            key = level_def["key"].split(":")[-1]
-                                            value = old_hierarchy2.get(key)
-                                            if not value:
-                                                break
-                                            clean_value = clean_id_with_strip(
-                                                value.get("en") if isinstance(value, dict) else value)
-                                            old_path_parts2.append(level_def["slug"])
-                                            old_path_parts2.append(clean_value)
-                                        candidate_path = os.path.join(CATALOG_DIR, *old_path_parts2)
-                                        if os.path.normpath(candidate_path) == os.path.normpath(old_full_path):
-                                            # C’est bien dans ce workgroup ancien, récupérer le nom du fichier
-                                            raw_title = res2.get("workTitle") or res2.get("title", {}).get(
-                                                "en") or "work"
-                                            base_name = clean_id_with_strip(raw_title)
-                                            moved_files_basenames.add(base_name)
+                            # Récupère les noms de fichiers déplacés (sans extension)
+                            moved_files_basenames = set()
+                            for rel2, res2 in resources_for_recursive_group.items():
+                                prev_entry2 = previous_files.get(rel2)
+                                if prev_entry2:
+                                    old_hierarchy2 = prev_entry2.get("hierarchy", {})
+                                    old_path_parts2 = []
+                                    for i, level_def in enumerate(config["hierarchy"]):
+                                        if i > changed_level:
+                                            break
+                                        key = level_def["key"].split(":")[-1]
+                                        value = old_hierarchy2.get(key)
+                                        if not value:
+                                            break
+                                        clean_value = clean_id_with_strip(
+                                            value.get("en") if isinstance(value, dict) else value
+                                        )
+                                        old_path_parts2.append(level_def["slug"])
+                                        old_path_parts2.append(clean_value)
+                                    candidate_path = os.path.join(CATALOG_DIR, *old_path_parts2)
+                                    if os.path.normpath(candidate_path) == os.path.normpath(old_full_path):
+                                        raw_title = res2.get("workTitle") or res2.get("title", {}).get("en") or "work"
+                                        base_name = clean_id_with_strip(raw_title)
+                                        moved_files_basenames.add(base_name)
 
-                                # Maintenant on a la liste des fichiers déplacés dans ce dossier
-                                remaining_files = [f for f in xml_files if
-                                                   os.path.splitext(f)[0] not in moved_files_basenames]
+                            # Séparer les fichiers déplacés des fichiers restants
+                            remaining_files = [
+                                fp for fp in xml_files_fullpaths
+                                if os.path.splitext(os.path.basename(fp))[0] not in moved_files_basenames
+                            ]
 
-                                if len(remaining_files) == 0:
-                                    # Tous les fichiers déplacés → supprimer dossier
-                                    try:
-                                        delete_file_and_cleanup_upwards(old_full_path, CATALOG_DIR)
-                                        log(f"[SUPPRESSION] Dossier supprimé récursivement : {old_full_path}")
-                                    except Exception as e:
-                                        log(f"[ERREUR] Impossible de supprimer {old_full_path} : {e}")
-                                else:
-                                    # Supprimer uniquement les fichiers déplacés
-                                    for filename in xml_files:
-                                        basename = os.path.splitext(filename)[0]
-                                        if basename in moved_files_basenames:
-                                            path_to_delete = os.path.join(works_dir, filename)
-                                            try:
-                                                delete_file_and_cleanup_upwards(path_to_delete, CATALOG_DIR)
-                                                log(f"[SUPPRESSION] Fichier supprimé : {path_to_delete}")
-                                            except Exception as e:
-                                                log(f"[ERREUR] Impossible de supprimer {path_to_delete} : {e}")
-                                    log(f"[SUPPRESSION] Dossier conservé : {len(remaining_files)} fichiers XML dans 'works'")
-
-                                    collection_members = []
-                                    for remaining_file in remaining_files:
-                                        full_path = os.path.join(works_dir, remaining_file)
-                                        collection_members.append(build_collection_element(
-                                            identifier=os.path.splitext(remaining_file)[0],
-                                            title=os.path.splitext(remaining_file)[0],
-                                            # ou extraire un vrai titre si tu peux
-                                            is_reference=True,
-                                            filepath=os.path.relpath(full_path, start=old_full_path).replace(os.sep,"/")
-                                        ))
-
-                                    try:
-                                        write_index_file(old_full_path, "_".join(old_path_parts), "Collection nettoyée",
-                                                         None, collection_members)
-                                        log(f"[MISE À JOUR] index.xml mis à jour dans : {old_full_path}")
-                                    except Exception as e:
-                                        log(f"[ERREUR] Impossible de régénérer l'index.xml dans {old_full_path} : {e}")
-
+                            if len(remaining_files) == 0:
+                                # Tous les fichiers ont été déplacés → supprimer le dossier complet
+                                try:
+                                    delete_file_and_cleanup_upwards(old_full_path, CATALOG_DIR)
+                                    log(f"[SUPPRESSION] Dossier supprimé récursivement : {old_full_path}")
+                                except Exception as e:
+                                    log(f"[ERREUR] Impossible de supprimer {old_full_path} : {e}")
                             else:
-                                log(f"[ERREUR] Le dossier works n'existe pas dans {old_full_path}")
+                                # Supprimer uniquement les fichiers déplacés
+                                for filepath in xml_files_fullpaths:
+                                    basename = os.path.splitext(os.path.basename(filepath))[0]
+                                    if basename in moved_files_basenames:
+                                        try:
+                                            delete_file_and_cleanup_upwards(filepath, CATALOG_DIR)
+                                            log(f"[SUPPRESSION] Fichier supprimé : {filepath}")
+                                        except Exception as e:
+                                            log(f"[ERREUR] Impossible de supprimer {filepath} : {e}")
 
-                        # Nettoyage récursif après suppression, à partir du parent
+                                log(f"[SUPPRESSION] Dossier conservé : {len(remaining_files)} fichiers XML restants")
+
+                                # Regénérer index.xml avec les fichiers restants
+                                collection_members = []
+                                for full_path in remaining_files:
+                                    rel_path = os.path.relpath(full_path, start=old_full_path).replace(os.sep, "/")
+                                    base = os.path.splitext(os.path.basename(full_path))[0]
+                                    collection_members.append(build_collection_element(
+                                        identifier=base,
+                                        title=base,  # Ou extraire un vrai titre si dispo
+                                        is_reference=True,
+                                        filepath=rel_path
+                                    ))
+
+                                try:
+                                    write_index_file(old_full_path, "_".join(old_path_parts), "Collection nettoyée",
+                                                     None, collection_members)
+                                    log(f"[MISE À JOUR] index.xml mis à jour dans : {old_full_path}")
+                                except Exception as e:
+                                    log(f"[ERREUR] Impossible de régénérer l'index.xml dans {old_full_path} : {e}")
+                        else:
+                            log(f"[ERREUR] Le dossier {old_full_path} n'existe pas")
+
+                        # Nettoyage récursif du parent
                         parent_path = os.path.dirname(old_full_path)
                         log(f"[NETTOYAGE] Nettoyage à partir du dossier parent : {parent_path}")
                         if os.path.exists(parent_path):
