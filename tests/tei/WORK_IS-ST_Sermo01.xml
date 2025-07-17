@@ -104,7 +104,7 @@
                         <item ana="corpus">test_corpus</item>
                         <item ana="authorgroup">test_authorgroup</item>
                         <item ana="workgroup">test_workgroup</item>
-                        <item ana="work">test_work</item>
+                        <item ana="work">test_work1</item>
                     </list>
                 </keywords>
             </textClass>
