@@ -13,6 +13,29 @@ def main():
     added, modified, deleted = [], [], []
 
     log_section("Vérification de l'état de la configuration et des fichiers")
+
+    tei_files = [
+        fn for fn in os.listdir(TEI_DIR)
+        if fn.startswith("WORK_") and fn.endswith(".xml")
+    ]
+
+    if not tei_files:
+        log_section("Aucun fichier TEI")
+        log("[INFO] Aucun fichier TEI détecté dans le répertoire, la collection est vide.")
+
+        # Supprimer les anciens fichiers générés s'ils existent
+        delete_all_generated_content()
+
+        # Réinitialiser l'état
+        state = {
+            "config_hash": current_hash,
+            "files": {}
+        }
+        save_state(state)
+        log("[INFO] build_state.json mis à jour (vide)")
+
+        return  # 🚨 Empêche la suite du script de s'exécuter inutilement
+
     if process_all:
         log("La configuration a changé : régénération complète requise.")
         delete_all_generated_content()
