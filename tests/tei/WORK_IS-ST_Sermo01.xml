@@ -3,8 +3,8 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main" xml:lang="fr">Sermon II</title>
-                <title type="main" xml:lang="en">sermo2</title>
+                <title type="main" xml:lang="fr">Sermon I</title>
+                <title type="main" xml:lang="en">sermo4</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
                 <author xml:lang="en">test_author</author>
@@ -101,7 +101,7 @@
                     <term ana="corpus">test_corpus</term>
                     <term ana="authorgroup">test_authorgroup</term>
                     <term ana="workgroup">test_workgroup</term>
-                    <term ana="work">test_work</term>
+                    <term ana="work">test_work1</term>
                 </keywords>
             </textClass>
         </profileDesc>

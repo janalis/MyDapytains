@@ -464,10 +464,6 @@ def main():
 
         min_changed_level = min(changed_levels) if changed_levels else 0
 
-        members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "",
-                                          min_changed_level)
-
-        # Si pas de fichiers TEI détectés, générer une collection vide pour éviter le crash
         if not resources_for_recursive_group:
             log("[INFO] Aucun fichier TEI détecté, génération d'une collection vide.")
             members = []
@@ -476,9 +472,11 @@ def main():
         else:
             members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "",
                                               min_changed_level)
+            # On génère le fichier index principal si on a des membres et que le niveau de changement le permet
             if members and 0 >= min_changed_level:
                 write_index_file(CATALOG_DIR, "root", "Main catalog", None, members)
 
+        # Mise à jour des chemins dans current_files
         for rel in current_files:
             if rel in output_paths_by_rel:
                 current_files[rel]["output_filepath"] = output_paths_by_rel[rel]
