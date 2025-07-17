@@ -101,7 +101,6 @@
                     <term ana="corpus">test_corpus</term>
                     <term ana="authorgroup">test_authorgroup</term>
                     <term ana="workgroup">test_workgroup</term>
-                    <term ana="work">test_work1</term>
                 </keywords>
             </textClass>
         </profileDesc>

@@ -273,16 +273,34 @@ def main():
             attach_to_parent_items = []
 
             for item in items:
-                value = item.get(level_key)
-                if not value:
+                # Sélection de la valeur de manière plus robuste
+                # Récupération robuste : d'abord level_key (ex: "author"), sinon fallback sur key complet (ex: "dc:author")
+                value = item.get(level_key) or item.get(key)
+
+                # Vérifie si value est "vide" ou inutilisable
+                is_missing = (
+                        value is None or
+                        (isinstance(value, str) and not value.strip()) or
+                        (isinstance(value, dict) and not value.get("en", "").strip())
+                )
+
+                if is_missing:
                     if if_missing == "skip":
+                        print(f"[DEBUG] SKIP: missing '{level_key}' for item {item.get('filepath', '')}")
                         continue
                     elif if_missing == "attach_to_parent":
+                        print(f"[DEBUG] ATTACH TO PARENT: missing '{level_key}' for item {item.get('filepath', '')}")
                         attach_to_parent_items.append(item)
                         continue
                     elif if_missing == "create_unknown":
-                        value = f"Unknown {slug}"
-                group_id = clean_id_with_strip(value.get("en") if isinstance(value, dict) else value)
+                        print(f"[DEBUG] CREATE UNKNOWN: missing '{level_key}' for item {item.get('filepath', '')}")
+                        value = {"en": f"Unknown {slug}"}
+                elif isinstance(value, str):
+                    value = {"en": value}
+
+                print(f"[DEBUG] VALIDE: '{level_key}' = {value.get('en')} pour item {item.get('filepath', '')}")
+
+                group_id = clean_id_with_strip(value.get("en"))
                 groups[group_id].append(item)
 
             group_dir = os.path.join(parent_path, slug)
@@ -292,7 +310,6 @@ def main():
                                  os.path.isdir(os.path.join(group_dir, entry))]
 
             all_group_ids = set(groups.keys()).union(existing_dirs)
-
             members = []
 
             if level == len(config["hierarchy"]) - 1:
@@ -304,11 +321,9 @@ def main():
                 ensure_dir(group_path)
 
                 expected_basenames = set()
-
                 for res in all_items:
                     raw_title = res.get("work", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
-
                     expected_basenames.add(base_name)
 
                 for rel_path, info in current_files.items():
@@ -415,8 +430,10 @@ def main():
 
                     if group_items:
                         first = group_items[0]
-                        name_data = first.get(level_key)
-                        group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
+                        name_data = first.get(level_key) or first.get(key)
+                        if isinstance(name_data, str):
+                            name_data = {"en": name_data}
+                        group_name = name_data.get("en") if isinstance(name_data, dict) else group_id
                     else:
                         group_name = group_id
 
@@ -425,7 +442,6 @@ def main():
                     index_filepath = os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(
                         os.sep, "/")
 
-                    # ✅ MODIFICATION ICI :
                     if sub_members:
                         if level >= min_level - 1:
                             write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
