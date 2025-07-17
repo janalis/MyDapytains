@@ -101,7 +101,7 @@
                 </keywords>
                 <keywords xml:lang="en">
                     <list>
-                        <item ana="corpus">test_corpus</item>
+                        <item ana="corpus">test_corpus3</item>
                         <item ana="authorgroup">test_authorgroup</item>
                         <item ana="workgroup">test_workgroup</item>
                         <item ana="work">test_work3</item>

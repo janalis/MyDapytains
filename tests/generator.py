@@ -240,7 +240,6 @@ def main():
                                     group_name = value.get("en") if isinstance(value, dict) else value
                                     title = f"{title_label} : {group_name}" if group_name else title_label
 
-                                    print("1")
                                     # Écriture du fichier index avec titre et identifiant corrigés
                                     write_index_file(old_full_path, group_identifier, title, None, collection_members)
 
@@ -261,8 +260,8 @@ def main():
                         log(f"[MODIFICATION] Régénération à partir du niveau {changed_level} pour {rel}")
                         resources_for_recursive_group[rel] = res
 
-        def recursive_group_tracked(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str) -> List[
-            ET.Element]:
+        def recursive_group_tracked(level: int, parent_path: str, items: List[Dict[str, Any]], parent_id: str,
+                                    min_level: int) -> List[ET.Element]:
             if level >= len(config["hierarchy"]):
                 return []
 
@@ -300,7 +299,6 @@ def main():
             members = []
 
             if level == len(config["hierarchy"]) - 1:
-                # Dernier niveau : tous les items dans un seul dossier
                 all_items = []
                 for g_items in groups.values():
                     all_items.extend(g_items)
@@ -310,13 +308,11 @@ def main():
 
                 expected_basenames = set()
 
-                # On récupère les basenames attendus des items
                 for res in all_items:
                     raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
                     expected_basenames.add(base_name)
 
-                # On ajoute les fichiers existants liés (depuis current_files)
                 for rel_path, info in current_files.items():
                     output_path = info.get("output_filepath")
                     if not output_path:
@@ -327,7 +323,6 @@ def main():
                         file_basename = os.path.splitext(os.path.basename(output_path))[0]
                         expected_basenames.add(file_basename)
 
-                # Suppression des fichiers obsolètes dans le dossier
                 existing_files = [f for f in os.listdir(group_path) if f.endswith(".xml") and f.lower() != "index.xml"]
                 for file in existing_files:
                     base = os.path.splitext(file)[0]
@@ -338,7 +333,6 @@ def main():
                         except Exception as e:
                             print(f"[DEBUG] ⚠️ Erreur suppression fichier : {file} ({e})")
 
-                # On récupère les noms actuels (après suppression)
                 existing_names = set(
                     os.path.splitext(f)[0]
                     for f in os.listdir(group_path)
@@ -350,16 +344,13 @@ def main():
                     raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
 
-                    # Ancien chemin output_filepath s'il existe
                     old_output_path = current_files.get(res.get("filepath"), {}).get("output_filepath") \
                                       or previous_files.get(res.get("filepath"), {}).get("output_filepath")
 
-                    # Nom attendu
                     expected_name = f"{base_name}.xml"
                     resource_path = os.path.join(group_path, expected_name)
                     rel_resource_path = os.path.relpath(resource_path, parent_path).replace(os.sep, "/")
 
-                    # Supprime l'ancien fichier si le chemin a changé
                     if old_output_path and old_output_path != rel_resource_path:
                         old_full_path = os.path.join(parent_path, old_output_path)
                         if os.path.exists(old_full_path):
@@ -369,7 +360,6 @@ def main():
                             except Exception as e:
                                 print(f"[DEBUG] ⚠️ Erreur suppression ancien fichier : {old_output_path} ({e})")
 
-                    # Gestion des collisions de noms
                     count = 2
                     final_base_name = base_name
                     while (final_base_name in existing_names and
@@ -394,7 +384,6 @@ def main():
                     track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
                     generated_files.append((filename_base, raw_title, filename))
 
-                # Les fichiers existants non générés (anciennes ressources orphelines)
                 current_generated_basenames = set(filename_map.values())
                 existing_files_map = {
                     os.path.splitext(f)[0]: os.path.join(group_path, f)
@@ -420,7 +409,6 @@ def main():
                         filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
                     ))
 
-
             else:
                 for group_id in sorted(all_group_ids):
                     group_items = groups.get(group_id, [])
@@ -434,13 +422,16 @@ def main():
                     else:
                         group_name = group_id
 
-                    sub_members = recursive_group_tracked(level + 1, group_path, group_items, group_identifier)
+                    sub_members = recursive_group_tracked(level + 1, group_path, group_items, group_identifier,
+                                                          min_level)
                     index_filepath = os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(
                         os.sep, "/")
 
+                    # ✅ MODIFICATION ICI :
                     if sub_members:
-                        write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
-                                         sub_members)
+                        if level >= min_level - 1:
+                            write_index_file(group_path, group_identifier, f"{title_label} : {group_name}", None,
+                                             sub_members)
                         members.append(build_collection_element(
                             identifier=group_identifier,
                             title=f"{title_label} : {group_name}",
@@ -457,15 +448,28 @@ def main():
                             ))
 
             if attach_to_parent_items:
-                sub_items = recursive_group_tracked(level + 1, parent_path, attach_to_parent_items, parent_id)
+                sub_items = recursive_group_tracked(level + 1, parent_path, attach_to_parent_items, parent_id,
+                                                    min_level)
                 if sub_items:
                     members += sub_items
 
             return members
 
-        members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "")
+        # 🔍 Déterminer le niveau le plus haut modifié
+        changed_levels = []
+        for rel, res in resources_for_recursive_group.items():
+            old_hierarchy = previous_files.get(rel, {}).get("hierarchy", {})
+            new_hierarchy = extract_hierarchy(res, config)
+            level = detect_changed_level(old_hierarchy, new_hierarchy)
+            if level >= 0:
+                changed_levels.append(level)
 
-        if members:
+        min_changed_level = min(changed_levels) if changed_levels else 0
+
+        members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "",
+                                          min_changed_level)
+
+        if members and 0 >= min_changed_level:
             write_index_file(CATALOG_DIR, "root", "Catalogue principal", None, members)
 
         for rel in current_files:

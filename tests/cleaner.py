@@ -2,7 +2,6 @@ import os
 import shutil
 
 paths_to_remove = [
-    "build_state.json",
     "tests/build_state.json",
     "tests/catalog/corpora",
     "tests/catalog/index.xml"
