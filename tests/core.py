@@ -181,38 +181,47 @@ def detect_changed_level(old: Dict[str, str], new: Dict[str, str]) -> int:
 
 
 def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
+    xml_ns = get_namespace("xml")  # récupère le namespace xml depuis ta config
+
     res_el = ET.Element("resource", {
         "identifier": res["identifier"],
         "filepath": relpath.replace(os.sep, "/")
     })
+
     for lang, val in res.get("title", {"und": "Titre inconnu"}).items():
         t = ET.SubElement(res_el, "title")
         t.text = val
         if lang:
-            t.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
+            t.set(f"{{{xml_ns}}}lang", lang)
+
     for key, tag in [("description", "description"), ("creator", "author"), ("work", "work")]:
         if key in res:
             for lang, val in res[key].items():
                 el = ET.SubElement(res_el, tag)
                 el.text = val
                 if lang:
-                    el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
-    dc_el = ET.SubElement(res_el, "dublinCore");
+                    el.set(f"{{{xml_ns}}}lang", lang)
+
+    dc_el = ET.SubElement(res_el, "dublinCore")
     dc_ns = get_namespace("dc")
     for dc in res.get("dublin_core", []):
         el = ET.SubElement(dc_el, f"{{{dc_ns}}}{dc.term}")
         el.text = dc.value
         if dc.language:
-            el.set("{http://www.w3.org/XML/1998/namespace}lang", dc.language)
-    ext_el = ET.SubElement(res_el, "extensions");
+            el.set(f"{{{xml_ns}}}lang", dc.language)
+
+    ext_el = ET.SubElement(res_el, "extensions")
     ex_ns = get_namespace("ex")
     for ext in res.get("extensions", []):
         tag = ext.term.split("/")[-1] if ext.term != "serie" else "serie"
         el = ET.SubElement(ext_el, f"{{{ex_ns}}}{tag}")
         el.text = ext.value
+        # Petite correction ici : tu dois utiliser ext.language (pas lang)
         if ext.language:
-            el.set("{http://www.w3.org/XML/1998/namespace}lang", lang)
+            el.set(f"{{{xml_ns}}}lang", ext.language)
+
     return res_el
+
 
 
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None,
