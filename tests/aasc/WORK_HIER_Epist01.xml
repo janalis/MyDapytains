@@ -92,20 +92,16 @@
         <profileDesc>
             <textClass>
                 <keywords xml:lang="fr">
-                    <list>
-                        <item ana="corpus">Textes Patristiques</item>
-                        <item ana="authorgroup">Italie (IIIe-VIIe s.)</item>
-                        <item ana="workgroup">Epistulae</item>
-                        <item ana="work">Epistula I</item>
-                    </list>
+                    <term ana="corpus">Textes Patristiques</term>
+                    <term ana="authorgroup">Italie (IIIe-VIIe s.)</term>
+                    <term ana="workgroup">Epistulae</term>
+                    <term ana="work">Epistula I</term>
                 </keywords>
                 <keywords xml:lang="en" type="metadata">
-                    <list>
-                        <item ana="corpus">Patristic Texts</item>
-                        <item ana="authorgroup">Italy (3rd-7th century)</item>
-                        <item ana="workgroup">Epistulae</item>
-                        <item ana="work">Epistula I</item>
-                    </list>
+                    <term ana="corpus">Patristic Texts</term>
+                    <term ana="authorgroup">Italy (3rd-7th century)</term>
+                    <term ana="workgroup">Epistulae</term>
+                    <term ana="work">Epistula I</term>
                 </keywords>
             </textClass>
         </profileDesc>

@@ -92,18 +92,14 @@
         <profileDesc>
             <textClass>
                 <keywords xml:lang="fr">
-                    <list>
-                        <item ana="corpus">Bibles</item>
-                        <item ana="workgroup">Vulgate</item>
-                        <item ana="work">Genèse</item>
-                    </list>
+                    <term ana="corpus">Bibles</term>
+                    <term ana="workgroup">Vulgate</term>
+                    <term ana="work">Genèse</term>
                 </keywords>
                 <keywords xml:lang="en" type="metadata">
-                    <list>
-                        <item ana="corpus">Bibles</item>
-                        <item ana="workgroup">Vulgate</item>
-                        <item ana="work">Genesis</item>
-                    </list>
+                    <term ana="corpus">Bibles</term>
+                    <term ana="workgroup">Vulgate</term>
+                    <term ana="work">Genesis</term>
                 </keywords>
             </textClass>
         </profileDesc>

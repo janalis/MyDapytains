@@ -19,10 +19,10 @@
       "dc:publisher": ".//tei:sourceDesc//tei:publisher"
     },
     "multi_lang_extensions": {
-      "ex:corpus": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='corpus']",
-      "ex:authorgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='authorgroup']",
-      "ex:workgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='workgroup']",
-      "ex:work": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:list/tei:item[@ana='work']"
+      "ex:corpus": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='corpus']",
+      "ex:authorgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='authorgroup']",
+      "ex:workgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='workgroup']",
+      "ex:work": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='work']"
     }
   }
 }

@@ -92,20 +92,16 @@
         <profileDesc>
             <textClass>
                 <keywords xml:lang="fr">
-                    <list>
-                        <item ana="corpus">test_corpus</item>
-                        <item ana="authorgroup">Moy Âecdental (XIe-XIVe s.)</item>
-                        <item ana="workgroup">Sermoes</item>
-                        <item ana="work">Sermo I</item>
-                    </list>
+                    <term ana="corpus">test_corpus</term>
+                    <term ana="authorgroup">Moy Âecdental (XIe-XIVe s.)</term>
+                    <term ana="workgroup">Sermoes</term>
+                    <term ana="work">Sermo I</term>
                 </keywords>
                 <keywords xml:lang="en">
-                    <list>
-                        <item ana="corpus">test_corpus2</item>
-                        <item ana="authorgroup">test_authorgroup</item>
-                        <item ana="workgroup">test_workgroup</item>
-                        <item ana="work">test_work</item>
-                    </list>
+                    <term ana="corpus">test_corpus</term>
+                    <term ana="authorgroup">test_authorgroup</term>
+                    <term ana="workgroup">test_workgroup</term>
+                    <term ana="work">test_work</term>
                 </keywords>
             </textClass>
         </profileDesc>
