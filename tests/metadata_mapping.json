@@ -18,11 +18,12 @@
       "dc:pubPlace": ".//tei:sourceDesc//tei:pubPlace",
       "dc:publisher": ".//tei:sourceDesc//tei:publisher"
     },
+    "keywords_xpath": ".//tei:profileDesc/tei:textClass/tei:keywords",
     "multi_lang_extensions": {
-      "ex:corpus": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='corpus']",
-      "ex:authorgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='authorgroup']",
-      "ex:workgroup": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='workgroup']",
-      "ex:work": ".//tei:profileDesc/tei:textClass/tei:keywords[@xml:lang=$lang]/tei:term[@ana='work']"
+      "ex:corpus": "$keywords_xpath[@xml:lang=$lang]/tei:term[@ana='corpus']",
+      "ex:authorgroup": "$keywords_xpath[@xml:lang=$lang]/tei:term[@ana='authorgroup']",
+      "ex:workgroup": "$keywords_xpath[@xml:lang=$lang]/tei:term[@ana='workgroup']",
+      "ex:work": "$keywords_xpath[@xml:lang=$lang]/tei:term[@ana='work']"
     }
   }
 }

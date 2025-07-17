@@ -7,18 +7,16 @@ import xml.etree.ElementTree as ET
 import shutil
 from collections import defaultdict
 from typing import List, Dict, Any, Optional, Tuple
-from extract_metadata import extract_metadata
-
+from extract_metadata import extract_metadata  # ok si plus d'import circulaire via utils.py
+from utils import get_namespace
 
 def log(message: str):
     print(f"[INFO] {message}")
-
 
 def log_section(title: str):
     print("\n" + "=" * 50)
     print(f"{title}")
     print("=" * 50)
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
@@ -34,18 +32,9 @@ STATE_PATH = os.path.join(BASE_DIR, config["build_state_file"])
 with open(MAPPING_PATH, encoding="utf-8") as f:
     mapping_config = json.load(f)
 
-namespaces = dict(mapping_config["default"].get("namespaces", {}))
-for prefix, uri in namespaces.items():
-    ET.register_namespace(prefix, uri)
+# Plus de gestion namespaces ici, elle est déplacée dans utils.py
 
 REQUIRED_NAMESPACES = [ns.split(":")[0] for h in config["hierarchy"] for ns in [h["key"]]]
-for ns in REQUIRED_NAMESPACES:
-    if ns not in namespaces:
-        raise RuntimeError(f"Namespace '{ns}' must be defined in the config file namespaces.")
-
-
-def get_namespace(ns_key: str) -> str:
-    return namespaces[ns_key]
 
 
 def strip_accents(text: str) -> str:
