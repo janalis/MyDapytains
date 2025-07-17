@@ -269,15 +269,29 @@ def main():
             level_key = key.split(":")[-1]
             if_missing = current_config.get("if_missing", "create_unknown")
 
+            # Si tous les items doivent être ignorés (skip) → on sort complètement
+            if if_missing == "skip":
+                remaining = []
+                for item in items:
+                    value = item.get(level_key) or item.get(key)
+                    is_missing = (
+                            value is None or
+                            (isinstance(value, str) and not value.strip()) or
+                            (isinstance(value, dict) and not value.get("en", "").strip())
+                    )
+                    if not is_missing:
+                        remaining.append(item)
+                if not remaining:
+                    print(f"[DEBUG] TOUS SKIPPÉS: niveau '{level_key}' sans données valides, on arrête ici.")
+                    return []
+                items = remaining
+
             groups = defaultdict(list)
             attach_to_parent_items = []
 
             for item in items:
-                # Sélection de la valeur de manière plus robuste
-                # Récupération robuste : d'abord level_key (ex: "author"), sinon fallback sur key complet (ex: "dc:author")
                 value = item.get(level_key) or item.get(key)
 
-                # Vérifie si value est "vide" ou inutilisable
                 is_missing = (
                         value is None or
                         (isinstance(value, str) and not value.strip()) or
@@ -306,8 +320,8 @@ def main():
             group_dir = os.path.join(parent_path, slug)
             existing_dirs = []
             if os.path.isdir(group_dir):
-                existing_dirs = [entry for entry in os.listdir(group_dir) if
-                                 os.path.isdir(os.path.join(group_dir, entry))]
+                existing_dirs = [entry for entry in os.listdir(group_dir)
+                                 if os.path.isdir(os.path.join(group_dir, entry))]
 
             all_group_ids = set(groups.keys()).union(existing_dirs)
             members = []
@@ -336,7 +350,8 @@ def main():
                         file_basename = os.path.splitext(os.path.basename(output_path))[0]
                         expected_basenames.add(file_basename)
 
-                existing_files = [f for f in os.listdir(group_path) if f.endswith(".xml") and f.lower() != "index.xml"]
+                existing_files = [f for f in os.listdir(group_path)
+                                  if f.endswith(".xml") and f.lower() != "index.xml"]
                 for file in existing_files:
                     base = os.path.splitext(file)[0]
                     if base not in expected_basenames:
@@ -401,8 +416,8 @@ def main():
                 existing_files_map = {
                     os.path.splitext(f)[0]: os.path.join(group_path, f)
                     for f in os.listdir(group_path)
-                    if f.endswith(".xml") and f.lower() != "index.xml" and os.path.splitext(f)[
-                        0] not in current_generated_basenames
+                    if f.endswith(".xml") and f.lower() != "index.xml"
+                       and os.path.splitext(f)[0] not in current_generated_basenames
                 }
 
                 for existing_file, existing_path in existing_files_map.items():
