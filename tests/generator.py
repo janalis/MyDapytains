@@ -14,28 +14,6 @@ def main():
 
     log_section("Vérification de l'état de la configuration et des fichiers")
 
-    tei_files = [
-        fn for fn in os.listdir(TEI_DIR)
-        if fn.startswith("WORK_") and fn.endswith(".xml")
-    ]
-
-    if not tei_files:
-        log_section("Aucun fichier TEI")
-        log("[INFO] Aucun fichier TEI détecté dans le répertoire, la collection est vide.")
-
-        # Supprimer les anciens fichiers générés s'ils existent
-        delete_all_generated_content()
-
-        # Réinitialiser l'état
-        state = {
-            "config_hash": current_hash,
-            "files": {}
-        }
-        save_state(state)
-        log("[INFO] build_state.json mis à jour (vide)")
-
-        return  # 🚨 Empêche la suite du script de s'exécuter inutilement
-
     if process_all:
         log("La configuration a changé : régénération complète requise.")
         delete_all_generated_content()
@@ -489,8 +467,17 @@ def main():
         members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "",
                                           min_changed_level)
 
-        if members and 0 >= min_changed_level:
-            write_index_file(CATALOG_DIR, "root", "Catalogue principal", None, members)
+        # Si pas de fichiers TEI détectés, générer une collection vide pour éviter le crash
+        if not resources_for_recursive_group:
+            log("[INFO] Aucun fichier TEI détecté, génération d'une collection vide.")
+            members = []
+            description = "No data available: no TEI files found."
+            write_index_file(CATALOG_DIR, "root", "Main catalog", description, members)
+        else:
+            members = recursive_group_tracked(0, CATALOG_DIR, list(resources_for_recursive_group.values()), "",
+                                              min_changed_level)
+            if members and 0 >= min_changed_level:
+                write_index_file(CATALOG_DIR, "root", "Main catalog", None, members)
 
         for rel in current_files:
             if rel in output_paths_by_rel:
