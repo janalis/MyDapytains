@@ -223,7 +223,6 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
     return res_el
 
 
-
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None,
                              is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
     if is_reference and filepath:

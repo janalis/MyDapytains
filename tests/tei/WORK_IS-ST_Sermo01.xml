@@ -4,7 +4,7 @@
         <fileDesc>
             <titleStmt>
                 <title type="main" xml:lang="fr">Sermon I</title>
-                <title type="main" xml:lang="en">sermo1</title>
+                <title type="main" xml:lang="en">sermo4</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
                 <author xml:lang="en">test_author</author>
@@ -104,7 +104,7 @@
                         <item ana="corpus">test_corpus</item>
                         <item ana="authorgroup">test_authorgroup</item>
                         <item ana="workgroup">test_workgroup</item>
-                        <item ana="work">test_work1</item>
+                        <item ana="work">test_work</item>
                     </list>
                 </keywords>
             </textClass>

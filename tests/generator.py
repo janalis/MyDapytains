@@ -130,6 +130,11 @@ def main():
                         for i, level_def in enumerate(config["hierarchy"]):
                             if i > changed_level:
                                 break
+
+                            # Éviter d’ajouter un sous-niveau inexistant pour les fichiers
+                            if i == len(config["hierarchy"]) - 1:
+                                break
+
                             key = level_def["key"].split(":")[-1]
                             value = old_hierarchy.get(key)
                             if not value:
@@ -294,26 +299,24 @@ def main():
 
             members = []
 
-            # Au dernier niveau, fusionner tous les groupes pour traiter les fichiers ensemble
             if level == len(config["hierarchy"]) - 1:
-                # Tous les items ensemble dans un seul groupe
+                # Dernier niveau : tous les items dans un seul dossier
                 all_items = []
                 for g_items in groups.values():
                     all_items.extend(g_items)
 
-                # Le chemin du dossier où sont stockés les fichiers (works)
                 group_path = os.path.join(parent_path, slug)
                 ensure_dir(group_path)
 
                 expected_basenames = set()
 
-                # Générer les noms attendus pour toutes les ressources dans ce dossier
+                # On récupère les basenames attendus des items
                 for res in all_items:
                     raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
                     expected_basenames.add(base_name)
 
-                # Ajouter aussi les fichiers présents dans current_files qui correspondent au dossier
+                # On ajoute les fichiers existants liés (depuis current_files)
                 for rel_path, info in current_files.items():
                     output_path = info.get("output_filepath")
                     if not output_path:
@@ -324,14 +327,8 @@ def main():
                         file_basename = os.path.splitext(os.path.basename(output_path))[0]
                         expected_basenames.add(file_basename)
 
-                existing_files = [f for f in os.listdir(group_path) if
-                                  f.endswith(".xml") and f.lower() != "index.xml"]
-
-                print(f"[DEBUG] Dossier : {group_path}")
-                print(f"[DEBUG] Fichiers existants : {existing_files}")
-                print(f"[DEBUG] Noms attendus (expected_basenames) : {expected_basenames}")
-
-                # Supprimer les fichiers obsolètes
+                # Suppression des fichiers obsolètes dans le dossier
+                existing_files = [f for f in os.listdir(group_path) if f.endswith(".xml") and f.lower() != "index.xml"]
                 for file in existing_files:
                     base = os.path.splitext(file)[0]
                     if base not in expected_basenames:
@@ -341,16 +338,47 @@ def main():
                         except Exception as e:
                             print(f"[DEBUG] ⚠️ Erreur suppression fichier : {file} ({e})")
 
-                existing_names = set(os.path.splitext(f)[0] for f in os.listdir(group_path)
-                                     if f.endswith(".xml") and f.lower() != "index.xml")
+                # On récupère les noms actuels (après suppression)
+                existing_names = set(
+                    os.path.splitext(f)[0]
+                    for f in os.listdir(group_path)
+                    if f.endswith(".xml") and f.lower() != "index.xml"
+                )
 
                 filename_map = {}
                 for res in all_items:
                     raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
-                    filename_base = unique_filename(base_name, existing_names)
-                    existing_names.add(filename_base)
-                    filename_map[id(res)] = filename_base
+
+                    # Ancien chemin output_filepath s'il existe
+                    old_output_path = current_files.get(res.get("filepath"), {}).get("output_filepath") \
+                                      or previous_files.get(res.get("filepath"), {}).get("output_filepath")
+
+                    # Nom attendu
+                    expected_name = f"{base_name}.xml"
+                    resource_path = os.path.join(group_path, expected_name)
+                    rel_resource_path = os.path.relpath(resource_path, parent_path).replace(os.sep, "/")
+
+                    # Supprime l'ancien fichier si le chemin a changé
+                    if old_output_path and old_output_path != rel_resource_path:
+                        old_full_path = os.path.join(parent_path, old_output_path)
+                        if os.path.exists(old_full_path):
+                            try:
+                                os.remove(old_full_path)
+                                print(f"[DEBUG] 🗑️ Supprimé ancien fichier obsolète : {old_output_path}")
+                            except Exception as e:
+                                print(f"[DEBUG] ⚠️ Erreur suppression ancien fichier : {old_output_path} ({e})")
+
+                    # Gestion des collisions de noms
+                    count = 2
+                    final_base_name = base_name
+                    while (final_base_name in existing_names and
+                           (not old_output_path or f"{final_base_name}.xml" != os.path.basename(old_output_path))):
+                        final_base_name = f"{base_name}_{count}"
+                        count += 1
+                    existing_names.add(final_base_name)
+
+                    filename_map[id(res)] = final_base_name
 
                 generated_files = []
                 for res in all_items:
@@ -366,6 +394,7 @@ def main():
                     track_output_filepath(os.path.relpath(filepath, BASE_DIR), res["filepath"])
                     generated_files.append((filename_base, raw_title, filename))
 
+                # Les fichiers existants non générés (anciennes ressources orphelines)
                 current_generated_basenames = set(filename_map.values())
                 existing_files_map = {
                     os.path.splitext(f)[0]: os.path.join(group_path, f)
@@ -391,8 +420,8 @@ def main():
                         filepath=os.path.relpath(filepath, start=parent_path).replace(os.sep, "/")
                     ))
 
+
             else:
-                # Niveau intermédiaire : parcours récursif normal
                 for group_id in sorted(all_group_ids):
                     group_items = groups.get(group_id, [])
                     group_identifier = f"{parent_id}_{group_id}" if parent_id else group_id
@@ -403,7 +432,7 @@ def main():
                         name_data = first.get(level_key)
                         group_name = name_data.get("en") if isinstance(name_data, dict) else name_data
                     else:
-                        group_name = group_id  # fallback
+                        group_name = group_id
 
                     sub_members = recursive_group_tracked(level + 1, group_path, group_items, group_identifier)
                     index_filepath = os.path.relpath(os.path.join(group_path, "index.xml"), start=parent_path).replace(
