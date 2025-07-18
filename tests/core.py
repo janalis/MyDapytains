@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 import shutil
 from collections import defaultdict
 from typing import List, Dict, Any, Optional, Tuple
-from extract_metadata import extract_metadata  # ok si plus d'import circulaire via utils.py
+from extract_metadata import extract_metadata
 from utils import get_namespace
 
 def log(message: str):
@@ -32,26 +32,19 @@ STATE_PATH = os.path.join(BASE_DIR, config["build_state_file"])
 with open(MAPPING_PATH, encoding="utf-8") as f:
     mapping_config = json.load(f)
 
-# Plus de gestion namespaces ici, elle est déplacée dans utils.py
-
 REQUIRED_NAMESPACES = [ns.split(":")[0] for h in config["hierarchy"] for ns in [h["key"]]]
-
 
 def strip_accents(text: str) -> str:
     return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
-
 def clean_id(text: str) -> str:
     return re.sub(r"[^\w\-]", "_", text.strip().lower())
-
 
 def clean_id_with_strip(text: str) -> str:
     return clean_id(strip_accents(text)) if text else "unknown"
 
-
 def ensure_dir(path: str):
     os.makedirs(path, exist_ok=True)
-
 
 def unique_filename(base_name: str, existing_names: set[str], exclude: str = None) -> str:
     cleaned_names = existing_names.copy()
@@ -65,8 +58,6 @@ def unique_filename(base_name: str, existing_names: set[str], exclude: str = Non
         i += 1
     return candidate
 
-
-
 def make_json_serializable(obj: Any) -> Any:
     if isinstance(obj, list):
         return [make_json_serializable(e) for e in obj]
@@ -76,7 +67,6 @@ def make_json_serializable(obj: Any) -> Any:
         return make_json_serializable(obj.__dict__)
     else:
         return obj
-
 
 def extract_hierarchy(metadata: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, str]:
     h = {}
@@ -89,7 +79,6 @@ def extract_hierarchy(metadata: Dict[str, Any], config: Dict[str, Any]) -> Dict[
             h[key] = clean_id_with_strip(val)
     return h
 
-
 def compute_config_hash(*paths: List[str]) -> str:
     hasher = hashlib.sha256()
     for path in paths:
@@ -97,13 +86,11 @@ def compute_config_hash(*paths: List[str]) -> str:
             hasher.update(f.read())
     return hasher.hexdigest()
 
-
 def load_state() -> Dict[str, Any]:
     if os.path.exists(STATE_PATH):
         with open(STATE_PATH, encoding="utf-8") as f:
             return json.load(f)
     return {"config_hash": None, "files": {}}
-
 
 def save_state(state: Dict[str, Any]):
     state_to_save = {
@@ -113,13 +100,11 @@ def save_state(state: Dict[str, Any]):
     with open(STATE_PATH, "w", encoding="utf-8") as f:
         json.dump(state_to_save, f, indent=2, ensure_ascii=False)
 
-
 def delete_all_generated_content():
     if os.path.isdir(CATALOG_DIR):
         shutil.rmtree(CATALOG_DIR)
         log(f"[SUPPRESSION COMPLÈTE] Contenu de {CATALOG_DIR} supprimé")
     ensure_dir(CATALOG_DIR)
-
 
 def delete_generated_files(hierarchy: Dict[str, str]):
     parts = [CATALOG_DIR]
@@ -132,13 +117,11 @@ def delete_generated_files(hierarchy: Dict[str, str]):
 
     out = os.path.join(*parts)
 
-    # Si c'est un dossier de collection (niveau intermédiaire)
     if os.path.isdir(out):
         shutil.rmtree(out)
         log(f"[SUPPRESSION] {out} supprimé")
         clean_empty_directories(os.path.dirname(out))
     else:
-        # Sinon, on vérifie si c'est un fichier XML de ressource (niveau final)
         parent_dir = os.path.join(*parts[:-1])
         slug = config["hierarchy"][-1]["slug"]
         target_dir = os.path.join(parent_dir, slug)
@@ -148,7 +131,6 @@ def delete_generated_files(hierarchy: Dict[str, str]):
                     os.remove(os.path.join(target_dir, file))
                     log(f"[SUPPRESSION] Fichier supprimé : {os.path.join(target_dir, file)}")
             clean_empty_directories(target_dir)
-
 
 def clean_empty_directories(path: str):
     while os.path.isdir(path) and not os.listdir(path) and path != CATALOG_DIR:
@@ -167,7 +149,6 @@ def detect_changed_level(old: Dict[str, str], new: Dict[str, str]) -> int:
             log(f"[DEBUG] Niveau modifié à {i}: Ancien {old.get(key)} vs Nouveau {new.get(key)}")
             return i  # Retourne le premier niveau modifié
     return len(config["hierarchy"]) - 1  # Aucun changement détecté, retourne le dernier niveau
-
 
 def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
     xml_ns = get_namespace("xml")  # récupère le namespace xml depuis ta config
@@ -205,12 +186,10 @@ def build_resource_element(res: Dict[str, Any], relpath: str) -> ET.Element:
         tag = ext.term.split("/")[-1] if ext.term != "serie" else "serie"
         el = ET.SubElement(ext_el, f"{{{ex_ns}}}{tag}")
         el.text = ext.value
-        # Petite correction ici : tu dois utiliser ext.language (pas lang)
         if ext.language:
             el.set(f"{{{xml_ns}}}lang", ext.language)
 
     return res_el
-
 
 def build_collection_element(identifier: str, title: str, description: Optional[str] = None,
                              is_reference: bool = False, filepath: Optional[str] = None) -> ET.Element:
@@ -224,7 +203,6 @@ def build_collection_element(identifier: str, title: str, description: Optional[
                                 {"xmlns": get_namespace("dc")})
         desc_el.text = description
     return col_el
-
 
 def write_index_file(path: str, identifier: str, title: str,
                      description: Optional[str], members: List[ET.Element]):
@@ -357,8 +335,6 @@ def delete_file_and_cleanup_upwards(path, base_dir):
     except Exception as e:
         log(f"[ERREUR] Impossible de supprimer {path} : {e}")
 
-# Fonction pour nettoyer et supprimer un répertoire
-# Fonction pour nettoyer et supprimer récursivement les répertoires vides et fichiers
 def clean_and_remove_directory(directory):
     """Supprime récursivement un répertoire et son contenu sans hardcoder les chemins."""
     print(f"[INFO] Tentative de nettoyage et suppression du répertoire : {directory}")
@@ -377,7 +353,7 @@ def clean_and_remove_directory(directory):
                     except Exception as e:
                         print(f"[ERREUR] Impossible de supprimer {file_path}: {e}")
 
-            # Suppression des sous-dossiers vides (ex. works)
+            # Suppression des sous-dossiers vides
             for dir in dirs:
                 dir_path = os.path.join(root, dir)
                 try:
@@ -388,28 +364,9 @@ def clean_and_remove_directory(directory):
 
         # Après avoir nettoyé tout, on tente de supprimer le dossier principal
         try:
-            os.rmdir(directory)  # Ou shutil.rmtree(directory) pour forcer la suppression
+            os.rmdir(directory)
             print(f"[SUPPRESSION] Dossier supprimé : {directory}")
         except Exception as e:
             print(f"[ERREUR] Impossible de supprimer le dossier {directory}: {e}")
     else:
         print(f"[INFO] Le répertoire {directory} n'existe pas.")
-
-# Fonction générique pour supprimer les fichiers au niveau d'un sous-dossier
-def delete_files_for_changed_level(level: int, hierarchy: Dict[str, Any], old_hierarchy: Dict[str, Any],
-                                   group_path: str):
-    """Supprime les fichiers d'un niveau affecté dans la hiérarchie sans hardcoder les chemins."""
-    if is_parent_changed(group_path, hierarchy):
-        delete_generated_files(old_hierarchy)  # Supprimer uniquement les fichiers du sous-niveau affecté
-        log(f"[SUPPRESSION] Fichiers supprimés au niveau {level} pour {group_path}")
-
-
-def count_non_index_xml_recursively(base_path: str) -> int:
-    if not os.path.exists(base_path):
-        return 0
-    return sum(
-        1
-        for root, _, files in os.walk(base_path)
-        for file in files
-        if file.endswith(".xml") and file.lower() != "index.xml"
-    )

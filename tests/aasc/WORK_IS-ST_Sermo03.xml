@@ -3,7 +3,7 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title type="main" xml:lang="fr">Sermon III</title>
+                <title type="main" xml:lang="fr">Sermon I</title>
                 <title type="main" xml:lang="en">sermo3</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
@@ -47,8 +47,8 @@
                     <author xml:lang="fr">Isaa de l'Étoile</author>
                     <author xml:lang="en">Isaac of Stella</author>
 
-                    <title type="main" xml:lang="fr">Sermons, tome III</title>
-                    <title type="main" xml:lang="en">Sermons, Volume III</title>
+                    <title type="main" xml:lang="fr">Sermons, tome II</title>
+                    <title type="main" xml:lang="en">Sermons, Volume II</title>
 
                     <title type="subtitle" xml:lang="fr">Sons 1–17</title>
                     <title type="subtitle" xml:lang="en">Serms 1–17</title>
@@ -93,7 +93,7 @@
             <textClass>
                 <keywords xml:lang="fr">
                     <term ana="corpus">test_corpus</term>
-                    <term ana="authorgroup">Moyen Âge occidental (XIe-XIVe s.)</term>
+                    <term ana="authorgroup">Moy Âecdental (XIe-XIVe s.)</term>
                     <term ana="workgroup">Sermoes</term>
                     <term ana="work">Sermo I</term>
                 </keywords>
@@ -101,7 +101,7 @@
                     <term ana="corpus">test_corpus</term>
                     <term ana="authorgroup">test_authorgroup</term>
                     <term ana="workgroup">test_workgroup</term>
-                    <term ana="work">test_work9</term>
+                    <term ana="work">test_work2</term>
                 </keywords>
             </textClass>
         </profileDesc>

@@ -5,6 +5,9 @@ name: Software Test
 
 on: [push, pull_request]
 
+env:
+  SERVER_ENV: test
+
 jobs:
   test:
     runs-on: ubuntu-latest

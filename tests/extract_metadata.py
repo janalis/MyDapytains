@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 from lxml import etree
 from dapitains.metadata.classes import DublinCore, Extension
 
-from utils import get_namespace  # <-- changer core par utils
+from utils import get_namespace
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MAPPING_PATH = os.path.join(BASE_DIR, "metadata_mapping.json")
@@ -29,7 +29,7 @@ def get_multilang_values(
     for expr in xpath_exprs:
         if "$lang" in expr:
             if not lang:
-                continue  # can't evaluate without a language
+                continue
             results = tree.xpath(expr, namespaces=namespaces, lang=lang)
             for el in results:
                 if isinstance(el, etree._Element) and el.text:
@@ -74,7 +74,6 @@ def extract_metadata(filepath: str) -> Dict[str, Any]:
         "extensions": [],
     }
 
-    # Extraction des langues disponibles dans les <keywords xml:lang="...">
     langs = {
         kw.get(lang_attr_name)
         for kw in root.xpath(keywords_xpath, namespaces=namespaces)
@@ -105,7 +104,6 @@ def extract_metadata(filepath: str) -> Dict[str, Any]:
 
     multi_lang_ext = mapping_config.get("default", {}).get("multi_lang_extensions", {})
     for term, xpath_expr in multi_lang_ext.items():
-        # remplacer $keywords_xpath par la valeur de keywords_xpath de la config
         xpath_expr = substitute_keywords_xpath(xpath_expr, keywords_xpath)
 
         values_by_lang: Dict[Optional[str], str] = {}

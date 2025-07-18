@@ -60,7 +60,6 @@ def main():
 
     log_section("Mise à jour des fichiers de ressources sans changement hiérarchique")
 
-    # Initialisation de la variable pour éviter les problèmes d'accès sans définition
     resource_hierarchy_unchanged = False
 
     for rel, res in modified:
@@ -80,13 +79,12 @@ def main():
                 ET.ElementTree(res_el).write(abs_output_path, encoding="utf-8", xml_declaration=True)
                 log(f"[MISE À JOUR] Ressource mise à jour sans modification de hiérarchie : {abs_output_path}")
 
-            # Mettre à jour l'état current_files pour inclure mtime et le chemin de sortie
-            current_files[rel]["mtime"] = os.path.getmtime(tei_abs_path)  # Actualisation du mtime
+            current_files[rel]["mtime"] = os.path.getmtime(tei_abs_path)
             current_files[rel]["output_filepath"] = output_path
 
             resource_hierarchy_unchanged = True
 
-    # Sauvegarder l'état si des ressources ont été mises à jour
+    # Sauvegarde l'état si des ressources ont été mises à jour
     if resource_hierarchy_unchanged:
         state = {
             "config_hash": current_hash,
@@ -128,7 +126,7 @@ def main():
                     if i > changed_level:
                         break
 
-                    # Éviter d’ajouter un sous-niveau inexistant pour les fichiers
+                    # Évite d’ajouter un sous-niveau inexistant pour les fichiers
                     if i == len(config["hierarchy"]) - 1:
                         break
 
@@ -152,7 +150,7 @@ def main():
                         if file.endswith(".xml") and file.lower() != "index.xml"
                     ]
 
-                    # Récupère les noms de fichiers déplacés (sans extension)
+                    # Récupère les noms de fichiers déplacés
                     moved_files_basenames = set()
                     for rel2, res2 in resources_for_recursive_group.items():
                         prev_entry2 = previous_files.get(rel2)
@@ -177,21 +175,20 @@ def main():
                                 base_name = clean_id_with_strip(raw_title)
                                 moved_files_basenames.add(base_name)
 
-                    # Séparer les fichiers déplacés des fichiers restants
+                    # Sépare les fichiers déplacés des fichiers restants
                     remaining_files = [
                         fp for fp in xml_files_fullpaths
                         if os.path.splitext(os.path.basename(fp))[0] not in moved_files_basenames
                     ]
 
                     if len(remaining_files) == 0:
-                        # Tous les fichiers ont été déplacés → supprimer le dossier complet
                         try:
                             delete_file_and_cleanup_upwards(old_full_path, CATALOG_DIR)
                             log(f"[SUPPRESSION] Dossier supprimé récursivement : {old_full_path}")
                         except Exception as e:
                             log(f"[ERREUR] Impossible de supprimer {old_full_path} : {e}")
                     else:
-                        # Supprimer uniquement les fichiers déplacés
+                        # Supprime uniquement les fichiers déplacés
                         for filepath in xml_files_fullpaths:
                             basename = os.path.splitext(os.path.basename(filepath))[0]
                             if basename in moved_files_basenames:
@@ -203,20 +200,19 @@ def main():
 
                         log(f"[SUPPRESSION] Dossier conservé : {len(remaining_files)} fichiers XML restants")
 
-                        # Regénérer index.xml avec les fichiers restants
+                        # Regénére index.xml avec les fichiers restants
                         collection_members = []
                         for full_path in remaining_files:
                             rel_path = os.path.relpath(full_path, start=old_full_path).replace(os.sep, "/")
                             base = os.path.splitext(os.path.basename(full_path))[0]
                             collection_members.append(build_collection_element(
                                 identifier=base,
-                                title=base,  # Ou extraire un vrai titre si dispo
+                                title=base,
                                 is_reference=True,
                                 filepath=rel_path
                             ))
 
                         try:
-                            # Reconstruire correctement le group_identifier à partir des valeurs hiérarchiques uniquement (sans slugs)
                             group_identifier_parts = []
                             for i in range(changed_level + 1):
                                 level_conf = config["hierarchy"][i]
@@ -229,7 +225,6 @@ def main():
                                 )
                             group_identifier = "_".join(group_identifier_parts)
 
-                            # Même logique pour le titre
                             level_def = config["hierarchy"][changed_level]
                             title_label = level_def["title"]
                             key = level_def["key"].split(":")[-1]
@@ -237,7 +232,6 @@ def main():
                             group_name = value.get("en") if isinstance(value, dict) else value
                             title = f"{title_label} : {group_name}" if group_name else title_label
 
-                            # Écriture du fichier index avec titre et identifiant corrigés
                             write_index_file(old_full_path, group_identifier, title, None, collection_members)
 
                             log(f"[MISE À JOUR] index.xml mis à jour dans : {old_full_path}")
@@ -269,7 +263,6 @@ def main():
             level_key = key.split(":")[-1]
             if_missing = current_config.get("if_missing", "create_unknown")
 
-            # Si tous les items doivent être ignorés (skip) → on sort complètement
             if if_missing == "skip":
                 remaining = []
                 for item in items:
@@ -336,7 +329,7 @@ def main():
 
                 expected_basenames = set()
                 for res in all_items:
-                    raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
+                    raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work" # TODO : voir pour modifier
                     base_name = clean_id_with_strip(raw_title)
                     expected_basenames.add(base_name)
 
@@ -357,9 +350,9 @@ def main():
                     if base not in expected_basenames:
                         try:
                             os.remove(os.path.join(group_path, file))
-                            print(f"[DEBUG] 🗑️ Supprimé fichier obsolète : {file}")
+                            print(f"[DEBUG] Supprimé fichier obsolète : {file}")
                         except Exception as e:
-                            print(f"[DEBUG] ⚠️ Erreur suppression fichier : {file} ({e})")
+                            print(f"[DEBUG] Erreur suppression fichier : {file} ({e})")
 
                 existing_names = set(
                     os.path.splitext(f)[0]
@@ -384,9 +377,9 @@ def main():
                         if os.path.exists(old_full_path):
                             try:
                                 os.remove(old_full_path)
-                                print(f"[DEBUG] 🗑️ Supprimé ancien fichier obsolète : {old_output_path}")
+                                print(f"[DEBUG] Supprimé ancien fichier obsolète : {old_output_path}")
                             except Exception as e:
-                                print(f"[DEBUG] ⚠️ Erreur suppression ancien fichier : {old_output_path} ({e})")
+                                print(f"[DEBUG] Erreur suppression ancien fichier : {old_output_path} ({e})")
 
                     count = 2
                     final_base_name = base_name
@@ -484,7 +477,6 @@ def main():
 
             return members
 
-        # 🔍 Déterminer le niveau le plus haut modifié
         changed_levels = []
         for rel, res in resources_for_recursive_group.items():
             old_hierarchy = previous_files.get(rel, {}).get("hierarchy", {})

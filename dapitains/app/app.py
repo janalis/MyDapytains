@@ -11,11 +11,11 @@ except ImportError:
 
 import json
 import lxml.etree as ET
+from dapitains.config import Config
 from dapitains.tei.document import Document
 from dapitains.errors import InvalidRangeOrder
 from dapitains.app.database import db, Collection, Navigation
 from dapitains.app.navigation import get_nav, get_member_by_path
-
 
 def inject_json(collection: Collection, templates) -> Dict:
     if collection.resource:
@@ -196,17 +196,15 @@ def navigation_view(resource, ref, start, end, tree, down, templates: Dict[str, 
 
 
 def create_app(
-        app: Flask,
-        base_uri: str,
-        use_query: bool = False
-) -> (Flask, SQLAlchemy):
+    app: Flask,
+    base_url: str,
+):
     """
-
-    Initialisation of the DB is up to you
+    Initialization of the DB is up to you
     """
-    navigation_template = uritemplate.URITemplate(base_uri+"/navigation/{?resource}{&ref,start,end,tree,down}")
-    collection_template = uritemplate.URITemplate(base_uri+"/collection/{?id}{&nav}")
-    document_template = uritemplate.URITemplate(base_uri+"/document/{?resource}{&ref,start,end,tree}")
+    navigation_template = uritemplate.URITemplate(base_url+"/navigation/{?resource}{&ref,start,end,tree,down}")
+    collection_template = uritemplate.URITemplate(base_url+"/collection/{?id}{&nav}")
+    document_template = uritemplate.URITemplate(base_url+"/document/{?resource}{&ref,start,end,tree}")
 
     @app.route("/")
     def index_route():
@@ -258,20 +256,17 @@ def create_app(
         tree = request.args.get("tree")
         return document_view(resource, ref, start, end, tree)
 
-    return app, db
-
 
 if __name__ == "__main__":
-    import os
     from dapitains.app.ingest import store_catalog
     from dapitains.metadata.xml_parser import parse
 
-    app = Flask(__name__)
-    _, db = create_app(app, base_uri="http://localhost:5000")
+    config = Config()
 
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    db_path = os.path.join(basedir, 'app.db')
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    app = Flask(__name__)
+    create_app(app, f'http://{config.get('SERVER_HOST')}:{config.get('SERVER_PORT')}')
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
@@ -279,9 +274,11 @@ if __name__ == "__main__":
         db.drop_all()
         db.create_all()
 
-        catalog, _ = parse(f"{basedir}/../../tests/catalog/index.xml")
-        #catalog, _ = parse(f"{basedir}/../../tests/catalog/example-collection.xml")
-        # catalog, _ = parse(f"{basedir}/../../tests/catalog/collections.xml")
+        catalog, _ = parse(config.get('CATALOG_PATH'))
         store_catalog(catalog)
 
-    app.run()
+    if 'prod' != config.get('SERVER_ENV'):
+        app.run(debug=True)
+    else:
+        from waitress import serve
+        serve(app, host=config.get('SERVER_HOST'), port=config.get('SERVER_PORT'))
