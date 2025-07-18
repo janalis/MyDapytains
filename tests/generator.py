@@ -336,7 +336,7 @@ def main():
 
                 expected_basenames = set()
                 for res in all_items:
-                    raw_title = res.get("work", {}).get("en") or "work"
+                    raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
                     expected_basenames.add(base_name)
 
@@ -369,7 +369,7 @@ def main():
 
                 filename_map = {}
                 for res in all_items:
-                    raw_title = res.get("work", {}).get("en") or "work"
+                    raw_title = res.get("workTitle") or res.get("title", {}).get("en") or "work"
                     base_name = clean_id_with_strip(raw_title)
 
                     old_output_path = current_files.get(res.get("filepath"), {}).get("output_filepath") \

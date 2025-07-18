@@ -100,7 +100,7 @@
                 <keywords xml:lang="en">
                     <term ana="corpus">test_corpus</term>
                     <term ana="authorgroup">test_authorgroup</term>
-                    <term ana="workgroup">test_workgroup</term>
+                    <term ana="workgroup">test_workgroup2</term>
                     <term ana="work">test_work2</term>
                 </keywords>
             </textClass>

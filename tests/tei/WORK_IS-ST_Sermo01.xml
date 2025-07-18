@@ -7,7 +7,7 @@
                 <title type="main" xml:lang="en">sermo4</title>
 
                 <author xml:lang="fr">Isaac de l'Étoile</author>
-                <author xml:lang="en">test_author</author>
+                <author xml:lang="en">test_author2</author>
 
                 <respStmt>
                     <resp xml:lang="fr">Encodage TEI</resp>
@@ -98,9 +98,10 @@
                     <term ana="work">Sermo I</term>
                 </keywords>
                 <keywords xml:lang="en">
+                    <term ana="corpus">test_corpus</term>
                     <term ana="authorgroup">test_authorgroup</term>
                     <term ana="workgroup">test_workgroup</term>
-                    <term ana="work">test_work1</term>
+                    <term ana="work">test_work</term>
                 </keywords>
             </textClass>
         </profileDesc>

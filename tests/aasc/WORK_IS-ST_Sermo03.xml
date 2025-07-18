@@ -98,7 +98,7 @@
                     <term ana="work">Sermo I</term>
                 </keywords>
                 <keywords xml:lang="en">
-                    <term ana="corpus">test_corpus3</term>
+                    <term ana="corpus">test_corpus</term>
                     <term ana="authorgroup">test_authorgroup</term>
                     <term ana="workgroup">test_workgroup</term>
                     <term ana="work">test_work9</term>
