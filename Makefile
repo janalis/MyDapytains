@@ -2,6 +2,7 @@
 
 include .env.local
 
+AUTOPEP8        ?= autopep8
 COMPOSE_FILE    ?= compose.yaml
 DOCKER_COMPOSE  ?= docker compose -f $(COMPOSE_FILE)
 PIP             ?= pip
@@ -20,7 +21,7 @@ ifeq ($(COLOR_SUPPORT),1)
 	COLOR_END    = \033[0m
 endif
 
-.PHONY: help install start test docker-shell docker-start docker-stop
+.PHONY: help install lint lint-autopep8 lint-fix lint-fix-autopep8 start test docker-shell docker-start docker-stop
 
 help:
 	@echo "$(COLOR_YELLOW)Usage:$(COLOR_END)"
@@ -29,20 +30,35 @@ help:
 	@echo "$(COLOR_YELLOW)Example:$(COLOR_END)"
 	@echo "  make start VERBOSE=1"
 	@echo ""
-	@echo "$(COLOR_YELLOW)Available targets:$(COLOR_END)"
-	@echo "$(COLOR_GREEN)  install     $(COLOR_END) Installs dependencies from requirements.txt"
-	@echo "$(COLOR_GREEN)  start       $(COLOR_END) Starts the web server"
-	@echo "$(COLOR_GREEN)  test        $(COLOR_END) Executes tests"
-	@echo "$(COLOR_YELLOW) docker$(COLOR_END)"
-	@echo "$(COLOR_GREEN)  docker-start$(COLOR_END) Starts docker container"
-	@echo "$(COLOR_GREEN)  docker-stop $(COLOR_END) Stops docker container"
-	@echo "$(COLOR_GREEN)  docker-shell$(COLOR_END) Opens a shell in docker container"
+	@echo "$(COLOR_YELLOW)Available targets: $(COLOR_END)"
+	@echo "$(COLOR_GREEN)  install           $(COLOR_END) Installs dependencies from requirements.txt"
+	@echo "$(COLOR_GREEN)  start             $(COLOR_END) Starts the web server"
+	@echo "$(COLOR_GREEN)  test              $(COLOR_END) Executes tests"
+	@echo "$(COLOR_YELLOW) coding standard   $(COLOR_END)"
+	@echo "$(COLOR_GREEN)  lint              $(COLOR_END) Lints files"
+	@echo "$(COLOR_GREEN)  lint-autopep8     $(COLOR_END) Lints files with autopep8"
+	@echo "$(COLOR_GREEN)  lint-fix          $(COLOR_END) Fixes files linting"
+	@echo "$(COLOR_GREEN)  lint-fix-autopep8 $(COLOR_END) Fixes files linting with autopep8"
+	@echo "$(COLOR_YELLOW) docker            $(COLOR_END)"
+	@echo "$(COLOR_GREEN)  docker-start      $(COLOR_END) Starts docker container"
+	@echo "$(COLOR_GREEN)  docker-stop       $(COLOR_END) Stops docker container"
+	@echo "$(COLOR_GREEN)  docker-shell      $(COLOR_END) Opens a shell in docker container"
 
 install:
 	$(PIP) install -r requirements.txt
 ifneq ($(SERVER_ENV),"prod")
 	$(PIP) install -r requirements-dev.txt
 endif
+
+lint: lint-autopep8
+
+lint-autopep8:
+	$(AUTOPEP8) -v --diff --exit-code --recursive dapytains tests
+
+lint-fix: lint-fix-autopep8
+
+lint-fix-autopep8:
+	$(AUTOPEP8) -v --in-place --recursive dapytains tests
 
 start:
 ifeq ($(VERBOSE),1)

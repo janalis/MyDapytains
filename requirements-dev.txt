@@ -3,3 +3,4 @@ pytest-cov
 coveralls
 pytest-sugar
 requests-mock
+autopep8
