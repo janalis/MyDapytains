@@ -7,7 +7,7 @@ def read_requirements():
 
 setup(
     name="dapytains",
-    version="0.0.1a3",
+    version="0.0.1a4",
     author="Thibault Clérice",
     author_email="thibault.clerice@inria.fr",
     description="A brief description of dapytains",
